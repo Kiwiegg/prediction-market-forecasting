@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25NOV14SACMIN-MIN/candlesticks?end_ts=1763082000&period_interval=1&start_ts=1763074800",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:13 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:12.278997Z",
+      "finished_at": "2026-10-19T09:54:13.576859Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "58ae1d0ab6e3b39f16a1270aeadd1809b4b3ae1ab7b253186c545bf649b3fd59"
+}

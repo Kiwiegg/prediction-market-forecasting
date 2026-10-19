@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25DEC21TORBKN-BKN/candlesticks?end_ts=1766271600&period_interval=1&start_ts=1766264400",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:03 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:02.127114Z",
+      "finished_at": "2026-10-19T09:55:03.427575Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "e2e5074a2ce4c808960e2334922680c6e6e707d7063be928eb98a7e6a59f14c9"
+}

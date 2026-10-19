@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26MAR18OKCBKN-BKN/candlesticks?end_ts=1773790200&period_interval=1&start_ts=1773783000",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:57:13 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:57:11.215613Z",
+      "finished_at": "2026-10-19T09:57:13.569878Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "03451dce99cd7738192cefe0a45bc600d8751f98b63f10a9b9f52033ab045ff4"
+}

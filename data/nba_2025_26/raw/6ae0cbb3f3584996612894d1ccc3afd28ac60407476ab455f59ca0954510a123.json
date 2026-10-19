@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26FEB12PORUTA-UTA/candlesticks?end_ts=1770861600&period_interval=1&start_ts=1770854400",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:31 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:56:29.529512Z",
+      "finished_at": "2026-10-19T09:56:31.483995Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "489c41553cd72db2d6cb2c7aba0f87347aa66293db4fc75e731e27fb1be59627"
+}

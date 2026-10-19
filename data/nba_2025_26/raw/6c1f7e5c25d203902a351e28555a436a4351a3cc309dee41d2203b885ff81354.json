@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1768447800&min_ts=1768444200&ticker=KXNBAGAME-26JAN15CHALAL-LAL",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:39 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:38.042809Z",
+      "finished_at": "2026-10-19T09:55:39.332278Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "45e0222e8e1281bfe81e7b908cb1872de1dee71ea2ea76ae57d871ab523c7294"
+}

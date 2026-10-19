@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26JAN05CHAOKC-OKC/candlesticks?end_ts=1767574800&period_interval=1&start_ts=1767567600",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:26 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:24.792809Z",
+      "finished_at": "2026-10-19T09:55:26.562204Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "02ba969a5a95dbe9250410919de30d82f9579fe3b93ee367d5226e3403259260"
+}

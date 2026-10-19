@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1763337600&min_ts=1763334000&ticker=KXNBAGAME-25NOV17MILCLE-CLE",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:21 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:18.429958Z",
+      "finished_at": "2026-10-19T09:54:22.087004Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "99cf926b3b66667fde11c6035bbd7c957b8643c74843cd6f75a23ebfc4a83956"
+}

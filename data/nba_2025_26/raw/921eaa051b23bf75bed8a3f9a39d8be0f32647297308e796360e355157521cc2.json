@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1773507600&min_ts=1773504000&ticker=KXNBAGAME-26MAR15MINOKC-OKC",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 08:06:22 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:06:20.769849Z",
+      "finished_at": "2026-10-19T08:06:22.264660Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "ea345383663da9d9ceb88600d92364bec17aae4bf534e84a98a64f2d46316cfa"
+}

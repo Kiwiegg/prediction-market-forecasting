@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1763856000&min_ts=1763852400&ticker=KXNBAGAME-25NOV23POROKC-OKC",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:32 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:31.731752Z",
+      "finished_at": "2026-10-19T09:54:33.002316Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "4f7cb7cbde9dba009208851dee929f1e8d3cb1878d4cb9af0b192bf135fb3640"
+}

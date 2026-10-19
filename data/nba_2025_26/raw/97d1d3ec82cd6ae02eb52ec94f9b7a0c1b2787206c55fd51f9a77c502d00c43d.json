@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/milestones?limit=100&related_event_ticker=KXNBAGAME-26MAR08DALTOR",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:57:03 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:57:02.773862Z",
+      "finished_at": "2026-10-19T09:57:04.206964Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "b668c8f82fb35c6b5b3277ef23290fe339ae3523e74f608e6c504d5d13d8c4bf"
+}

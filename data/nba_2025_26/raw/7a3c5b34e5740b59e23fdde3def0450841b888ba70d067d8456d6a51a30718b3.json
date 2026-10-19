@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25DEC29NYKNOP-NOP/candlesticks?end_ts=1766970000&period_interval=1&start_ts=1766962800",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:17 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:16.378164Z",
+      "finished_at": "2026-10-19T09:55:17.742412Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "2deb9b005c9461146203fe61d9f8edf16ba88c91bb933a7595e3ae45f448a4f6"
+}

@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25NOV17DALMIN-MIN/candlesticks?end_ts=1763341200&period_interval=1&start_ts=1763334000",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:18 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:16.987249Z",
+      "finished_at": "2026-10-19T09:54:18.966386Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "1c9f29cd6f8bdcfce21d15ddb1c90619b32589362832527bd1d2490db277471a"
+}

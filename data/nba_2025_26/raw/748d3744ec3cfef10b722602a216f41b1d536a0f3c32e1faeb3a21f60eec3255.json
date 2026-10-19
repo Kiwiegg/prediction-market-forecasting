@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/milestones?limit=100&related_event_ticker=KXNBAGAME-26FEB05CHITOR",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:16 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:56:15.338212Z",
+      "finished_at": "2026-10-19T09:56:16.544705Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "ac3782e43c9e5b6e97eb620aae59a8ab256408442e418a2bfa17a64f949d3238"
+}

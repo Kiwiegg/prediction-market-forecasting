@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1774569600&min_ts=1774566000&ticker=KXNBAGAME-26MAR27CHIOKC-OKC",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:57:30 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:57:29.085436Z",
+      "finished_at": "2026-10-19T09:57:30.989395Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "5eaccf70d58d1213148c5dab9fb3a9a7766c0fe2066916568a3ce3b4d5baa453"
+}

@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1775516400&min_ts=1775512800&ticker=KXNBAGAME-26APR07CHIWAS-WAS",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:57:47 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:57:46.237451Z",
+      "finished_at": "2026-10-19T09:57:47.751173Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "5e715272a953952e00105cd96e118cd5d9903a3f792d86d03f683d0185f3c831"
+}

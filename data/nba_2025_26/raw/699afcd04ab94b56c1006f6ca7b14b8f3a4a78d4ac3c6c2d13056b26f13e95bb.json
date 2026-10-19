@@ -1,0 +1,16 @@
+{
+  "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/23/schedule?season=2026&seasontype=2",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:20:59 GMT",
+    "Content-Type": "application/json;charset=UTF-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:20:57.115495Z",
+      "finished_at": "2026-10-19T09:21:03.609404Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "23a1f0fac16d4ccad76d8631da01b57eb84b2e664d63e532017ed36beca0950e"
+}

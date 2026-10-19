@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1766970000&min_ts=1766966400&ticker=KXNBAGAME-25DEC29CLESAS-SAS",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:19 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:18.321536Z",
+      "finished_at": "2026-10-19T09:55:19.612369Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "2bfd7460d4ea69889a80c6ca331ec393c77bc2e90f0b835562d81ceb952a13d4"
+}

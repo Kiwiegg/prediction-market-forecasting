@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26APR07CHIWAS-WAS/candlesticks?end_ts=1775516400&period_interval=1&start_ts=1775509200",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:57:46 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:57:44.817065Z",
+      "finished_at": "2026-10-19T09:57:46.109110Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "7cdef2f3745c00a145b20d5631219fb011a7257c8fbdd6e1bb470287603e9226"
+}

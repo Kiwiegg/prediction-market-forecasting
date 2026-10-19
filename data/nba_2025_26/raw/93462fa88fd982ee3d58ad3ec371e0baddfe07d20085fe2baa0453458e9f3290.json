@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26FEB24BOSPHX-PHX/candlesticks?end_ts=1771898400&period_interval=1&start_ts=1771891200",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:43 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:56:41.342215Z",
+      "finished_at": "2026-10-19T09:56:43.974371Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "5a00552d1f3290183eb4f6017e5bc34304b89e51c0f32e4c4e83c95962def2be"
+}

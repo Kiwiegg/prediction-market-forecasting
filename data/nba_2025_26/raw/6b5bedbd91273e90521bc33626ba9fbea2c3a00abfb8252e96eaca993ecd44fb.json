@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25NOV21WASTOR-TOR/candlesticks?end_ts=1763685000&period_interval=1&start_ts=1763677800",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:24 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:23.605306Z",
+      "finished_at": "2026-10-19T09:54:25.322261Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "d398cc585dd00ca8c93076fca4990c460891b28898cddf158e8982d90825cd18"
+}

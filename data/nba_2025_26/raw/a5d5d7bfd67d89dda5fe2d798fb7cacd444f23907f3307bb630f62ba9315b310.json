@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1764460800&min_ts=1764457200&ticker=KXNBAGAME-25NOV30SASMIN-MIN",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:42 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:41.495734Z",
+      "finished_at": "2026-10-19T09:54:42.952199Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "99b8ef417e8247bf03ca181fc781e0b9d595be6e11fbff800677ec7d815f0c2d"
+}

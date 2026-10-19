@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1772762400&min_ts=1772758800&ticker=KXNBAGAME-26MAR06NYKDEN-DEN",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:57:00 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:56:59.680747Z",
+      "finished_at": "2026-10-19T09:57:00.994164Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "cbd6649d29d3f0cbcf3075220e1c16c8e4fbe8a0fb425a09c88aaa0023c01377"
+}

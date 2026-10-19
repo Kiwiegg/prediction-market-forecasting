@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25NOV05WASBOS-BOS/candlesticks?end_ts=1762302600&period_interval=1&start_ts=1762295400",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:53:49 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:53:48.014780Z",
+      "finished_at": "2026-10-19T09:53:49.673172Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "64fe58c533bb25aeffe191c98dba600747283abe4824189e2bbc8e28c8031559"
+}

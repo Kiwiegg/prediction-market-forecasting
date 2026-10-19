@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/milestones?limit=100&related_event_ticker=KXNBAGAME-26MAR02DENUTA",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:51 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:56:50.483679Z",
+      "finished_at": "2026-10-19T09:56:51.977482Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "5e8f42d607c1811402ad7eeb9bd783f27d8d63161d3c1f556a55992045b1cc48"
+}

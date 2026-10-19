@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1765067400&min_ts=1765063800&ticker=KXNBAGAME-25DEC07LALPHI-PHI",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:53 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:51.456199Z",
+      "finished_at": "2026-10-19T09:54:53.389191Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "de03a14754831e388192f3f1d087bd9dcd0bc96aea0d77a2aef2ea66da3517e3"
+}

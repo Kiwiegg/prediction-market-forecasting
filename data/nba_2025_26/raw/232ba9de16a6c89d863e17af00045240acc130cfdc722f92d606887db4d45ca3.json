@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/milestones?limit=100&related_event_ticker=KXNBAGAME-26FEB19TORCHI",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:31 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:56:30.397070Z",
+      "finished_at": "2026-10-19T09:56:31.833659Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "050ca79f0d7b300df6ab71d540c999bdf9c2ec18baabc4242aa26e4f0a560295"
+}

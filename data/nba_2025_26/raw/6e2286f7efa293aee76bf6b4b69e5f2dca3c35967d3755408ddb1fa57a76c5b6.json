@@ -1,0 +1,16 @@
+{
+  "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/11/schedule?season=2026&seasontype=2",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:20:48 GMT",
+    "Content-Type": "application/json;charset=UTF-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:20:47.289523Z",
+      "finished_at": "2026-10-19T09:20:50.705386Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "e5f57540a4ec22b9699b275136e359a9bc9313536f888c620fca6f55fa73f6e2"
+}

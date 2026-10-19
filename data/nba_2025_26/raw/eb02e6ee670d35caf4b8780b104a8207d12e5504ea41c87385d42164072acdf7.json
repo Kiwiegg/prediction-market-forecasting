@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1772416800&min_ts=1772413200&ticker=KXNBAGAME-26MAR02DENUTA-UTA",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:54 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:56:53.820436Z",
+      "finished_at": "2026-10-19T09:56:55.137166Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "8a07de3f275fe71480691a09653ccb05f9aa20a0953453f5c9fc6a53d2d1bfd0"
+}

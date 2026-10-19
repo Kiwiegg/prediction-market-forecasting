@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1762732800&min_ts=1762729200&ticker=KXNBAGAME-25NOV10WASDET-DET",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:05 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:03.974987Z",
+      "finished_at": "2026-10-19T09:54:05.855996Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "4df90dfa383dc6a9f2824d1df3359df6fbbe5c57ae2207bca26c39e237244d68"
+}

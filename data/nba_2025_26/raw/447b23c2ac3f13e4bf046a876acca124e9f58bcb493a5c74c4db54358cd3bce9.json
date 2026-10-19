@@ -1,0 +1,16 @@
+{
+  "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/17/schedule?season=2026&seasontype=2",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:20:53 GMT",
+    "Content-Type": "application/json;charset=UTF-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:20:51.890583Z",
+      "finished_at": "2026-10-19T09:20:54.847189Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "e98c121f650165a129cedb8326f2d1337d65682365f5a89dbbf96d78c251d23a"
+}

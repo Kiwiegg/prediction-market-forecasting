@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/milestones?limit=100&related_event_ticker=KXNBAGAME-26JAN26MEMHOU",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:58 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:56.647231Z",
+      "finished_at": "2026-10-19T09:55:58.143796Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "b9f2a9c381162bd5fca3ba0e7a3a9bde2601161be2a9fac51634d339e14fe44a"
+}

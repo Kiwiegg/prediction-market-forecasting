@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26JAN26MEMHOU-HOU/candlesticks?end_ts=1769389200&period_interval=1&start_ts=1769382000",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:00 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:58.266462Z",
+      "finished_at": "2026-10-19T09:56:00.620367Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "51775884ed6087d05e59262ec17c106483ceecadcb9590a8dd53c7f383d317d9"
+}

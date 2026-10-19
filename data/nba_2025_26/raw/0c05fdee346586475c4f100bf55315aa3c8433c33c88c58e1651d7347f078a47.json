@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25OCT24MILTOR-TOR/candlesticks?end_ts=1761258600&period_interval=1&start_ts=1761251400",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:53:37 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:53:36.533715Z",
+      "finished_at": "2026-10-19T09:53:37.846946Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "266dcc380c8e2f5bd695e696fb582d56e47f8198c7121ca436f46bc63811c2f1"
+}

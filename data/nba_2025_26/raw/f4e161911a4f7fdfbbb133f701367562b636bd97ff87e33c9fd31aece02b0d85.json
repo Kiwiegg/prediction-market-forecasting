@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1773964800&min_ts=1773961200&ticker=KXNBAGAME-26MAR20ATLHOU-HOU",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:57:21 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:57:19.682123Z",
+      "finished_at": "2026-10-19T09:57:21.077476Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "6129f20c5cfd952cbe94f0eb72fe080739d11d1e409d70c4c96f8d91ea4cd824"
+}

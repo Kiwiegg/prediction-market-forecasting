@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26JAN09TORBOS-BOS/candlesticks?end_ts=1767916800&period_interval=1&start_ts=1767909600",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:34 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:32.073135Z",
+      "finished_at": "2026-10-19T09:55:35.855318Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "31676bb2dfa1f8b95be3fe0bf789b7be2d2a34f3d1452625e0e616517f90434d"
+}

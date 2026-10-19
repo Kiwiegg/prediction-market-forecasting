@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26MAR27WASGSW-GSW/candlesticks?end_ts=1774576800&period_interval=1&start_ts=1774569600",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:57:29 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:57:27.895399Z",
+      "finished_at": "2026-10-19T09:57:29.189495Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "1d5c012aa4b255f8d668a492d765feca0ae654e8be9bacb0b3de157489c5162f"
+}

@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26MAR02DENUTA-UTA/candlesticks?end_ts=1772416800&period_interval=1&start_ts=1772409600",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:53 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:56:52.104540Z",
+      "finished_at": "2026-10-19T09:56:53.692918Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "fa5f0709ce71ef3adc5221aca42d0bba330bd0f17642f243446ee656744ebb92"
+}

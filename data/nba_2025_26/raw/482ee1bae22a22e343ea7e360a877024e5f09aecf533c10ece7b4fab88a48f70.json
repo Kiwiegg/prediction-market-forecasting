@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26JAN21CLECHA-CHA/candlesticks?end_ts=1768953600&period_interval=1&start_ts=1768946400",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:46 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:45.737274Z",
+      "finished_at": "2026-10-19T09:55:47.232905Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "75207b093927ad81139569cc2363fbd99d33e3d9384874d9cdd1eb7e853eb884"
+}

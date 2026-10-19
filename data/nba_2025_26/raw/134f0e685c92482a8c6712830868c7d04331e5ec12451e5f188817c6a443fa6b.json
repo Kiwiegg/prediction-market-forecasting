@@ -1,0 +1,16 @@
+{
+  "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401810890",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:34:28 GMT",
+    "Content-Type": "application/json;charset=UTF-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:34:27.186798Z",
+      "finished_at": "2026-10-19T09:34:29.055923Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "a7178cd4ed3690010d423ee8dd4077adf78426582f0b7fe7205e503f53257a7b"
+}

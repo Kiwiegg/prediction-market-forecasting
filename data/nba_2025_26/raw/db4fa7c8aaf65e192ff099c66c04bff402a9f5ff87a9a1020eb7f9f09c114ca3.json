@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1771462800&min_ts=1771459200&ticker=KXNBAGAME-26FEB19TORCHI-CHI",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:35 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:56:33.962892Z",
+      "finished_at": "2026-10-19T09:56:35.660084Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "7d5816c7e26a10e1cbfe57620bc637f393ecb4339389fb1dba17f45764f01942"
+}

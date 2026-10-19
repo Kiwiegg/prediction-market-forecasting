@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/milestones?limit=100&related_event_ticker=KXNBAGAME-26FEB04OKCSAS",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:15 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:56:14.372838Z",
+      "finished_at": "2026-10-19T09:56:16.032002Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "ec3c238ee51b17a2a169c2113894c2097b9fd155fd1530959e93532c7fa6d4ab"
+}

@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/milestones?limit=100&related_event_ticker=KXNBAGAME-26MAR19LALMIA",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:57:14 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:57:13.508078Z",
+      "finished_at": "2026-10-19T09:57:14.733826Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "4175fc00372fa7790b17894fe726cff61555012235173b613fd47a1bf08ca6ee"
+}

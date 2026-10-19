@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25NOV07HOUSAS-SAS/candlesticks?end_ts=1762475400&period_interval=1&start_ts=1762468200",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:53:59 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:53:57.854338Z",
+      "finished_at": "2026-10-19T09:53:59.552582Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "8130e089f7252b41d07e3ed2de58ba9448b0ed0f6c703e2e74802e38046dd9cc"
+}

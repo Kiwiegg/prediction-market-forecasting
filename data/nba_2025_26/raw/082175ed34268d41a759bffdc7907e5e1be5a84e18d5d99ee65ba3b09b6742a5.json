@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26FEB11LACHOU-HOU/candlesticks?end_ts=1770771600&period_interval=1&start_ts=1770764400",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:31 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:56:28.964521Z",
+      "finished_at": "2026-10-19T09:56:31.654966Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "df084a80c28320741e637d75a2c25c2b58ea1dd3659ae124cbd1758dc06f9fea"
+}

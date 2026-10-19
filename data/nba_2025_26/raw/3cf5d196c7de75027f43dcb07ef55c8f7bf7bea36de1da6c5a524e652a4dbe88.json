@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25DEC07GSWCHI-CHI/candlesticks?end_ts=1765065600&period_interval=1&start_ts=1765058400",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:49 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:47.733681Z",
+      "finished_at": "2026-10-19T09:54:49.551052Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "d388a0fb98972517325a7a11220ee230c4367cacd60f7fe398db45bb18ba6c83"
+}

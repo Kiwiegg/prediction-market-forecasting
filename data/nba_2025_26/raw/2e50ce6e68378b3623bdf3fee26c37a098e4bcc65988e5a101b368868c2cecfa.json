@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26APR12NOPMIN-MIN/candlesticks?end_ts=1775953800&period_interval=1&start_ts=1775946600",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:57:57 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:57:56.686156Z",
+      "finished_at": "2026-10-19T09:57:57.961799Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "981afdf02fea159c3e8f2389b0c077c423f32b85aa86e7e4252469d9367cb431"
+}

@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1767315600&min_ts=1767312000&ticker=KXNBAGAME-26JAN02CHAMIL-MIL",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:25 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:24.675088Z",
+      "finished_at": "2026-10-19T09:55:25.947815Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "1425a9a502b03ad9efeb6d274350c2a2be9274d8d1a706f2f2698fbbdf2bc74b"
+}

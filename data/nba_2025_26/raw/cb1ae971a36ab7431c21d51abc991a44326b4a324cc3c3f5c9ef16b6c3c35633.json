@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26JAN06DALSAC-SAC/candlesticks?end_ts=1767672000&period_interval=1&start_ts=1767664800",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:28 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:27.359179Z",
+      "finished_at": "2026-10-19T09:55:28.958764Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "65e3c70c5e08f2a026a7302c52b00f55f0349285745f55477ec96951a6b24771"
+}

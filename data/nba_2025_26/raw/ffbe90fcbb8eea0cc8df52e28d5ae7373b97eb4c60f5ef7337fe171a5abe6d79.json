@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25NOV03DALHOU-HOU/candlesticks?end_ts=1762131600&period_interval=1&start_ts=1762124400",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:53:48 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:53:47.104861Z",
+      "finished_at": "2026-10-19T09:53:48.634735Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "388af4eb4d4f8e2582d05aa55879b02055fcabd563b9486ef29ccb2c8eba7132"
+}

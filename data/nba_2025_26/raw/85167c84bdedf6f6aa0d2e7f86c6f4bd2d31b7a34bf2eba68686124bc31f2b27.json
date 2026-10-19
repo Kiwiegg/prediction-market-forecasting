@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26JAN23SACCLE-CLE/candlesticks?end_ts=1769128200&period_interval=1&start_ts=1769121000",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:51 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:49.369814Z",
+      "finished_at": "2026-10-19T09:55:51.546394Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "d9cd91665bba242fceab519e507082fcd22f00423c62e97d1b02c72dc712ed11"
+}

@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1775001600&min_ts=1774998000&ticker=KXNBAGAME-26APR01NYKMEM-MEM",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:57:40 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:57:38.917531Z",
+      "finished_at": "2026-10-19T09:57:40.137378Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "a82748aa56b03b1977f72bb2fecc691bf8422297aa1fffbe11647542abf4cff2"
+}

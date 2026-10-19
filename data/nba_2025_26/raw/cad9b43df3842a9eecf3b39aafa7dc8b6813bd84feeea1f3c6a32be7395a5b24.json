@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1761692400&min_ts=1761688800&ticker=KXNBAGAME-25OCT29CLEBOS-BOS",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:53:45 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:53:42.964846Z",
+      "finished_at": "2026-10-19T09:53:45.432588Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "e579a34aee480af4235cb87ba1253b11d4a9560570dc6adf89e098c6bc2f8f76"
+}

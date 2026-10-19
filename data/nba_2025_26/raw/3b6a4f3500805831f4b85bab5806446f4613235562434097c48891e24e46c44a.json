@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1771898400&min_ts=1771894800&ticker=KXNBAGAME-26FEB24BOSPHX-PHX",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:45 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:56:44.098654Z",
+      "finished_at": "2026-10-19T09:56:45.797152Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "a2e750eeab058efa51ca664ba6b1aa69cb50516f84be7b2e9778b9b9f2e66913"
+}

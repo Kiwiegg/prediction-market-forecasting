@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26JAN16LACTOR-TOR/candlesticks?end_ts=1768523400&period_interval=1&start_ts=1768516200",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:39 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:38.423707Z",
+      "finished_at": "2026-10-19T09:55:40.095261Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "4484cf4881e850d5833c6cbea51441865ad5d436f8a6d2f8e2a70e7f2c38fce1"
+}

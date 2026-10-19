@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25DEC06SACMIA-MIA/candlesticks?end_ts=1764982800&period_interval=1&start_ts=1764975600",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:48 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:47.015357Z",
+      "finished_at": "2026-10-19T09:54:48.397896Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "842c66e23f122b27c921b53cd78aa126a36ee0c72b3958ab62cbed1737e885f2"
+}

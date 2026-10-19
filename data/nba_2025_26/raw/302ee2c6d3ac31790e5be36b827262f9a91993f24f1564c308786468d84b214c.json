@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25NOV12WASHOU-HOU/candlesticks?end_ts=1762909200&period_interval=1&start_ts=1762902000",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:06 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:04.862775Z",
+      "finished_at": "2026-10-19T09:54:06.870720Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "49329947aba85394aee8d32ed43f5ccea5bf24b4912cff1a7166133a81dfa433"
+}

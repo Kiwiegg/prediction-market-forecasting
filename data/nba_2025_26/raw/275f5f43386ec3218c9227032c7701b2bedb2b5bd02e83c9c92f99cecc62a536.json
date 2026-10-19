@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26JAN07DENBOS-BOS/candlesticks?end_ts=1767744000&period_interval=1&start_ts=1767736800",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:28 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:27.779494Z",
+      "finished_at": "2026-10-19T09:55:29.568198Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "d7b46a67873fb2cbb27c15bd568636445f34a2f8c3bbdc2e5bc1efadce889651"
+}

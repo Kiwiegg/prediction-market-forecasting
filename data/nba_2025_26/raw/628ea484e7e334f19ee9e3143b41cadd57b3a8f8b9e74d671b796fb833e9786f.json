@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1766797200&min_ts=1766793600&ticker=KXNBAGAME-25DEC27NYKATL-ATL",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:15 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:14.043853Z",
+      "finished_at": "2026-10-19T09:55:15.895350Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "ce91679332b1b83d2574366e4cc72f6d41bf656ccc2fa9cf574ee4f9ac6809e7"
+}

@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1764126000&min_ts=1764122400&ticker=KXNBAGAME-25NOV26HOUGSW-GSW",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:34 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:33.389052Z",
+      "finished_at": "2026-10-19T09:54:34.806315Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "424ae52f7082284d563f93e99b39b3337de054e747aaf7280ba9cb57b5dd87fc"
+}

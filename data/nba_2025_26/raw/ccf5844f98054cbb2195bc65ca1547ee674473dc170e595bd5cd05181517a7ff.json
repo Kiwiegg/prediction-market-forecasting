@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26APR07DALLAC-LAC/candlesticks?end_ts=1775529000&period_interval=1&start_ts=1775521800",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:57:52 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:57:49.968213Z",
+      "finished_at": "2026-10-19T09:57:53.294163Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "c7efd0b609beee8a39910bb981d4e0cc4e7fc0cadf2fc1070c816960c24da24b"
+}

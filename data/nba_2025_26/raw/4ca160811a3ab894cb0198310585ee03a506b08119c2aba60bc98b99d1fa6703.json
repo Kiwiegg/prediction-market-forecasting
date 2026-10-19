@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26MAR12WASORL-ORL/candlesticks?end_ts=1773270000&period_interval=1&start_ts=1773262800",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:57:08 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:57:07.475603Z",
+      "finished_at": "2026-10-19T09:57:08.800334Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "e2a1d332e765d73e3bacdf6fb1438f26d644765e0845f04fbdd4da9e1d7d91aa"
+}

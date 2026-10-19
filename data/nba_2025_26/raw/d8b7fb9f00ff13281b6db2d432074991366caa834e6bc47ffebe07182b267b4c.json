@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1769563800&min_ts=1769560200&ticker=KXNBAGAME-26JAN28MINDAL-DAL",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:07 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:56:05.849655Z",
+      "finished_at": "2026-10-19T09:56:07.142530Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "a15663f4150e9d03960bea9b6f278f29510ea0ccad48093791be22833de92bc6"
+}

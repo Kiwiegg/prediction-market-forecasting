@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1770861600&min_ts=1770858000&ticker=KXNBAGAME-26FEB12PORUTA-UTA",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:32 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:56:31.606720Z",
+      "finished_at": "2026-10-19T09:56:33.324556Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "8d9dc70a1aec7bb15f21e2dc8b7b9ac1d3f8b79d25b37216194f281d649fdca3"
+}

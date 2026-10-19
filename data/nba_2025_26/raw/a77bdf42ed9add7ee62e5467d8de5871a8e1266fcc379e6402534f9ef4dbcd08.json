@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25NOV05HOUMEM-MEM/candlesticks?end_ts=1762304400&period_interval=1&start_ts=1762297200",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:53:54 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:53:53.557964Z",
+      "finished_at": "2026-10-19T09:53:55.047247Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "ec83443c15d8ea7de32f3efd8c7d41ddadea2cb7e5f8ba02d3e06a2f24bc7581"
+}

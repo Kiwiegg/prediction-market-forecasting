@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1772067600&min_ts=1772064000&ticker=KXNBAGAME-26FEB26PORCHI-CHI",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:48 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:56:47.136153Z",
+      "finished_at": "2026-10-19T09:56:48.814164Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "5fa116753e7f25aee6ff462e2526a5e43a7b27d01f7e77c15d462a765b0492b0"
+}

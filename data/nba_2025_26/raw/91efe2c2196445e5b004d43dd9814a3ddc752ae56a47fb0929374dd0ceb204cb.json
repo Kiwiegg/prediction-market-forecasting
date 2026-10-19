@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1762563600&min_ts=1762560000&ticker=KXNBAGAME-25NOV08NOPSAS-SAS",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:03 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:01.878834Z",
+      "finished_at": "2026-10-19T09:54:03.109468Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "8f33784986a9e451bd39191615e7a663f14bfd853c701b500dc40474e32b1323"
+}

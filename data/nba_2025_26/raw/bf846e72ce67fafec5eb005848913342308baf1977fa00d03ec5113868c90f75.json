@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25OCT31ATLIND-IND/candlesticks?end_ts=1761865200&period_interval=1&start_ts=1761858000",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:53:48 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:53:46.738481Z",
+      "finished_at": "2026-10-19T09:53:49.035052Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "ab89ac78da5f5c20e78322a7cffde474532a55d59f759e509fd1d9f0dd24ff62"
+}

@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/milestones?limit=100&related_event_ticker=KXNBAGAME-25NOV23POROKC",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:29 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:28.247438Z",
+      "finished_at": "2026-10-19T09:54:29.942024Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "68ad7dbf339c2af03e7ae2143ee39ffd048eac53c9303347d3b68a9a7be79919"
+}

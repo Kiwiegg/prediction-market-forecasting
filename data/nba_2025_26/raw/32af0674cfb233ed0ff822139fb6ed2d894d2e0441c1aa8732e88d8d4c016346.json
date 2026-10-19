@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25NOV15TORIND-IND/candlesticks?end_ts=1763164800&period_interval=1&start_ts=1763157600",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:13 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:12.677079Z",
+      "finished_at": "2026-10-19T09:54:14.001040Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "994a9fc42d17ae671f5e8be096555a58b68778043350ead64d8317b09c1d0417"
+}

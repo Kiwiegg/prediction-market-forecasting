@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25NOV05MINNYK-NYK/candlesticks?end_ts=1762302600&period_interval=1&start_ts=1762295400",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:53:54 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:53:52.666035Z",
+      "finished_at": "2026-10-19T09:53:54.589760Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "f5b13e0b2f93f74b37e0ae15a81d1aa3e92fbd942b491e10d61f00df78fe893c"
+}

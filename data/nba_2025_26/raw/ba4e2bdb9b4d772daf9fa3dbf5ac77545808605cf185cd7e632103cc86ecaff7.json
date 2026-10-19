@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1769128200&min_ts=1769124600&ticker=KXNBAGAME-26JAN23SACCLE-CLE",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:52 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:51.673335Z",
+      "finished_at": "2026-10-19T09:55:52.929434Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "e31439a282787200a06f600b44d126b686eb2f1a73ac1fe958430bb2c029689a"
+}

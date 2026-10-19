@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25NOV23POROKC-OKC/candlesticks?end_ts=1763856000&period_interval=1&start_ts=1763848800",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:31 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:30.065060Z",
+      "finished_at": "2026-10-19T09:54:31.603287Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "244fe4a276b39eb9b9473f25ec8675086a16daf4c5d3fa110af73a314426bf99"
+}

@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25DEC01CLEIND-IND/candlesticks?end_ts=1764547200&period_interval=1&start_ts=1764540000",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 08:05:02 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:05:00.853730Z",
+      "finished_at": "2026-10-19T08:05:02.435627Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "cbd6af125a625a896887a89bd674bac0b2b67c256d9189308a47c492ce177f55"
+}

@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26FEB22TORMIL-MIL/candlesticks?end_ts=1771705800&period_interval=1&start_ts=1771698600",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:37 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:56:36.529728Z",
+      "finished_at": "2026-10-19T09:56:38.017904Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "a80ac30462e47e8f08d69353ea3339e76ffa0fbe9fdd1243e5ab77be09bf2212"
+}

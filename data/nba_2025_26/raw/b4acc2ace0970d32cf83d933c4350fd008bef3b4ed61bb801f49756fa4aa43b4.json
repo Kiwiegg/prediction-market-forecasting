@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1761865200&min_ts=1761861600&ticker=KXNBAGAME-25OCT31ATLIND-IND",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:53:50 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:53:49.163527Z",
+      "finished_at": "2026-10-19T09:53:50.903171Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "ec2dae248581e57695563c0dc1eab4fa26166ce497afe6855d7ad0cfe098fa03"
+}

@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25NOV17MILCLE-CLE/candlesticks?end_ts=1763337600&period_interval=1&start_ts=1763330400",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:18 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:16.861434Z",
+      "finished_at": "2026-10-19T09:54:18.305869Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "5f299b5627d924ff644bad50718d39069a1c20d4869d8ceb6f0208cd293b731e"
+}

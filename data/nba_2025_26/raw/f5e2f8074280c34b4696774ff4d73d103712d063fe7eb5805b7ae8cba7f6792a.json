@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1762909200&min_ts=1762905600&ticker=KXNBAGAME-25NOV12WASHOU-HOU",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:08 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:06.996131Z",
+      "finished_at": "2026-10-19T09:54:09.034014Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "1d918ffb4c2f552a0c5c027172b897548e2e366370452a68b8850b06d7a57fd0"
+}

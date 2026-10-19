@@ -1,0 +1,16 @@
+{
+  "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/12/schedule?season=2026&seasontype=2",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:20:48 GMT",
+    "Content-Type": "application/json;charset=UTF-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:20:47.582401Z",
+      "finished_at": "2026-10-19T09:20:51.712645Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "d245f44d1f827382a5941c4ebd1ace441350afb124bd7d1a320dd7a3c6c40f0b"
+}

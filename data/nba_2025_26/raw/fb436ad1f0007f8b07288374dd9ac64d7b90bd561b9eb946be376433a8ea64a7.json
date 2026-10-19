@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/milestones?limit=100&related_event_ticker=KXNBAGAME-26MAR15DETTOR",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 08:06:31 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:06:29.925130Z",
+      "finished_at": "2026-10-19T08:06:31.984394Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "9d8668182e3249959cfb8cbfc344d0f4a2f6fd35609bcf1060725a59d23cda86"
+}

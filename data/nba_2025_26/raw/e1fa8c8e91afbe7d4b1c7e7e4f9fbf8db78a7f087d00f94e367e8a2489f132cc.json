@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1767747600&min_ts=1767744000&ticker=KXNBAGAME-26JAN07UTAOKC-OKC",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:33 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:31.254204Z",
+      "finished_at": "2026-10-19T09:55:33.576443Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "c917ea33831bb96ad10614365cb47b0e3453abbfab63bc73905942add014817b"
+}

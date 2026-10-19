@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25DEC18WASSAS-SAS/candlesticks?end_ts=1766019600&period_interval=1&start_ts=1766012400",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:57 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:55.846688Z",
+      "finished_at": "2026-10-19T09:54:57.407276Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "c30c41b494d338a62e1febd91905bdd2a7811674d7d5409e6ccffab7f03facab"
+}

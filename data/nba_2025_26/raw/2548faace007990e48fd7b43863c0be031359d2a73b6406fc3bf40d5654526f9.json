@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25NOV12PORNOP-NOP/candlesticks?end_ts=1762909200&period_interval=1&start_ts=1762902000",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:08 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:07.510147Z",
+      "finished_at": "2026-10-19T09:54:09.095069Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "45e1f2b45cc54adef548afe2a488027c1c538cec654db9e8908becaba8132975"
+}

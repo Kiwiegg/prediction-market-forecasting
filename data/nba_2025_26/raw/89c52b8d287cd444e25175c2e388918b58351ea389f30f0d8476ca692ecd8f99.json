@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1764457200&min_ts=1764453600&ticker=KXNBAGAME-25NOV30BOSCLE-CLE",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:40 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:38.784425Z",
+      "finished_at": "2026-10-19T09:54:40.217957Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "4499bf0c0a472e087379bff2c4bc8bc8a4fab56e29fa319fb801362fae539604"
+}

@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1764446400&min_ts=1764442800&ticker=KXNBAGAME-25NOV30HOUUTA-UTA",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:40 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:38.186407Z",
+      "finished_at": "2026-10-19T09:54:40.922863Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "e661909922aa2b6f1b3e8c7497c1a4802b0c6c36502b7eace7357105ea11a505"
+}

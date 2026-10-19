@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1763164800&min_ts=1763161200&ticker=KXNBAGAME-25NOV15TORIND-IND",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:15 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:14.126422Z",
+      "finished_at": "2026-10-19T09:54:15.497361Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "91dbd208e3471499a8a863efe8d9b11e9d5bda3457aa2b30a128d541e46656fa"
+}

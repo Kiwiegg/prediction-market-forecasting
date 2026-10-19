@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26JAN24BOSCHI-CHI/candlesticks?end_ts=1769216400&period_interval=1&start_ts=1769209200",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:56 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:55.508351Z",
+      "finished_at": "2026-10-19T09:55:57.201738Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "e04ceff2d01b1e682c5ccb371ecab9b712bd5f338b7e847b538f9d005b6ac679"
+}

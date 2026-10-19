@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1769221800&min_ts=1769218200&ticker=KXNBAGAME-26JAN24MIAUTA-UTA",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:00 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:58.376370Z",
+      "finished_at": "2026-10-19T09:56:00.757313Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "5f4ae9b99a423bc3dec0e6941561c8bf45176761df020a8ac54fcc122df40702"
+}

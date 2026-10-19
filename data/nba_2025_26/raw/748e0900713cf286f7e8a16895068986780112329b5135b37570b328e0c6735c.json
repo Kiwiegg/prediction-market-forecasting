@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1768953600&min_ts=1768950000&ticker=KXNBAGAME-26JAN21CLECHA-CHA",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:49 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:47.356411Z",
+      "finished_at": "2026-10-19T09:55:49.491638Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "3a22a2cea71034269b7279b6963a6072f80e70f49c91362ab73750714f755e71"
+}

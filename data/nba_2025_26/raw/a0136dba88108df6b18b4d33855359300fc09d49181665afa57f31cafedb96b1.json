@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25DEC23CHIATL-ATL/candlesticks?end_ts=1766449800&period_interval=1&start_ts=1766442600",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:07 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:06.170989Z",
+      "finished_at": "2026-10-19T09:55:07.447784Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "073a3be2d66c50be78af1e6f9a972eb2f8dfc3bde40c6cbf24e53735d69aeafa"
+}

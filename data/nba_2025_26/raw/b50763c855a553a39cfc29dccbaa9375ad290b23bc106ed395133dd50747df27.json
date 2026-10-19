@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1762131600&min_ts=1762128000&ticker=KXNBAGAME-25NOV03DALHOU-HOU",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:53:50 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:53:48.758071Z",
+      "finished_at": "2026-10-19T09:53:50.774370Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "71f68ccf9029d049b21474e13015234b5125ec77e66b7e1e9065ca53ce240820"
+}

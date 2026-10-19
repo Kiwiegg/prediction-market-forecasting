@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1767672000&min_ts=1767668400&ticker=KXNBAGAME-26JAN06DALSAC-SAC",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:30 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:29.087155Z",
+      "finished_at": "2026-10-19T09:55:30.561475Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "86e86269dbf3e4ced3c2ffc8578a7abb94b65da6b10aae39583e2c16f31fe1ca"
+}

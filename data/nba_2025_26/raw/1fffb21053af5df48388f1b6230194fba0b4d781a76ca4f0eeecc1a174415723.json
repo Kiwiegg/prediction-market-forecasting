@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets?limit=1000&series_ticker=KXNBAGAME",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 08:03:52 GMT",
+    "Content-Type": "application/json"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:03:50.911464Z",
+      "finished_at": "2026-10-19T08:03:53.936313Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "5238a80b1fac6373faea032345ce056975427682d1961210326ea4692377a744"
+}

@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1773878400&min_ts=1773874800&ticker=KXNBAGAME-26MAR19CLECHI-CHI",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:57:18 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:57:17.391825Z",
+      "finished_at": "2026-10-19T09:57:18.681618Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "454773dc388c0277aef54851d8055cae1fb0ddee6a94428c0348a682f6d6b157"
+}

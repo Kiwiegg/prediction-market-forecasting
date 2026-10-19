@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25NOV12ATLSAC-SAC/candlesticks?end_ts=1762916400&period_interval=1&start_ts=1762909200",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:10 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:09.104743Z",
+      "finished_at": "2026-10-19T09:54:10.854718Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "08275e370f00a5c5a08daa9a4e1e96953d97fbf6321a0ace6b1a1b890108fde7"
+}

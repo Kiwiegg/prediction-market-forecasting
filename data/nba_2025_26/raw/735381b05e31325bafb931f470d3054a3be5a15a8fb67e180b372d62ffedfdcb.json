@@ -1,0 +1,16 @@
+{
+  "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/8/schedule?season=2026&seasontype=2",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:20:46 GMT",
+    "Content-Type": "application/json;charset=UTF-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:20:45.215521Z",
+      "finished_at": "2026-10-19T09:20:47.403549Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "acb5e47b206d3090f2c20d8d93c5dc5a92a075cd20061124512ced57a2e001a5"
+}

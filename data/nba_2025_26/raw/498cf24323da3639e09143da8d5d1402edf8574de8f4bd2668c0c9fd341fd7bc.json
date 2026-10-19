@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26MAR19LALMIA-MIA/candlesticks?end_ts=1773878400&period_interval=1&start_ts=1773871200",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:57:16 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:57:14.857701Z",
+      "finished_at": "2026-10-19T09:57:17.127617Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "1649097ed1921c270303f984e22dc4bde7c1adb6ee79dc3d95f16581f13ab55f"
+}

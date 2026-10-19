@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26JAN30SACBOS-BOS/candlesticks?end_ts=1769733000&period_interval=1&start_ts=1769725800",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:09 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:56:07.884830Z",
+      "finished_at": "2026-10-19T09:56:09.520746Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "2615f5e1020e1d83f0f814f0e6104e248493fe0b7a537c9997d590f68bade7fa"
+}

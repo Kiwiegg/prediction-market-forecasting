@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1762304400&min_ts=1762300800&ticker=KXNBAGAME-25NOV05HOUMEM-MEM",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:53:56 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:53:55.176184Z",
+      "finished_at": "2026-10-19T09:53:57.010419Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "e6305d69d44f173a67ca0cae37ec5207d4c3d965eefbfbff527c04461a156553"
+}

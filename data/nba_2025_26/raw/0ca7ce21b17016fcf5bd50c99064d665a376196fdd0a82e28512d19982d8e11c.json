@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25NOV26HOUGSW-GSW/candlesticks?end_ts=1764126000&period_interval=1&start_ts=1764118800",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:32 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:30.910195Z",
+      "finished_at": "2026-10-19T09:54:33.261742Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "67fc3d66be845fd0a422362852ef1af2bdc5251b2fb0888037bcb2b95f3c107b"
+}

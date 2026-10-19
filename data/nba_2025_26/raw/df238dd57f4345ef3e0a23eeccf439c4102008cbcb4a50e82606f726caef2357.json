@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1767837600&min_ts=1767834000&ticker=KXNBAGAME-26JAN08DALUTA-UTA",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:34 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:33.383360Z",
+      "finished_at": "2026-10-19T09:55:34.736275Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "21fa9c36b370bb07889e07ccb6d26700973a5001086c5c80034f46a9860a2d15"
+}

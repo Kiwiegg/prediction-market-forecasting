@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/milestones?limit=100&related_event_ticker=KXNBAGAME-26MAR19CLECHI",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:57:15 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:57:14.287060Z",
+      "finished_at": "2026-10-19T09:57:15.797082Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "0bda8dcef50e46e01dee5732fc0677e1d11c369a6e3999ac1203d912fc8a9f90"
+}

@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25NOV30HOUUTA-UTA/candlesticks?end_ts=1764446400&period_interval=1&start_ts=1764439200",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:37 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:36.386784Z",
+      "finished_at": "2026-10-19T09:54:38.058484Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "f5d5e8cd38913bbc3346729f0bb11a3a44b34f0876bfdc50be54b28ba5180a1b"
+}

@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26JAN23NOPMEM-MEM/candlesticks?end_ts=1769130000&period_interval=1&start_ts=1769122800",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:53 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:52.668228Z",
+      "finished_at": "2026-10-19T09:55:54.229547Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "1831281c408fbcb8656b7291072b96f9ec4759b561bca700748e7969fed8de97"
+}

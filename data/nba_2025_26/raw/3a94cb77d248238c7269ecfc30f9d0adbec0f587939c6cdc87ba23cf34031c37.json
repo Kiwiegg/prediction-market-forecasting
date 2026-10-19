@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26MAR30CLEUTA-UTA/candlesticks?end_ts=1774832400&period_interval=1&start_ts=1774825200",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:57:34 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:57:33.018424Z",
+      "finished_at": "2026-10-19T09:57:34.467200Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "c2269b091d734375aae58b532bdece2bdb77d6097821ec52b1bd69349f5ee91d"
+}

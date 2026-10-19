@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26FEB24CHACHI-CHI/candlesticks?end_ts=1771894800&period_interval=1&start_ts=1771887600",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:41 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:56:40.322696Z",
+      "finished_at": "2026-10-19T09:56:41.835040Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "5ad1701bb5ae531d83d77506cbc81a8465bf33ab714d3019e2f654515ceac05a"
+}

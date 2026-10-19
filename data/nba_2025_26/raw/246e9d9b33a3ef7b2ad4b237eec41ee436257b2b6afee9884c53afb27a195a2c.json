@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26FEB19TORCHI-CHI/candlesticks?end_ts=1771462800&period_interval=1&start_ts=1771455600",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:33 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:56:31.958731Z",
+      "finished_at": "2026-10-19T09:56:33.840140Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "98e5321a0f0d14eb7b3da775d0ccb9126b7d1f52924d1aae0ee5b14bb2b660a1"
+}

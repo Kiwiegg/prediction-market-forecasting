@@ -24,7 +24,10 @@ ALIASES = {"NY": "NYK", "NO": "NOP", "SA": "SAS", "GS": "GSW",
 
 
 def timestamp(value):
-    return datetime.fromisoformat(value.replace("Z", "+00:00")).timestamp()
+    parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    if parsed.tzinfo is None:
+        raise ValueError("Timestamp must specify a timezone")
+    return parsed.timestamp()
 
 
 def iso(value):
@@ -69,7 +72,7 @@ def select_trade(trades, target):
     latest = max(timestamp(t["created_time"]) for t in eligible)
     tied = [t for t in eligible if timestamp(t["created_time"]) == latest]
     # IDs do not establish execution order for conflicting equal-time trades.
-    ambiguous = len({t["yes_price_dollars"] for t in tied}) > 1
+    ambiguous = len({number(t["yes_price_dollars"]) for t in tied}) > 1
     return (None if ambiguous else sorted(tied, key=lambda t: t["trade_id"])[0]), ambiguous
 
 
@@ -124,7 +127,7 @@ class Client:
         if meta["status"] != 200:
             return None
         try:
-            return json.loads(body)
+            return json.loads(gzip.decompress(body) if body.startswith(b"\x1f\x8b") else body)
         except (ValueError, UnicodeDecodeError):
             return None
 

@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25DEC29CLESAS-SAS/candlesticks?end_ts=1766970000&period_interval=1&start_ts=1766962800",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:17 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:16.595764Z",
+      "finished_at": "2026-10-19T09:55:18.195074Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "be0d95265587091744e9956c7d139aa0798d4a69d6c99b5b31319acec8e889ef"
+}

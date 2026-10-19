@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1767916800&min_ts=1767913200&ticker=KXNBAGAME-26JAN09NOPWAS-WAS",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:36 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:34.528130Z",
+      "finished_at": "2026-10-19T09:55:36.401392Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "e6da924ef991b4cde5003bcd405886d840e24efff8a9139190862509e4d6f388"
+}

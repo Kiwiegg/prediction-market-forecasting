@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1761867000&min_ts=1761863400&ticker=KXNBAGAME-25OCT31TORCLE-CLE",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:53:50 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:53:48.717641Z",
+      "finished_at": "2026-10-19T09:53:50.499622Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "45875a9e54486c2b5930c8a7110c2b9c0b6aa12a65a3ff1c70553b71c0f7ad54"
+}

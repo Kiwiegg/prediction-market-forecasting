@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/milestones?limit=100&related_event_ticker=KXNBAGAME-25DEC20CHADET",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:57 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:56.122509Z",
+      "finished_at": "2026-10-19T09:54:57.577155Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "5801aaba6c8772df889b87ba25ae5af79d6e41942d35380b039634b8dcbf3f03"
+}

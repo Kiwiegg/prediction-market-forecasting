@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1766019600&min_ts=1766016000&ticker=KXNBAGAME-25DEC18WASSAS-SAS",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:58 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:57.536606Z",
+      "finished_at": "2026-10-19T09:54:58.979832Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "4b140b79c3534410a376d9270c42aa50eaeb297f119daf4bdd4d3269e1a8293b"
+}

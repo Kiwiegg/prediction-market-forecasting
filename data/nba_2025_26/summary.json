@@ -1,0 +1,58 @@
+{
+  "features": {
+    "away_recent_available": 176,
+    "away_record_available": 180,
+    "away_rest_available": 171,
+    "home_recent_available": 180,
+    "home_record_available": 183,
+    "home_rest_available": 177
+  },
+  "flags": {
+    "ambiguous_latest_trade_timestamp": 8,
+    "cutoff_midpoint_missing": 86,
+    "historical_schedule_version_unverified": 200,
+    "last_trade_missing_in_queried_window": 8,
+    "last_trade_stale_over_15m": 36,
+    "quote_update_age_unknown": 200,
+    "recorded_start_disagreement": 1
+  },
+  "frame_regular_season_games": 1230,
+  "freshness_threshold_seconds": 900,
+  "historical_cutoff": {
+    "market_positions_last_updated_ts": "2026-08-20T00:00:00Z",
+    "market_settled_ts": "2026-08-20T00:00:00Z",
+    "orders_updated_ts": "2026-10-05T00:00:00Z",
+    "trades_created_ts": "2026-08-20T00:00:00Z"
+  },
+  "history_issues": {
+    "excluded_postponed_or_cancelled_fixture": 4,
+    "final_scores_differ_winner_agrees": 9,
+    "missing_game_specific_publication_clocks": 1,
+    "missing_timestamped_end_game": 1
+  },
+  "last_trades": 192,
+  "midpoints": 114,
+  "outcomes": 200,
+  "point_in_time_verified": false,
+  "quotas": {
+    "2025-10": 13,
+    "2025-11": 36,
+    "2025-12": 32,
+    "2026-01": 38,
+    "2026-02": 27,
+    "2026-03": 39,
+    "2026-04": 15
+  },
+  "retrieved_from": "2026-10-19T08:03:50.784654Z",
+  "retrieved_through": "2026-10-19T10:42:00.465950Z",
+  "schedule_asof_verified": 0,
+  "schedule_disagreements": 1,
+  "schema_version": 1,
+  "selected_games": 200,
+  "selection_seed": "nba-2025-26-v1",
+  "source_requests": 1874,
+  "source_statuses": {
+    "200": 1874
+  },
+  "stale_last_trades": 36
+}

@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1767916800&min_ts=1767913200&ticker=KXNBAGAME-26JAN09TORBOS-BOS",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:37 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:35.979963Z",
+      "finished_at": "2026-10-19T09:55:37.164251Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "f8e2090b3c8bc99ae53d7fe4798998177ff38f11889a0d669c2d43e85d3c1111"
+}

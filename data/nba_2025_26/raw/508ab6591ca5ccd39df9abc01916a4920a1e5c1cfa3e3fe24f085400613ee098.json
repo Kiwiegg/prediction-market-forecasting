@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25OCT29CLEBOS-BOS/candlesticks?end_ts=1761692400&period_interval=1&start_ts=1761685200",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:53:42 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:53:41.353901Z",
+      "finished_at": "2026-10-19T09:53:42.838886Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "62280cac4a48ce5bada7df254ef76c08e63f0b0c1ce0775b10287f2b13f84e95"
+}

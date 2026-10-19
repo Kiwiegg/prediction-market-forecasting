@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1766188800&min_ts=1766185200&ticker=KXNBAGAME-25DEC20BOSTOR-TOR",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:59 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:58.294458Z",
+      "finished_at": "2026-10-19T09:54:59.425305Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "c22c3bd6daa63b0a468ae4381f49dfec9a679fbe088b8569274a81862dfdcb4e"
+}

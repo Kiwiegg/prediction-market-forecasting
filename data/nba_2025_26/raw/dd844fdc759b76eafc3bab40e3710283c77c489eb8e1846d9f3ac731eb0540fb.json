@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26FEB03BOSDAL-DAL/candlesticks?end_ts=1770080400&period_interval=1&start_ts=1770073200",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:56:13 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:56:12.515560Z",
+      "finished_at": "2026-10-19T09:56:13.902536Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "d408bbb35fee7c0fce80ca0ca6af1b73d039463bfdbef1c2ed78cd7938cccc55"
+}

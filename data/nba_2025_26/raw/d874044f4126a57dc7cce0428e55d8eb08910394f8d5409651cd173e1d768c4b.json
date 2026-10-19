@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26MAR23BKNPOR-POR/candlesticks?end_ts=1774231200&period_interval=1&start_ts=1774224000",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:57:22 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:57:20.567760Z",
+      "finished_at": "2026-10-19T09:57:22.949950Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "8cdd56e6e639c9b9ea21d2c938a7ce819a87d7bc929c052098eebca59a58c3e1"
+}

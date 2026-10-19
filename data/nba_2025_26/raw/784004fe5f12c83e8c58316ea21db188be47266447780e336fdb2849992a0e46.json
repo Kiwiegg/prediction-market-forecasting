@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26JAN25NOPSAS-SAS/candlesticks?end_ts=1769299200&period_interval=1&start_ts=1769292000",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:58 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:57.557505Z",
+      "finished_at": "2026-10-19T09:55:59.783324Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "30c6f40125e8cf3d4de52c4f48475587bda70eed47fc8e56ce8fd4079fd1fb91"
+}

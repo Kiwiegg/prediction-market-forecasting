@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1765756800&min_ts=1765753200&ticker=KXNBAGAME-25DEC15DETBOS-BOS",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:54:55 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:54:54.229695Z",
+      "finished_at": "2026-10-19T09:54:55.995712Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "fcc6ef694bb40579f2c694b32a0ebddbf167bb44520f9f83ebf84db7e51529c3"
+}

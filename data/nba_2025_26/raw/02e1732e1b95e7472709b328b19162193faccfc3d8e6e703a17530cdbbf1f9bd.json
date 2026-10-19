@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26APR08PORSAS-SAS/candlesticks?end_ts=1775611800&period_interval=1&start_ts=1775604600",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:57:55 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:57:54.205879Z",
+      "finished_at": "2026-10-19T09:57:55.673119Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "c7f0681392ee4b502dd34b935333c26e9c0eef967e9b9da94755ec947b51c33a"
+}

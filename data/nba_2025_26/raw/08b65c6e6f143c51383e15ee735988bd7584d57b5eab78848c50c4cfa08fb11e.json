@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1766451600&min_ts=1766448000&ticker=KXNBAGAME-25DEC23DENDAL-DAL",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 09:55:09 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T09:55:08.631325Z",
+      "finished_at": "2026-10-19T09:55:09.896077Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "e58e0779b72c68c8ff1daaa82b2e0826452c77516406b1a17a97f806b4836340"
+}
