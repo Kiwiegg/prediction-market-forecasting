@@ -61,14 +61,15 @@ class QuoteSelectionTests(unittest.TestCase):
         self.assertEqual(select_quote(conflict[::-1], 1000), select_quote(conflict, 1000))
 
     def test_lag_boundaries_are_inclusive_and_sets_nested(self):
-        for limit in (60, 300, 900):
+        for limit in (60, 300, 900, 1200):
             with self.subTest(limit=limit):
                 self.assertIsNotNone(select_quote([candle(2000 - limit)], 2000, limit)[0])
                 self.assertIsNone(select_quote([candle(2000 - limit - .000001)], 2000, limit)[0])
-        for lag in (0, 1, 60, 61, 300, 301, 900, 901):
-            flags = [select_quote([candle(2000 - lag)], 2000, limit)[0] is not None for limit in (60, 300, 900)]
+        for lag in (0, 1, 60, 61, 300, 301, 900, 901, 1200, 1201):
+            flags = [select_quote([candle(2000 - lag)], 2000, limit)[0] is not None for limit in (60, 300, 900, 1200)]
             self.assertLessEqual(flags[0], flags[1])
             self.assertLessEqual(flags[1], flags[2])
+            self.assertLessEqual(flags[2], flags[3])
         with self.assertRaises(ValueError):
             select_quote([], 1000, -1)
 
@@ -105,7 +106,7 @@ class SavedQuoteDatasetTests(unittest.TestCase):
 
     def test_all_200_quotes_against_independent_exported_observations(self):
         self.assertEqual(len(self.rows), 200)
-        sets = {1: set(), 5: set(), 15: set()}
+        sets = {1: set(), 5: set(), 15: set(), 20: set()}
         for row in self.rows:
             cutoff = timestamp(row["cutoff_utc"])
             valid = []
@@ -114,9 +115,9 @@ class SavedQuoteDatasetTests(unittest.TestCase):
                     continue
                 bid, ask = Decimal(c["yes_bid_close"]), Decimal(c["yes_ask_close"])
                 end = timestamp(c["end_period_utc"])
-                if 0 < bid <= ask < 1 and 0 <= cutoff - end <= 900:
+                if 0 < bid <= ask < 1 and 0 <= cutoff - end <= 1200:
                     valid.append((end, bid, ask))
-            for minutes in (1, 5, 15):
+            for minutes in (1, 5, 15, 20):
                 expected = any(cutoff - end <= minutes * 60 for end, bid, ask in valid)
                 self.assertEqual(row[f"quote_available_{minutes}m"], str(expected))
                 if expected:
@@ -144,6 +145,7 @@ class SavedQuoteDatasetTests(unittest.TestCase):
                 self.assertEqual(row["midpoint_price"], row["preferred_midpoint_price"])
         self.assertLessEqual(sets[1], sets[5])
         self.assertLessEqual(sets[5], sets[15])
+        self.assertLessEqual(sets[15], sets[20])
 
     def test_coverage_and_comparisons_reconcile_with_all_records(self):
         summary = json.loads((DATA / "summary.json").read_text())
@@ -151,7 +153,7 @@ class SavedQuoteDatasetTests(unittest.TestCase):
             coverage = list(csv.DictReader(f))
         for group in coverage:
             part = [r for r in self.rows if r["game_date" if group["group_type"] == "date" else "month"] == group["group"]]
-            for minutes in (1, 5, 15):
+            for minutes in (1, 5, 15, 20):
                 self.assertEqual(int(group[f"quote_coverage_{minutes}m"]),
                                  sum(r[f"quote_available_{minutes}m"] == "True" for r in part))
             self.assertEqual(int(group["preferred_midpoints"]), sum(bool(r["preferred_midpoint_price"]) for r in part))
@@ -159,7 +161,7 @@ class SavedQuoteDatasetTests(unittest.TestCase):
             self.assertEqual(int(group["fresh_last_trades"]), sum(r["fresh_last_trade_available"] == "True" for r in part))
             self.assertEqual(json.loads(group["preferred_quote_missing_reasons"]), dict(Counter(
                 r["preferred_quote_missing_reason"] for r in part if not r["preferred_midpoint_price"])))
-        for minutes in (1, 5, 15):
+        for minutes in (1, 5, 15, 20):
             n = sum(r[f"quote_available_{minutes}m"] == "True" for r in self.rows)
             self.assertEqual(n, summary["quote_coverage_by_max_candle_end_lag_seconds"][str(minutes * 60)])
         self.assertEqual(summary["preferred_midpoints"], sum(bool(r["preferred_midpoint_price"]) for r in self.rows))
@@ -197,7 +199,7 @@ class SavedQuoteDatasetTests(unittest.TestCase):
                 group = monthly[cells[0]]
                 expected = [group["group"], group["selected_games"],
                             str(int(group["selected_games"]) - int(group["missing_midpoint"])),
-                            group["quote_coverage_1m"], group["quote_coverage_5m"], group["preferred_midpoints"],
+                            group["quote_coverage_1m"], group["quote_coverage_5m"], group["quote_coverage_15m"], group["preferred_midpoints"],
                             group["missing_preferred_midpoint"], group["fresh_last_trades"], group["stale_last_trade"],
                             group["missing_last_trade"], group["missing_outcome"], group["recorded_start_disagreement"]]
                 self.assertEqual(cells, expected)

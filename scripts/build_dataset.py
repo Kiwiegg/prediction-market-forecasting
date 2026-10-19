@@ -22,7 +22,8 @@ SEED = "nba-2025-26-v1"
 EASTERN = ZoneInfo("America/New_York")
 ALIASES = {"NY": "NYK", "NO": "NOP", "SA": "SAS", "GS": "GSW", "UTAH": "UTA", "WSH": "WAS"}
 MONTHS = ("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC")
-QUOTE_LAGS = (60, 300, 900)
+PREFERRED_QUOTE_MAX_LAG_SECONDS = 1200
+QUOTE_LAGS = (60, 300, 900, PREFERRED_QUOTE_MAX_LAG_SECONDS)
 
 
 def valid_quote(candle):
@@ -36,7 +37,7 @@ def valid_quote(candle):
     return None
 
 
-def select_quote(candles, target, max_lag_seconds=900, strictly_before=False):
+def select_quote(candles, target, max_lag_seconds=PREFERRED_QUOTE_MAX_LAG_SECONDS, strictly_before=False):
     """Latest valid observed candle within an inclusive lag bound; no imputation.
 
     Identical timestamp/quote duplicates agree. Conflicting valid quote closes at
@@ -89,7 +90,7 @@ def quote_fields(candles, target, market_open, request_ok):
         selected, _ = select_quote(candles, target, lag)
         fields[f"quote_available_{lag // 60}m"] = selected is not None
     for prefix, strictly_before in (("preferred", False), ("earlier", True)):
-        quote, reason = select_quote(candles, target, 900, strictly_before)
+        quote, reason = select_quote(candles, target, PREFERRED_QUOTE_MAX_LAG_SECONDS, strictly_before)
         fields[prefix + "_quote_missing_reason"] = reason
         if quote is not None:
             fields.update({prefix + "_quote_candle_end_utc": iso(quote["end_period_ts"]),
@@ -482,7 +483,7 @@ def run(args):
         "outcomes": sum(r["home_yes_outcome"] is not None for r in rows),
         "midpoints": sum(r["midpoint_price"] is not None for r in rows),
         "preferred_midpoints": sum(r["preferred_midpoint_price"] is not None for r in rows),
-        "preferred_quote_max_candle_end_lag_seconds": 900,
+        "preferred_quote_max_candle_end_lag_seconds": PREFERRED_QUOTE_MAX_LAG_SECONDS,
         "quote_coverage_by_max_candle_end_lag_seconds": {
             str(lag): sum(r[f"quote_available_{lag // 60}m"] for r in rows) for lag in QUOTE_LAGS},
         "preferred_quote_missing_reasons": dict(sorted(Counter(
@@ -532,9 +533,9 @@ def write_report(out, s, cover, rows):
     for lag in QUOTE_LAGS:
         n = s["quote_coverage_by_max_candle_end_lag_seconds"][str(lag)]
         unit = "minute" if lag == 60 else "minutes"
-        lines.append(f"| Valid quote / {lag // 60} {unit}{' (preferred)' if lag == 900 else ''} | {n} | {100 * n / s['selected_games']:.1f}% |")
+        lines.append(f"| Valid quote / {lag // 60} {unit}{' (preferred)' if lag == PREFERRED_QUOTE_MAX_LAG_SECONDS else ''} | {n} | {100 * n / s['selected_games']:.1f}% |")
     lines += [f"| Fresh last trade / execution age <=15 minutes | {s['fresh_last_trades']} | {100 * s['fresh_last_trades'] / s['selected_games']:.1f}% |", "",
-        "The quote sets for 1, 5 and 15 minutes are nested. The preferred proxy selects the newest valid observed quote close "
+        "The quote sets for 1, 5, 15 and 20 minutes are nested. The preferred proxy selects the newest valid observed quote close "
         "ending at or before the cutoff, including the exact-cutoff candle where available. It does not project the "
         "selected candle to the cutoff. No trade fills a missing quote.", "",
         "**Candle-end lag is not actual quote age.** Saved historical candles expose period ends and OHLC quote levels, "
@@ -542,11 +543,11 @@ def write_report(out, s, cover, rows):
         "when the book last changed or that quotes were refreshed at the candle end. Actual quote age remains missing.", "",
         "## Market coverage and missingness by month", "",
         "Exact and quote columns count observed prices; missing/stale columns retain all selected games in their denominator.", "",
-        "| Month | Selected | Exact | Quote <=1m | Quote <=5m | Preferred <=15m | Missing preferred | Fresh trade | Stale trade | Missing trade | Missing outcome | Start disagreements |",
-        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |"]
+        "| Month | Selected | Exact | Quote <=1m | Quote <=5m | Quote <=15m | Preferred <=20m | Missing preferred | Fresh trade | Stale trade | Missing trade | Missing outcome | Start disagreements |",
+        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |"]
     for c in monthly:
         lines.append(f"| {c['group']} | {c['selected_games']} | {c['selected_games'] - c['missing_midpoint']} | "
-                     f"{c['quote_coverage_1m']} | {c['quote_coverage_5m']} | {c['preferred_midpoints']} | "
+                     f"{c['quote_coverage_1m']} | {c['quote_coverage_5m']} | {c['quote_coverage_15m']} | {c['preferred_midpoints']} | "
                      f"{c['missing_preferred_midpoint']} | {c['fresh_last_trades']} | {c['stale_last_trade']} | "
                      f"{c['missing_last_trade']} | {c['missing_outcome']} | {c['recorded_start_disagreement']} |")
     lines += ["", "## Remaining missing observations", "",
@@ -566,7 +567,7 @@ def write_report(out, s, cover, rows):
         "Fresh trades require execution age <=900 seconds. These are descriptive price comparisons, not forecasting scores. "
         "The preferred/exact pair must agree wherever the exact quote is unambiguous. To measure temporal sensitivity "
         "without that tautology, the **earlier** diagnostic selects the newest valid candle strictly before the cutoff "
-        "with lag <=900 seconds, even when an exact quote exists. It is never substituted into the exact column. "
+        "with lag <=1200 seconds, even when an exact quote exists. It is never substituted into the exact column. "
         "Pair counts differ because availability differs; comparisons are conditional on their paired samples.", "",
         "| Left minus right | Paired games | Mean signed pp | Mean absolute pp | Median absolute pp | Max absolute pp |",
         "| --- | ---: | ---: | ---: | ---: | ---: |"]
@@ -601,7 +602,7 @@ def write_report(out, s, cover, rows):
         "No historical schedule version is asserted. Last-trade lookup starts with the prior hour and expands back to listing "
         "if no eligible trade is found. An empty response does not establish complete exchange archival retention.",
         "* Exact midpoints require a valid two-sided candle ending exactly at the cutoff. Preferred midpoints retain the "
-        "most recent valid observed candle with end lag <=900 seconds. This relaxes the period-boundary requirement, "
+        "most recent valid observed candle with end lag <=1200 seconds. This relaxes the period-boundary requirement, "
         "not the unknown true quote age; recent bars can contain old quote levels. No interpolation or trade fallback is used.",
         "* LLM-facing evidence_packets.jsonl contains only allowlisted schedule identities and historical team facts. "
         "Market prices, target outcomes, target scores and raw response links live outside that file.",

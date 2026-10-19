@@ -13,7 +13,6 @@
     "historical_schedule_version_unverified": 200,
     "last_trade_missing_in_queried_window": 8,
     "last_trade_stale_over_15m": 36,
-    "preferred_quote_missing": 3,
     "quote_update_age_unknown": 200,
     "recorded_start_disagreement": 1
   },
@@ -36,11 +35,9 @@
   "midpoints": 114,
   "outcomes": 200,
   "point_in_time_verified": false,
-  "preferred_midpoints": 197,
-  "preferred_quote_max_candle_end_lag_seconds": 900,
-  "preferred_quote_missing_reasons": {
-    "no_candle_within_lag_limit": 3
-  },
+  "preferred_midpoints": 200,
+  "preferred_quote_max_candle_end_lag_seconds": 1200,
+  "preferred_quote_missing_reasons": {},
   "price_comparisons": [
     {
       "comparison": "preferred_minus_exact",
@@ -103,6 +100,7 @@
     "2026-04": 15
   },
   "quote_coverage_by_max_candle_end_lag_seconds": {
+    "1200": 200,
     "300": 187,
     "60": 155,
     "900": 197

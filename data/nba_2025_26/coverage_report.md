@@ -1,6 +1,6 @@
 # Historical NBA dataset coverage
 
-Selected 200 distinct games from a 1230-game frame. Outcomes: 200; exact-cutoff midpoints: 114; preferred midpoints: 197; last trades: 192; fresh last trades: 156; last trades older than 15 minutes: 36.
+Selected 200 distinct games from a 1230-game frame. Outcomes: 200; exact-cutoff midpoints: 114; preferred midpoints: 200; last trades: 192; fresh last trades: 156; last trades older than 15 minutes: 36.
 
 Missing cutoff midpoints: 86; missing last-trade prices: 8. Of the latter, 8 have conflicting prices at the same latest trade timestamp. No arbitrary ordering resolves those ties.
 
@@ -8,17 +8,18 @@ These are retrospective reconstructions. Zero games have a verified as-of schedu
 
 ## Quote coverage and before/after comparison
 
-The exact-cutoff calculation is retained at 114/200 (57.0%). The new preferred proxy covers 197/200 (98.5%), an increase of 83 games over exact-cutoff coverage. The sample, original price calculations, outcomes, packets, and raw sources are preserved in place.
+The exact-cutoff calculation is retained at 114/200 (57.0%). The new preferred proxy covers 200/200 (100.0%), an increase of 86 games over exact-cutoff coverage. The sample, original price calculations, outcomes, packets, and raw sources are preserved in place.
 
 | Observation / maximum candle-end lag | Games | Coverage |
 | --- | ---: | ---: |
 | Exact-cutoff midpoint / 0 seconds (retained) | 114 | 57.0% |
 | Valid quote / 1 minute | 155 | 77.5% |
 | Valid quote / 5 minutes | 187 | 93.5% |
-| Valid quote / 15 minutes (preferred) | 197 | 98.5% |
+| Valid quote / 15 minutes | 197 | 98.5% |
+| Valid quote / 20 minutes (preferred) | 200 | 100.0% |
 | Fresh last trade / execution age <=15 minutes | 156 | 78.0% |
 
-The quote sets for 1, 5 and 15 minutes are nested. The preferred proxy selects the newest valid observed quote close ending at or before the cutoff, including the exact-cutoff candle where available. It does not project the selected candle to the cutoff. No trade fills a missing quote.
+The quote sets for 1, 5, 15 and 20 minutes are nested. The preferred proxy selects the newest valid observed quote close ending at or before the cutoff, including the exact-cutoff candle where available. It does not project the selected candle to the cutoff. No trade fills a missing quote.
 
 **Candle-end lag is not actual quote age.** Saved historical candles expose period ends and OHLC quote levels, without reliable quote-update timestamps. A recent candle, unchanged prices, or zero trading volume cannot establish when the book last changed or that quotes were refreshed at the candle end. Actual quote age remains missing.
 
@@ -26,31 +27,28 @@ The quote sets for 1, 5 and 15 minutes are nested. The preferred proxy selects t
 
 Exact and quote columns count observed prices; missing/stale columns retain all selected games in their denominator.
 
-| Month | Selected | Exact | Quote <=1m | Quote <=5m | Preferred <=15m | Missing preferred | Fresh trade | Stale trade | Missing trade | Missing outcome | Start disagreements |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 2025-10 | 13 | 9 | 13 | 13 | 13 | 0 | 11 | 2 | 0 | 0 | 1 |
-| 2025-11 | 36 | 24 | 30 | 34 | 36 | 0 | 26 | 8 | 2 | 0 | 0 |
-| 2025-12 | 32 | 18 | 28 | 32 | 32 | 0 | 23 | 9 | 0 | 0 | 0 |
-| 2026-01 | 38 | 25 | 30 | 38 | 38 | 0 | 32 | 4 | 2 | 0 | 0 |
-| 2026-02 | 27 | 15 | 21 | 25 | 26 | 1 | 22 | 3 | 2 | 0 | 0 |
-| 2026-03 | 39 | 17 | 25 | 33 | 38 | 1 | 29 | 8 | 2 | 0 | 0 |
-| 2026-04 | 15 | 6 | 8 | 12 | 14 | 1 | 13 | 2 | 0 | 0 | 0 |
+| Month | Selected | Exact | Quote <=1m | Quote <=5m | Quote <=15m | Preferred <=20m | Missing preferred | Fresh trade | Stale trade | Missing trade | Missing outcome | Start disagreements |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 2025-10 | 13 | 9 | 13 | 13 | 13 | 13 | 0 | 11 | 2 | 0 | 0 | 1 |
+| 2025-11 | 36 | 24 | 30 | 34 | 36 | 36 | 0 | 26 | 8 | 2 | 0 | 0 |
+| 2025-12 | 32 | 18 | 28 | 32 | 32 | 32 | 0 | 23 | 9 | 0 | 0 | 0 |
+| 2026-01 | 38 | 25 | 30 | 38 | 38 | 38 | 0 | 32 | 4 | 2 | 0 | 0 |
+| 2026-02 | 27 | 15 | 21 | 25 | 26 | 27 | 0 | 22 | 3 | 2 | 0 | 0 |
+| 2026-03 | 39 | 17 | 25 | 33 | 38 | 39 | 0 | 29 | 8 | 2 | 0 | 0 |
+| 2026-04 | 15 | 6 | 8 | 12 | 14 | 15 | 0 | 13 | 2 | 0 | 0 | 0 |
 
 ## Remaining missing observations
 
-Preferred-quote missing reasons: `{"no_candle_within_lag_limit": 3}`. The saved two-hour windows bound this diagnosis; missing bars do not identify the exchange's reason for sparse output.
+Preferred-quote missing reasons: `{}`. The saved two-hour windows bound this diagnosis; missing bars do not identify the exchange's reason for sparse output.
 
 | Date | Game ID | Reason | Nearest preceding returned candle-end lag (seconds) |
 | --- | --- | --- | ---: |
-| 2026-02-10 | 401810627 | no_candle_within_lag_limit | 1080 |
-| 2026-03-21 | 401810886 | no_candle_within_lag_limit | 1020 |
-| 2026-04-07 | 401811003 | no_candle_within_lag_limit | 1020 |
 
 Fresh trade coverage excludes 36 observed trades older than 900 seconds and 8 missing/ambiguous latest prices. All observed stale trade values remain in evaluation.csv with their age and flag.
 
 ## Paired price sensitivity
 
-Differences are left minus right in **percentage points**, computed only when both prices exist. Fresh trades require execution age <=900 seconds. These are descriptive price comparisons, not forecasting scores. The preferred/exact pair must agree wherever the exact quote is unambiguous. To measure temporal sensitivity without that tautology, the **earlier** diagnostic selects the newest valid candle strictly before the cutoff with lag <=900 seconds, even when an exact quote exists. It is never substituted into the exact column. Pair counts differ because availability differs; comparisons are conditional on their paired samples.
+Differences are left minus right in **percentage points**, computed only when both prices exist. Fresh trades require execution age <=900 seconds. These are descriptive price comparisons, not forecasting scores. The preferred/exact pair must agree wherever the exact quote is unambiguous. To measure temporal sensitivity without that tautology, the **earlier** diagnostic selects the newest valid candle strictly before the cutoff with lag <=1200 seconds, even when an exact quote exists. It is never substituted into the exact column. Pair counts differ because availability differs; comparisons are conditional on their paired samples.
 
 | Left minus right | Paired games | Mean signed pp | Mean absolute pp | Median absolute pp | Max absolute pp |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -144,7 +142,7 @@ H/A columns count missing features separately for home and away teams. All selec
 | 2026-02-05 | 3 | 0 | 1 | 0 | 1 | 0 | 0/1 | 0/1 | 0/0 |
 | 2026-02-07 | 1 | 0 | 0 | 0 | 0 | 0 | 0/0 | 0/0 | 0/0 |
 | 2026-02-09 | 1 | 0 | 0 | 0 | 1 | 0 | 1/0 | 1/0 | 1/0 |
-| 2026-02-10 | 2 | 0 | 1 | 1 | 0 | 1 | 0/1 | 0/1 | 1/0 |
+| 2026-02-10 | 2 | 0 | 1 | 0 | 0 | 1 | 0/1 | 0/1 | 1/0 |
 | 2026-02-11 | 2 | 0 | 2 | 0 | 0 | 0 | 0/1 | 0/1 | 0/0 |
 | 2026-02-12 | 1 | 0 | 0 | 0 | 0 | 0 | 0/0 | 0/0 | 0/1 |
 | 2026-02-19 | 3 | 0 | 1 | 0 | 0 | 0 | 1/0 | 1/0 | 0/0 |
@@ -167,7 +165,7 @@ H/A columns count missing features separately for home and away teams. All selec
 | 2026-03-18 | 2 | 0 | 2 | 0 | 0 | 0 | 0/0 | 0/0 | 0/1 |
 | 2026-03-19 | 3 | 0 | 1 | 0 | 0 | 0 | 1/1 | 1/1 | 0/0 |
 | 2026-03-20 | 1 | 0 | 1 | 0 | 0 | 0 | 0/0 | 0/0 | 0/0 |
-| 2026-03-21 | 1 | 0 | 1 | 1 | 0 | 1 | 0/0 | 0/0 | 0/0 |
+| 2026-03-21 | 1 | 0 | 1 | 0 | 0 | 1 | 0/0 | 0/0 | 0/0 |
 | 2026-03-23 | 1 | 0 | 1 | 0 | 0 | 1 | 1/0 | 1/0 | 1/0 |
 | 2026-03-24 | 2 | 0 | 2 | 0 | 0 | 0 | 0/0 | 0/0 | 0/1 |
 | 2026-03-25 | 1 | 0 | 0 | 0 | 0 | 1 | 0/0 | 0/0 | 0/0 |
@@ -179,7 +177,7 @@ H/A columns count missing features separately for home and away teams. All selec
 | 2026-04-01 | 1 | 0 | 0 | 0 | 0 | 0 | 0/0 | 0/0 | 0/0 |
 | 2026-04-05 | 3 | 0 | 1 | 0 | 0 | 0 | 2/1 | 2/1 | 1/1 |
 | 2026-04-06 | 1 | 0 | 1 | 0 | 0 | 0 | 0/0 | 0/0 | 0/1 |
-| 2026-04-07 | 5 | 0 | 5 | 1 | 0 | 1 | 1/2 | 1/2 | 0/0 |
+| 2026-04-07 | 5 | 0 | 5 | 0 | 0 | 1 | 1/2 | 1/2 | 0/0 |
 | 2026-04-08 | 2 | 0 | 1 | 0 | 0 | 0 | 0/0 | 0/0 | 0/0 |
 | 2026-04-12 | 3 | 0 | 1 | 0 | 0 | 1 | 1/0 | 1/0 | 0/0 |
 
@@ -190,7 +188,7 @@ H/A columns count missing features separately for home and away teams. All selec
 * Exact End Game/header score differences are retained as issues when both agree on the winner. Only the agreed W/L fact is used; exact points and margins are omitted. Missing completion/publication clocks can suppress later record/recent-form features for the affected teams.
 * Rest counts completed 24-hour periods since the latest reliably completed game AT the cutoff, including the Cup final. It is not a prediction of rest at tipoff. Ongoing or unresolved latest games cause omission.
 * Recorded home/away designation and neutral-site flag come from the retrospective schedule. No historical schedule version is asserted. Last-trade lookup starts with the prior hour and expands back to listing if no eligible trade is found. An empty response does not establish complete exchange archival retention.
-* Exact midpoints require a valid two-sided candle ending exactly at the cutoff. Preferred midpoints retain the most recent valid observed candle with end lag <=900 seconds. This relaxes the period-boundary requirement, not the unknown true quote age; recent bars can contain old quote levels. No interpolation or trade fallback is used.
+* Exact midpoints require a valid two-sided candle ending exactly at the cutoff. Preferred midpoints retain the most recent valid observed candle with end lag <=1200 seconds. This relaxes the period-boundary requirement, not the unknown true quote age; recent bars can contain old quote levels. No interpolation or trade fallback is used.
 * LLM-facing evidence_packets.jsonl contains only allowlisted schedule identities and historical team facts. Market prices, target outcomes, target scores and raw response links live outside that file.
 
 Source HTTP statuses: `{"200": 1874}`. History extraction issues: `{"excluded_postponed_or_cancelled_fixture": 4, "final_scores_differ_winner_agrees": 9, "missing_game_specific_publication_clocks": 1, "missing_timestamped_end_game": 1}`.
