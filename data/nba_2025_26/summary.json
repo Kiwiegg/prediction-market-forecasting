@@ -13,10 +13,12 @@
     "historical_schedule_version_unverified": 200,
     "last_trade_missing_in_queried_window": 8,
     "last_trade_stale_over_15m": 36,
+    "preferred_quote_missing": 3,
     "quote_update_age_unknown": 200,
     "recorded_start_disagreement": 1
   },
   "frame_regular_season_games": 1230,
+  "fresh_last_trades": 156,
   "freshness_threshold_seconds": 900,
   "historical_cutoff": {
     "market_positions_last_updated_ts": "2026-08-20T00:00:00Z",
@@ -34,6 +36,63 @@
   "midpoints": 114,
   "outcomes": 200,
   "point_in_time_verified": false,
+  "preferred_midpoints": 197,
+  "preferred_quote_max_candle_end_lag_seconds": 900,
+  "preferred_quote_missing_reasons": {
+    "no_candle_within_lag_limit": 3
+  },
+  "price_comparisons": [
+    {
+      "comparison": "preferred_minus_exact",
+      "group": "all",
+      "group_type": "all",
+      "max_absolute_difference_pp": 0.0,
+      "mean_absolute_difference_pp": 0.0,
+      "mean_signed_difference_pp": 0.0,
+      "median_absolute_difference_pp": 0.0,
+      "paired_games": 114
+    },
+    {
+      "comparison": "earlier_minus_exact",
+      "group": "all",
+      "group_type": "all",
+      "max_absolute_difference_pp": 4.0,
+      "mean_absolute_difference_pp": 0.14473684210526316,
+      "mean_signed_difference_pp": 0.013157894736842105,
+      "median_absolute_difference_pp": 0.0,
+      "paired_games": 114
+    },
+    {
+      "comparison": "preferred_minus_fresh_trade",
+      "group": "all",
+      "group_type": "all",
+      "max_absolute_difference_pp": 9.0,
+      "mean_absolute_difference_pp": 0.9230769230769231,
+      "mean_signed_difference_pp": -0.7243589743589743,
+      "median_absolute_difference_pp": 0.5,
+      "paired_games": 156
+    },
+    {
+      "comparison": "earlier_minus_fresh_trade",
+      "group": "all",
+      "group_type": "all",
+      "max_absolute_difference_pp": 9.5,
+      "mean_absolute_difference_pp": 0.9487179487179487,
+      "mean_signed_difference_pp": -0.7115384615384616,
+      "median_absolute_difference_pp": 0.5,
+      "paired_games": 156
+    },
+    {
+      "comparison": "exact_minus_fresh_trade",
+      "group": "all",
+      "group_type": "all",
+      "max_absolute_difference_pp": 9.0,
+      "mean_absolute_difference_pp": 0.978494623655914,
+      "mean_signed_difference_pp": -0.8064516129032258,
+      "median_absolute_difference_pp": 0.5,
+      "paired_games": 93
+    }
+  ],
   "quotas": {
     "2025-10": 13,
     "2025-11": 36,
@@ -42,6 +101,11 @@
     "2026-02": 27,
     "2026-03": 39,
     "2026-04": 15
+  },
+  "quote_coverage_by_max_candle_end_lag_seconds": {
+    "300": 187,
+    "60": 155,
+    "900": 197
   },
   "retrieved_from": "2026-10-19T08:03:50.784654Z",
   "retrieved_through": "2026-10-19T10:42:00.465950Z",

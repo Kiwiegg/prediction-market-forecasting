@@ -8,16 +8,20 @@ Read the [dataset methodology](reports/dataset_methodology.md), [generated cover
 # Rebuild the expanded dataset from saved responses, without network access.
 python3 scripts/build_dataset.py --offline
 
-# Collect a new dataset from public sources without reusing the original study.
-python3 scripts/build_dataset.py --output data/new_dataset --no-reuse
+# Rebuild in place, reusing saved responses and fetching only absent requests.
+python3 scripts/build_dataset.py
 
 # Run leakage, temporal-boundary, blinding, lineage and consistency checks.
 python3 -m unittest discover -s tests -v
 ```
 
-The builder fetches all 30 team schedules, checks 1,230 games/82 per team, and locks a 200-game selection before joining Kalshi. It allocates slots proportionally across all seven season months and ranks fixed hashes of game IDs within each month. Prices, outcomes, and data availability do not affect selection; unavailable observations never trigger replacement draws. `--max-games` supports 1–200 games in a new output directory; `--workers` controls concurrent public GET requests (default 4).
+The builder checks all 30 saved team schedules, reconciles 1,230 games/82 per team, and preserves the locked 200-game selection before joining Kalshi. The selection allocates slots proportionally across all seven season months and ranks fixed hashes of game IDs within each month. Prices, outcomes, and data availability do not affect selection; unavailable observations never trigger replacement draws. This price-quality update changes neither sampling nor team-feature definitions. `--workers` controls concurrent public GET requests (default 4).
 
-Existing responses are immutable caches keyed by request URL, including failed requests. Default online builds can reuse matching raw responses from the original study, preserving their original retrieval times. Use a new output directory and `--no-reuse` for a new collection. Offline replay raises an error for absent responses and verifies saved body hashes. The output directory is separate from the original feasibility sample.
+Rebuilds overwrite derived exports in the existing `data/nba_2025_26/` directory. Saved responses are immutable caches keyed by request URL, including failed requests. Offline replay raises an error for absent responses and verifies saved body hashes. This extraction update requires no additional API requests: raw sources, source hashes, the selection manifest and evidence packets are preserved.
+
+The preferred market proxy is `preferred_midpoint_price`: the newest valid two-sided YES bid/ask candle ending at or before the cutoff with **candle-end lag <=15 minutes**. It stores the actual selected candle timestamp, lag, bid, ask, spread and midpoint. **Candle-end lag does not establish actual quote age or prove quotes were refreshed at that time**; actual quote age remains unknown. Missing quotes stay missing and never receive a trade-price fallback. The original exact-cutoff `midpoint_price` and separate `last_trade_price` are retained; trades older than 15 minutes remain flagged.
+
+The same 200 games have **114 exact-cutoff midpoints (57%)**, **197 preferred midpoints (98.5%)**, and **156 fresh last trades (78%)**. Quote coverage is **155 / 187 / 197** at maximum candle-end lags of **1 / 5 / 15 minutes**. Three games have no returned candle within 15 minutes. Paired price sensitivity compares exact, preferred, strictly earlier quotes, and fresh trades without computing forecasting metrics. See the coverage report for monthly missingness, remaining causes and price differences.
 
 Expanded files under `data/nba_2025_26/`:
 
@@ -27,11 +31,12 @@ Expanded files under `data/nba_2025_26/`:
 | `schedule_frame.jsonl` | Schedule-only projections, including excluded Cup/postponed fixtures |
 | `evidence_packets.jsonl` | **LLM-facing input only**: one allowlisted pregame packet per game |
 | `evidence_lineage.jsonl` | Audit-only feature game IDs and source references; keep outside LLM inputs |
-| `evaluation.csv` | Target outcomes, separate midpoint/last-trade prices, trade ages, missingness, verification flags |
+| `evaluation.csv` | Target outcomes, exact/preferred/strictly earlier quote midpoints, separate trade prices, ages/lags, sensitivity eligibility, missingness and verification flags |
 | `game_history.jsonl` | Audit-only normalized completed-game facts and event/publication/update clocks |
 | `candle_observations.csv` | Minute observations in two-hour windows ending at each cutoff |
 | `market_metadata.json`, `market_lineage.jsonl` | Full target market metadata and price/label source references |
 | `coverage.csv`, `coverage_report.md`, `summary.json` | Missingness by selected game date/month, totals, extraction and API limitations |
+| `price_comparisons.csv` | All-season/monthly paired price differences in percentage points; no outcome-based metrics |
 | `sources.jsonl`, `raw/` | URLs, retrieval dates, source IDs, hashes, HTTP status and original compressed responses |
 
 Only the packet file is intended as future model input. Raw ESPN summaries also contain unrelated current standings, news and odds; these are preserved for audit and never copied to packets. Blank CSV cells and omitted packet features mean unavailable/unverified, not zero. Rest measures time since the latest reliably completed game **at the cutoff**, not assumed rest at future tipoff. Source, omission and schedule semantics are specified in the methodology.
