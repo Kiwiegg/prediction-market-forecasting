@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25OCT22TORATL-ATL/candlesticks?end_ts=1761089400&period_interval=1&start_ts=1761082200",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 08:04:33 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:04:32.077557Z",
+      "finished_at": "2026-10-19T08:04:33.611721Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "14b91177ebdb58907f6f72e6985910edcfcbc4e72a3657e1f68d15a61f0bba41"
+}

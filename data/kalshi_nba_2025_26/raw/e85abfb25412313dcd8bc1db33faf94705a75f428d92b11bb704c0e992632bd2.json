@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25DEC01MILWAS-WAS/candlesticks?end_ts=1764547200&period_interval=1&start_ts=1764540000",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 08:05:08 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:05:07.644598Z",
+      "finished_at": "2026-10-19T08:05:09.188548Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "75e82a31aacd49c05385e99932d26e508b4595570512d2be70001e798e5887ba"
+}

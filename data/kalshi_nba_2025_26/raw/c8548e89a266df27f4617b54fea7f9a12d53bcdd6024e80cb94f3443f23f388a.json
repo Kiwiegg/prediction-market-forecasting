@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/cutoff",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 08:03:50 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:03:48.959750Z",
+      "finished_at": "2026-10-19T08:03:50.784654Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "8ba023cb753be1521655676a377d03b2d2f01d283934e6ff022425960b6d1f59"
+}

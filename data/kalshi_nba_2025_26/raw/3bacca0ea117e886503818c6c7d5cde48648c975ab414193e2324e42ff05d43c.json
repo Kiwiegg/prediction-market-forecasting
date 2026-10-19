@@ -1,0 +1,16 @@
+{
+  "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20251022&limit=100",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 08:04:02 GMT",
+    "Content-Type": "application/json;charset=UTF-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:04:01.596093Z",
+      "finished_at": "2026-10-19T08:04:04.243790Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "eb4c16d23c818cf5b6df61a50162a37609da2a4e1b4b4cae2b010f228c41164c"
+}

@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/series/KXNBAGAME",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 08:03:48 GMT",
+    "Content-Type": "application/json"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:03:47.200275Z",
+      "finished_at": "2026-10-19T08:03:48.833158Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "79930874404536efe20c8e6c01e1216f46edaf7fa7575b1697157a170eb2a2e9"
+}

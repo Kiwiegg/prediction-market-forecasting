@@ -1,0 +1,85 @@
+{
+  "series": {
+    "additional_prohibitions": [
+      "Current players, coaches, and staff of the league, association, or organization(s) governing the event. For college leagues/associations specifically, or where otherwise appropriate (as identified by the Exchange), this applies to current players/coaches/staff of the specific sport in <event> rather than the league/association as a whole (e.g., if the Division I Gonzaga Men\u2019s Basketball Team is playing in <event>, this prohibition will restrict trades by current players/coaches/staff on NCAA Basketball, rather than all current players/coaches/staff in any NCAA sport).",
+      "Paid employees of the league and league participants",
+      "Owners of teams and the league",
+      "and household members and immediate family of all above",
+      "Persons who are employed by any of the Source Agencies are not permitted to trade on the Contract.",
+      "Persons who hold any material, non-public information on the Underlying are not permitted to trade on the Contract."
+    ],
+    "categories": [
+      "Sports"
+    ],
+    "category": "Sports",
+    "contract_terms_url": "https://assets.kalshi.com/contract_terms/BASKETBALLGAMEWIN.pdf",
+    "contract_url": "https://assets.kalshi.com/regulatory/product-certifications/BASKETBALLGAMEWIN.pdf",
+    "exchange_index": 3,
+    "fee_multiplier": 1,
+    "fee_type": "quadratic_with_maker_fees",
+    "frequency": "custom",
+    "last_updated_ts": "2026-10-14T17:19:35.743246Z",
+    "product_metadata": {
+      "scope": "Game"
+    },
+    "settlement_sources": [
+      {
+        "name": "the Governing League",
+        "url": "https://www.nba.com"
+      },
+      {
+        "name": "ESPN",
+        "url": "https://www.espn.com"
+      }
+    ],
+    "tags": [
+      "Basketball"
+    ],
+    "ticker": "KXNBAGAME",
+    "title": "NBA Game"
+  },
+  "historical_cutoff": {
+    "market_positions_last_updated_ts": "2026-08-20T00:00:00Z",
+    "market_settled_ts": "2026-08-20T00:00:00Z",
+    "orders_updated_ts": "2026-10-05T00:00:00Z",
+    "trades_created_ts": "2026-08-20T00:00:00Z"
+  },
+  "sample_dates": [
+    "20251022",
+    "20251201",
+    "20260115",
+    "20260315"
+  ],
+  "stale_threshold_seconds": 900,
+  "discovered_archived_markets": 2898,
+  "sample_markets": 20,
+  "distinct_games": 20,
+  "recorded_schedule_midpoints": 14,
+  "last_trade_prices": 20,
+  "stale_last_trades": 4,
+  "point_in_time_verified_probabilities": 0,
+  "candle_rows": 2752,
+  "trade_rows": 379,
+  "issue_counts": {
+    "last_trade_stale": 4,
+    "no_minute_bucket_ending_at_target": 6,
+    "quote_bucket_lag_exceeds_one_minute": 4,
+    "quote_update_age_unknown": 20,
+    "schedule_as_known_at_target_unverified": 20
+  },
+  "selection_failures": [],
+  "missing_metadata_counts": {
+    "occurrence_datetime": 20,
+    "expected_expiration_time": 0,
+    "settlement_ts": 0,
+    "milestone_id": 0
+  },
+  "requests": 95,
+  "request_statuses": {
+    "404": 2,
+    "200": 92,
+    "403": 1
+  },
+  "retrieved_from": "2026-10-19T08:03:47.200275Z",
+  "retrieved_through": "2026-10-19T08:20:17.530790Z"
+}

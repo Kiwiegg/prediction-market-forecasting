@@ -1,0 +1,13 @@
+{
+  "url": "https://cdn.nba.com/static/json/staticData/scheduleLeagueV2_1.json",
+  "status": 403,
+  "headers": {},
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:20:15.127733Z",
+      "finished_at": "2026-10-19T08:20:16.402834Z",
+      "status": 403
+    }
+  ],
+  "body_sha256": "22275c80bdb6c56359baea45f9d8b9d0b34695d8305d3a10136479c4024dff6d"
+}

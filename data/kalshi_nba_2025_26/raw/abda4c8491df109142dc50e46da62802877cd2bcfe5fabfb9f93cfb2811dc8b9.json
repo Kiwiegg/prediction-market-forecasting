@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/milestones?limit=100&related_event_ticker=KXNBAGAME-26MAR15PORPHI",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 08:06:47 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:06:46.101705Z",
+      "finished_at": "2026-10-19T08:06:47.604113Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "28852af4870de584b8987d5e76e4b9032620885e3d33bdc93fb0547a8adfd786"
+}

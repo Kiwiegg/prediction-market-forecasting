@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26MAR15DETTOR-TOR/candlesticks?end_ts=1773603000&period_interval=60&start_ts=1773396360",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 08:06:33 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:06:32.111140Z",
+      "finished_at": "2026-10-19T08:06:33.718807Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "a39c24cf8d66420bd5538486dadd86b302b8b26532d7900f84294c278729be23"
+}

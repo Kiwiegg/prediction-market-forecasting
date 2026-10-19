@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-25OCT22MIAORL-ORL/candlesticks?end_ts=1761087600&period_interval=1&start_ts=1761080400",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 08:04:26 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:04:25.203829Z",
+      "finished_at": "2026-10-19T08:04:26.783581Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "186b1b1e297372af59a4337dac6fa335c2e0cf003bb20199abb8cffdba9cfe36"
+}

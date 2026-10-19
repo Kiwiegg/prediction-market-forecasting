@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/events/KXNBAGAME-25OCT22CLENYK",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 08:20:11 GMT",
+    "Content-Type": "application/json"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:20:10.397417Z",
+      "finished_at": "2026-10-19T08:20:11.938077Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "c06b6362e2af7c6974e8bbf7770e9cab0632655e8f4af1bdbef2314b2487ae31"
+}

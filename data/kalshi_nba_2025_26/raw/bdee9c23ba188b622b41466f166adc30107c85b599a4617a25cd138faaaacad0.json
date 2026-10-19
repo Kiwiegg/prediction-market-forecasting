@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26JAN15PHXDET-DET/candlesticks?end_ts=1768435200&period_interval=1&start_ts=1768428000",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 08:05:43 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:05:42.048271Z",
+      "finished_at": "2026-10-19T08:05:43.411794Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "5344e3fb6bdaf0bab3fa591702c755316a0a8c9c18d5d43678b0e02de01cf852"
+}

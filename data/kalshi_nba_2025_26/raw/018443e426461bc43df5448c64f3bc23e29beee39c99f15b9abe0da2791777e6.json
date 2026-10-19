@@ -1,0 +1,13 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/series/KXNBAGAME/markets/KXNBAGAME-25OCT22CLENYK-NYK/candlesticks?end_ts=1761087600&period_interval=1&start_ts=1761080400",
+  "status": 404,
+  "headers": {},
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:20:13.799940Z",
+      "finished_at": "2026-10-19T08:20:15.003733Z",
+      "status": 404
+    }
+  ],
+  "body_sha256": "dea78f843e46c45482b84c9d9db6d16b10a294376e65bcf67a43484f071428c1"
+}

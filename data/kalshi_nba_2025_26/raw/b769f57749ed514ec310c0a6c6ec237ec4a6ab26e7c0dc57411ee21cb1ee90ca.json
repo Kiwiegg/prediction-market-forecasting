@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1764547200&min_ts=1764543600&ticker=KXNBAGAME-25DEC01CLEIND-IND",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 08:05:04 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:05:02.561404Z",
+      "finished_at": "2026-10-19T08:05:04.355609Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "3bbaaccf9cd6a9fae7f5f4c8bb65167f262a2009e338d2d4e6da863f23d59c27"
+}

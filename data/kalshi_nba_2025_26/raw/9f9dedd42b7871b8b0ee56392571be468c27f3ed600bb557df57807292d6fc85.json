@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/milestones?limit=100&related_event_ticker=KXNBAGAME-26MAR15DALCLE",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 08:06:23 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:06:22.392392Z",
+      "finished_at": "2026-10-19T08:06:24.143912Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "308693ee99fedb9a7532b381b6cd7881b24ed7346a1a07a56463ce5a47fa0768"
+}

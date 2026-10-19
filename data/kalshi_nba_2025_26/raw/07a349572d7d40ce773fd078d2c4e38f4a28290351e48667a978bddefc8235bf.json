@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26JAN15OKCHOU-HOU/candlesticks?end_ts=1768437000&period_interval=1&start_ts=1768429800",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 08:05:59 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:05:57.929132Z",
+      "finished_at": "2026-10-19T08:05:59.717731Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "b559d4fb165718a729d7d84f04e822a569a3127030b9c0f474fab3370bf7888e"
+}

@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26JAN15BOSMIA-MIA/candlesticks?end_ts=1768437000&period_interval=1&start_ts=1768429800",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 08:05:51 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:05:49.748148Z",
+      "finished_at": "2026-10-19T08:05:51.578141Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "c60a66b736f7b3ccca8e390e99feb40a4ddb8ab90eef791c042a538f6cb35fd7"
+}

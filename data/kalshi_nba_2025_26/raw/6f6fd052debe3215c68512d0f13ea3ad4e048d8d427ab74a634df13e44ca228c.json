@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/trades?limit=1000&max_ts=1768417200&min_ts=1768413600&ticker=KXNBAGAME-26JAN15MEMORL-ORL",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 08:05:38 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:05:35.955340Z",
+      "finished_at": "2026-10-19T08:05:38.568523Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "489cd6b3f8d1f6653c9a4378fbcd9fee3f373965f5b10cda97b2fd223efb0746"
+}

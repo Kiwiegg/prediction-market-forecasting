@@ -1,0 +1,16 @@
+{
+  "url": "https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNBAGAME-26MAR15INDMIL-MIL/candlesticks?end_ts=1773516600&period_interval=1&start_ts=1773509400",
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 19 Oct 2026 08:06:43 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "attempts": [
+    {
+      "started_at": "2026-10-19T08:06:41.967881Z",
+      "finished_at": "2026-10-19T08:06:43.936511Z",
+      "status": 200
+    }
+  ],
+  "body_sha256": "6bf5a571edae08acb00be880b12fe7071ebebe3cfcd1146b5de663c945ea6bb8"
+}
