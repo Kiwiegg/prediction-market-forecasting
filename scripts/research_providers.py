@@ -3,6 +3,7 @@
 import gzip
 import json
 import os
+import re
 import time
 import urllib.error
 import urllib.parse
@@ -147,7 +148,14 @@ class BraveAnthropicProvider:
         if not isinstance(blocks, list) or not blocks or any(not isinstance(b, dict) or b.get("type") != "text" or not isinstance(b.get("text"), str) for b in blocks):
             raise ProviderError("Unexpected model content/tools")
         try:
-            extracted = json.loads("".join(b["text"] for b in blocks))
+            text = "".join(b["text"] for b in blocks)
+            if self.config.get("extraction_format_recovery", False):
+                # A whole-response JSON code fence is presentation, not prose
+                # or a license to repair arbitrary malformed model output.
+                fenced = re.fullmatch(r"\s*```(?:json)?[ \t]*\r?\n(.*?)\r?\n```\s*", text, re.S)
+                if fenced:
+                    text = fenced.group(1)
+            extracted = json.loads(text)
             findings = extracted["findings"]
             if not isinstance(findings, list) or any(not isinstance(f, dict) for f in findings):
                 raise ValueError("findings must be objects")

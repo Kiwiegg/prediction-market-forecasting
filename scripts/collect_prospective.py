@@ -5,6 +5,7 @@ import argparse
 import json
 import os
 import re
+import shutil
 import time
 import urllib.parse
 from dataclasses import asdict
@@ -44,7 +45,8 @@ def choose_game(games, now, game_id=None):
 def check_config(config):
     if set(config) - {"search_provider", "llm_provider", "model", "model_endpoint", "search_key_env", "llm_key_env",
             "discovery_days", "max_public_requests", "max_injury_reports", "injury_team_catalog", "budget", "prices",
-            "extended_team_stats", "research_diagnostics", "timing_tolerance_seconds"}:
+            "extended_team_stats", "research_diagnostics", "timing_tolerance_seconds", "dated_article_research",
+            "extraction_format_recovery"}:
         raise ValueError("Unknown configuration fields; credentials must be environment variables")
     if config.get("search_provider") != "brave" or config.get("llm_provider") not in {"anthropic", "json_gateway"}:
         raise ValueError("Choose a supported search and extraction provider")
@@ -57,6 +59,10 @@ def check_config(config):
             raise ValueError("Credential configuration must name an environment variable")
     budget = Budget(**config.get("budget", {}))
     Ledger(budget)
+    if type(config.get("dated_article_research", False)) is not bool:
+        raise ValueError("dated_article_research must be boolean")
+    if type(config.get("extraction_format_recovery", False)) is not bool:
+        raise ValueError("extraction_format_recovery must be boolean")
     tolerance = config.get("timing_tolerance_seconds", 0)
     if type(tolerance) not in (int, float) or not isfinite(tolerance) or tolerance < 0:
         raise ValueError("Timing tolerance must be finite nonnegative seconds")
@@ -75,7 +81,7 @@ def plan(config, game=None, now=None):
     budget = check_config(config)
     return {"dry_run": True, "network_calls": 0, "inference_calls": 0, "selected_game": game,
         "target_cutoff_utc": iso(timestamp(game["recorded_start_utc"]) - 86400) if game else None,
-        "planned_queries": planned_queries(game, budget) if game else [], "research_budget": asdict(budget),
+        "planned_queries": planned_queries(game, budget, dated_articles=config.get("dated_article_research", False)) if game else [], "research_budget": asdict(budget),
         "max_public_requests": config.get("max_public_requests", 190),
         "timing_tolerance_seconds": config.get("timing_tolerance_seconds", 0),
         "target_deviation_seconds_now": round(now - timestamp(game["recorded_start_utc"]) + 86400, 6) if game else None,
@@ -131,13 +137,16 @@ def run_components(folder, config, session, game, started, allow_search=False, a
     if allow_search:
         provider = provider or BraveAnthropicProvider(config, folder / "provider_captures",
                     allow_network=not replay, allow_model=allow_model, replay=replay)
-        documents = DocumentStore(folder / "news_raw", replay, allowed_page)
+        dated_articles = config.get("dated_article_research", False)
+        documents = DocumentStore(folder / "news_raw", replay,
+                                  lambda u: allowed_page(u, dated_articles=dated_articles))
         begin = mark("research_started")
         def validation_clock():
             return mark("research_validation")
         news_result = research(game, begin, provider, documents.get, check_config(config), config["prices"],
             now=begin, use_model=allow_model, live_window=True, clock=validation_clock,
-            diagnostics=config.get("research_diagnostics", False))
+            diagnostics=config.get("research_diagnostics", False), dated_articles=dated_articles,
+            format_recovery=config.get("extraction_format_recovery", False))
         news_result["audit"]["provider_requests"] = provider.http.calls
         news_result["audit"]["actual_provider_usage"] = provider.usage
     if config.get("research_diagnostics"):
@@ -298,6 +307,41 @@ def new_capture_directory(path):
         raise ValueError("Capture already exists; retry with a new --output directory") from exc
 
 
+def reprocess_capture(folder, output, clock=time.time):
+    """Derive a fresh frozen bundle from saved bytes, with no provider retry.
+
+    Only deterministic extraction formatting changes. Original source clocks,
+    queries, model response and snapshot stay fixed; packet creation is current.
+    """
+    folder, output = Path(folder).resolve(), Path(output).resolve()
+    if folder == output or folder in output.parents or output in folder.parents:
+        raise ValueError("Derived output must be separate from the immutable original")
+    original = verify_bundle(folder)
+    run = json.loads((folder / "run.json").read_text())
+    run["settings"]["config"]["extraction_format_recovery"] = True
+    run["clocks"]["created"] = clock()
+    if run["clocks"]["created"] < run["clocks"]["snapshot"]:
+        raise ValueError("Derived creation time cannot precede the source snapshot")
+    check_config(run["settings"]["config"])
+    new_capture_directory(output)
+    for name in ("raw", "news_raw", "provider_captures"):
+        if (folder / name).exists():
+            shutil.copytree(folder / name, output / name)
+    settings = run["settings"]
+    session = SourceSession(output / "raw", True, settings["config"].get("max_public_requests", 190))
+    discovery = json.loads((folder / "discovery.json").read_text())
+    games, _ = discover(session, discovery["started_at"], settings["config"].get("discovery_days", 3))
+    if choose_game(games, discovery["started_at"], run["game"]["game_id"]) != run["game"]:
+        raise ValueError("Original schedule projection differs")
+    packet, lineage, derived_run = run_components(output, settings["config"], session, run["game"],
+        run["clocks"]["started"], settings["allow_search"], settings["allow_model"], replay_run=run)
+    derived_run["derivation"] = {"method": "offline_saved_response_format_recovery", "network_calls": 0,
+        "original_packet_sha256": original["packet_sha256"],
+        "original_bundle_manifest_sha256": digest((folder / "bundle_manifest.json").read_bytes()),
+        "derived_at_utc": iso(run["clocks"]["created"])}
+    return save_completed(output, packet, lineage, derived_run, discovery)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", default="examples/prospective_config.example.json")
@@ -307,12 +351,20 @@ def main():
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--discover", action="store_true", help="Free public schedule GETs only")
     parser.add_argument("--live", action="store_true", help="Collect one upcoming game")
-    parser.add_argument("--live-test", action="store_true", help="Explicitly authorize one search and at most one extraction; requires all paid opt-ins")
+    parser.add_argument("--live-test", action="store_true", help="Explicitly authorize up to two searches, four articles and one extraction; requires all paid opt-ins")
     parser.add_argument("--allow-network", action="store_true")
     parser.add_argument("--allow-search", action="store_true", help="Opt into paid Brave search")
     parser.add_argument("--allow-inference", action="store_true", help="Separately opt into paid extraction")
     parser.add_argument("--replay", help="Offline verification/reproduction of a completed capture")
+    parser.add_argument("--reprocess", help="Offline format recovery from an immutable capture; requires a new --output")
     args = parser.parse_args()
+    if args.reprocess:
+        if not args.output or args.replay or args.live or args.live_test or args.discover or args.allow_network or args.allow_search or args.allow_inference:
+            parser.error("Reprocessing is offline only and requires a separate --output directory")
+        packet = reprocess_capture(args.reprocess, args.output)
+        print(json.dumps({"derived_sha256": packet["evidence_snapshot_sha256"], "network_calls": 0,
+                          "capture_directory": args.output}))
+        return
     if args.replay:
         if args.live or args.live_test or args.discover or args.allow_network or args.allow_search or args.allow_inference:
             parser.error("Replay cannot enable live providers")
@@ -323,11 +375,14 @@ def main():
     config.setdefault("extended_team_stats", True)
     config.setdefault("research_diagnostics", True)
     config.setdefault("timing_tolerance_seconds", 0)
+    config.setdefault("dated_article_research", True)
+    config.setdefault("extraction_format_recovery", True)
     if args.live_test:
         if not all((args.live, args.allow_network, args.allow_search, args.allow_inference)):
             parser.error("--live-test requires --live --allow-network --allow-search --allow-inference")
-        config["budget"] = dict(config["budget"], max_queries=min(config["budget"]["max_queries"], 1),
-                                max_pages=min(config["budget"]["max_pages"], 2))
+        config["budget"] = dict(config["budget"], max_queries=min(config["budget"]["max_queries"], 2),
+                                max_pages=min(config["budget"]["max_pages"], 4),
+                                max_estimated_cost_usd=min(config["budget"]["max_estimated_cost_usd"], .35))
     check_config(config)
     now = time.time()
     if args.dry_run or not (args.live or args.discover):

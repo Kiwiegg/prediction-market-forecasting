@@ -1,0 +1,346 @@
+{
+  "additional_paid_calls_or_retries": 0,
+  "anthropic_request": {
+    "body_sha256": "0bf076d918bfff408e7a85dcc32198c0f36dbd31a2bbc2d5f0857a710e1d1747",
+    "http_status": 200,
+    "latency_seconds": 3.86018,
+    "model": "claude-haiku-4-5-20251001",
+    "response_format": "whole-response Markdown JSON fence; original strict decoder rejected it",
+    "retrieved_at_utc": "2026-10-20T15:32:59.545198Z",
+    "source_id": "8117408ee0a238074dcfce91b9db7c5552104c5eba19b591d3fca68c8f822618",
+    "started_at_utc": "2026-10-20T15:32:55.684951Z",
+    "stop_reason": "end_turn"
+  },
+  "budgets": {
+    "max_estimated_cost_usd": 0.35,
+    "max_output_tokens": 2000,
+    "max_pages": 4,
+    "max_queries": 2,
+    "max_tokens": 320000
+  },
+  "capture_directories": {
+    "offline_derived": "captures/article_retrieval_validation/offline_reprocessed",
+    "original": "captures/article_retrieval_validation/live_test"
+  },
+  "consumer_packets_identical": true,
+  "derivation": {
+    "derived_at_utc": "2026-10-20T15:38:12.089129Z",
+    "method": "offline_saved_response_format_recovery",
+    "network_calls": 0,
+    "original_bundle_manifest_sha256": "afab2c9e836b8f9c7d7f55c787cc5a34835aa7534a2b3a76318e7e5e7aa87cb8",
+    "original_packet_sha256": "1f7afa70e085ff18c5bf296d4e4a1c3844ec86b033828501c5675c6fe8ab48f1"
+  },
+  "derived_packet_sha256": "76c5609a2fe636818795562cadf96557d0f6f5771bc5484ea94d57d8d4d65ffe",
+  "diagnostics": {
+    "counters": {
+      "duplicate_claims": 0,
+      "pages_rejected": 1,
+      "pages_retrieved": 2,
+      "queries_attempted": 2,
+      "queries_returned_results": 2,
+      "results_discovered": 8,
+      "unique_urls_discovered": 7,
+      "validated_findings": 1
+    },
+    "estimated_cost_usd": {
+      "reported_inference_usage": 0.009774,
+      "reserved_upper_bound": 0.060449,
+      "retrieved_pages": 0,
+      "search_requests": 0.02
+    },
+    "provider_latency_seconds": {
+      "inference": [
+        {
+          "http_status": 200,
+          "seconds": 3.86018,
+          "source_id": "8117408ee0a238074dcfce91b9db7c5552104c5eba19b591d3fca68c8f822618"
+        }
+      ],
+      "search": [
+        {
+          "http_status": 200,
+          "seconds": 1.319091,
+          "source_id": "4dc20c528e8548cf7b7edd583072cab91032928dcc939bcd8b19c1d7c184ad3c"
+        },
+        {
+          "http_status": 200,
+          "seconds": 1.377461,
+          "source_id": "04e11ad32726455fa4d654834a3165a6a8a6e075806ce0ac0f3a67044be56ae6"
+        }
+      ]
+    },
+    "rejection_reasons": {
+      "claim_or_player_not_supported_by_excerpt": 4,
+      "disallowed_source_url": 6,
+      "page_unavailable_or_truncated": 1
+    },
+    "reported_token_usage": {
+      "input_tokens": 593,
+      "output_tokens": 533,
+      "raw": [
+        {
+          "model": "claude-haiku-4-5-20251001",
+          "retrieved_at_utc": "2026-10-20T15:32:59.545198Z",
+          "usage": {
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 0,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "inference_geo": "not_available",
+            "input_tokens": 593,
+            "output_tokens": 533,
+            "service_tier": "standard",
+            "speed": "standard"
+          }
+        }
+      ]
+    },
+    "searches": [
+      {
+        "pages_rejected": 1,
+        "pages_retrieved": 2,
+        "provider_source_id": "4dc20c528e8548cf7b7edd583072cab91032928dcc939bcd8b19c1d7c184ad3c",
+        "query": "(\"Orlando Magic\" OR \"Atlanta Hawks\") (injury OR lineup OR availability) (site:nba.com OR site:espn.com OR site:apnews.com OR site:reuters.com OR site:si.com OR site:orlandosentinel.com) -standings -tracker -\"injury report\" -\"depth chart\"",
+        "rejection_reasons": {
+          "page_unavailable_or_truncated": 1
+        },
+        "results_discovered": 4,
+        "supporting_references": [
+          "2c23258be8e387754e146f3055e2464dca840fe6c08596e18869f0d32544a1d2:paragraph:2"
+        ],
+        "url_status": [
+          {
+            "status": "disallowed_source_url",
+            "url": "https://www.espn.com/nba/injuries"
+          },
+          {
+            "status": "page_unavailable_or_truncated",
+            "url": "https://apnews.com/article/orlando-magic-atlanta-hawks-ce43e787cec64362b086091669ce40a2"
+          },
+          {
+            "status": "retrieved_usable",
+            "url": "https://www.si.com/nba/magic/onsi/orlando-magic-provide-franz-wagner-injury-update-early-exit-preseason-finale-01m56by3dhpy"
+          },
+          {
+            "status": "disallowed_source_url",
+            "url": "https://www.nba.com/hawks/roster"
+          }
+        ],
+        "urls": [
+          "https://www.espn.com/nba/injuries",
+          "https://apnews.com/article/orlando-magic-atlanta-hawks-ce43e787cec64362b086091669ce40a2",
+          "https://www.si.com/nba/magic/onsi/orlando-magic-provide-franz-wagner-injury-update-early-exit-preseason-finale-01m56by3dhpy",
+          "https://www.nba.com/hawks/roster"
+        ],
+        "validated_findings": 1
+      },
+      {
+        "pages_rejected": 0,
+        "pages_retrieved": 0,
+        "provider_source_id": "04e11ad32726455fa4d654834a3165a6a8a6e075806ce0ac0f3a67044be56ae6",
+        "query": "(\"Orlando Magic\" OR \"Atlanta Hawks\") (signed OR waived OR traded OR coach) (site:nba.com OR site:espn.com OR site:apnews.com OR site:reuters.com OR site:si.com OR site:orlandosentinel.com) -standings -tracker -\"injury report\" -\"depth chart\"",
+        "rejection_reasons": {},
+        "results_discovered": 4,
+        "supporting_references": [],
+        "url_status": [
+          {
+            "status": "disallowed_source_url",
+            "url": "https://www.espn.com/nba/transactions"
+          },
+          {
+            "status": "disallowed_source_url",
+            "url": "https://www.nba.com/hawks/roster"
+          },
+          {
+            "status": "disallowed_source_url",
+            "url": "https://www.si.com/nba/magic"
+          },
+          {
+            "status": "disallowed_source_url",
+            "url": "https://www.espn.com/nba/team/_/name/orl/orlando-magic"
+          }
+        ],
+        "urls": [
+          "https://www.espn.com/nba/transactions",
+          "https://www.nba.com/hawks/roster",
+          "https://www.si.com/nba/magic",
+          "https://www.espn.com/nba/team/_/name/orl/orlando-magic"
+        ],
+        "validated_findings": 0
+      }
+    ]
+  },
+  "finding_decisions": [
+    {
+      "accepted": false,
+      "candidate_index": 0,
+      "reason": "claim_or_player_not_supported_by_excerpt"
+    },
+    {
+      "accepted": false,
+      "candidate_index": 1,
+      "reason": "claim_or_player_not_supported_by_excerpt"
+    },
+    {
+      "accepted": false,
+      "candidate_index": 2,
+      "reason": "claim_or_player_not_supported_by_excerpt"
+    },
+    {
+      "accepted": false,
+      "candidate_index": 3,
+      "reason": "claim_or_player_not_supported_by_excerpt"
+    },
+    {
+      "accepted": true,
+      "candidate_index": 4,
+      "reason": null,
+      "source_case_normalization": {
+        "original_claim": "Day-to-day with low back soreness",
+        "verbatim_claim": "day-to-day with low back soreness"
+      }
+    }
+  ],
+  "game": {
+    "away": "Atlanta Hawks",
+    "game_id": "401909834",
+    "home": "Orlando Magic",
+    "recorded_tipoff_utc": "2026-10-21T23:00:00Z"
+  },
+  "official_injury": {
+    "away": {
+      "players": [],
+      "state": "not_yet_submitted",
+      "team_id": "1",
+      "uncertainty_flags": []
+    },
+    "collection_mode": "prospective_official_capture",
+    "home": {
+      "players": [],
+      "state": "not_yet_submitted",
+      "team_id": "19",
+      "uncertainty_flags": []
+    },
+    "independent_historical_public_capture_verified": false,
+    "latest_report_globally_verified": false,
+    "publication_verification": "observed_public_capture_upper_bound",
+    "published_at_utc": "2026-10-20T15:32:50.518411Z",
+    "report_issue_utc": "2026-10-20T15:15:00Z",
+    "report_source_id": "66d1d38c223be0b541f62c0617272525ad277d136ab698f4e37b343c1f8d6b93",
+    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-10-20_11_15AM.pdf",
+    "selection_scope": "latest_eligible_among_captured_index_links_last_24h"
+  },
+  "offline_replay_verified": true,
+  "original_error": "Malformed extraction JSON: complete valid JSON object inside a whole-response Markdown fence",
+  "original_packet_sha256": "1f7afa70e085ff18c5bf296d4e4a1c3844ec86b033828501c5675c6fe8ab48f1",
+  "original_validated_news_findings": 0,
+  "public_source_probe": [
+    {
+      "fixture": "si_article.html",
+      "fixture_kind": "reduced explicit metadata and a verbatim paragraph prefix; not original full HTML",
+      "fixture_sha256": "8d4feb257f2fd90b15166ed142c3f4ddae2d481774b0ef5bb87f33aaab0317f6",
+      "modified_utc": "2026-10-18T02:55:11Z",
+      "original_body_sha256": "a564a62a964dc4789a716496059ea07ae1e3844baf5c2671d48fb91809a354f0",
+      "original_http_status": 200,
+      "publication_utc": "2026-10-18T02:55:11Z",
+      "retrieved_at_utc": "2026-10-20T15:09:58.756420Z",
+      "url": "https://www.si.com/nba/magic/onsi/orlando-magic-provide-franz-wagner-injury-update-early-exit-preseason-finale-01m56by3dhpy"
+    },
+    {
+      "fixture": "nba_jsonld.html",
+      "fixture_kind": "reduced explicit metadata and a verbatim paragraph prefix; not original full HTML",
+      "fixture_sha256": "b7337d650f3ec1dd4a8128733892ef1c561941717e00c8b1d76ab053a4fcca18",
+      "modified_utc": "2026-10-03T20:11:51Z",
+      "original_body_sha256": "67c04728836e7d1e60740ab86fb9c6b4a50ef22fd0e6ff155d45cee9832f3904",
+      "original_http_status": 200,
+      "publication_utc": "2026-09-22T17:57:08Z",
+      "retrieved_at_utc": "2026-10-20T15:10:03.268777Z",
+      "url": "https://www.nba.com/news/2026-27-season-preview-orl"
+    },
+    {
+      "fixture": "sentinel_article.html",
+      "fixture_kind": "reduced explicit metadata and a verbatim paragraph prefix; not original full HTML",
+      "fixture_sha256": "ef9c1b29772efa6b71ad14db1165be54b7a0d10cc5ea19bd3be4686409c03239",
+      "modified_utc": "2026-10-18T21:19:17+00:00",
+      "original_body_sha256": "637655d773bd185bf7a86b5b4a07788e4cd8bfd22052f75f59ab8092efb3e43b",
+      "original_http_status": 200,
+      "publication_utc": "2026-10-18T21:19:17+00:00",
+      "retrieved_at_utc": "2026-10-20T15:10:00.838449Z",
+      "url": "https://www.orlandosentinel.com/2026/10/18/orlando-magic-practice-franz-wagner-noah-penda-jonathan-isaac-anthony-black-injury-updates-nba-preseason-kia-center-sean-sweeney/"
+    }
+  ],
+  "purpose": "pipeline_validation_not_eligible_prospective_forecast",
+  "snapshot_timing": {
+    "actual_snapshot_utc": "2026-10-20T15:32:59.551277Z",
+    "collection_started_at_utc": "2026-10-20T15:32:35.331314Z",
+    "deviation_seconds": -26820.448723,
+    "packet_created_at_utc": "2026-10-20T15:38:12.089129Z",
+    "status": "early",
+    "strict_t24h_eligible": false,
+    "target_cutoff_utc": "2026-10-20T23:00:00Z",
+    "timing_tolerance_seconds": 300,
+    "within_timing_tolerance": false
+  },
+  "sources_and_validation": [
+    {
+      "body_sha256": "4d40279ec5cfc6144ca2fea57dfc7c7721be0c0ad8804a50235d257a99021da9",
+      "reason": "page_unavailable_or_truncated",
+      "retrieved_at_utc": "2026-10-20T15:32:52.482445Z",
+      "source_id": "b9eab748d7421cea9a8530c4472f16859c08e563e646e0457f1f4af8d332d183",
+      "url": "https://apnews.com/article/orlando-magic-atlanta-hawks-ce43e787cec64362b086091669ce40a2",
+      "usable": false
+    },
+    {
+      "authority": "credible_reporting",
+      "body_sha256": "a564a62a964dc4789a716496059ea07ae1e3844baf5c2671d48fb91809a354f0",
+      "modified_at_utc": "2026-10-18T02:55:11Z",
+      "published_at_utc": "2026-10-18T02:55:11Z",
+      "reason": null,
+      "retrieved_at_utc": "2026-10-20T15:32:54.236645Z",
+      "source_id": "2c23258be8e387754e146f3055e2464dca840fe6c08596e18869f0d32544a1d2",
+      "timestamp_fields": [
+        {
+          "field": "meta:article:published_time",
+          "kind": "published",
+          "value": "2026-10-18T02:55:11Z"
+        },
+        {
+          "field": "meta:article:modified_time",
+          "kind": "modified",
+          "value": "2026-10-18T02:55:11Z"
+        },
+        {
+          "field": "jsonld:datePublished",
+          "kind": "published",
+          "value": "2026-10-18T02:55:11Z"
+        },
+        {
+          "field": "jsonld:dateModified",
+          "kind": "modified",
+          "value": "2026-10-18T02:55:11Z"
+        }
+      ],
+      "url": "https://www.si.com/nba/magic/onsi/orlando-magic-provide-franz-wagner-injury-update-early-exit-preseason-finale-01m56by3dhpy",
+      "usable": true
+    }
+  ],
+  "total_estimated_provider_cost_usd": 0.029774,
+  "validated_news_findings": [
+    {
+      "category": "injury_update",
+      "claim": "day-to-day with low back soreness",
+      "player": "Jase Richardson",
+      "published_at_utc": "2026-10-18T02:55:11Z",
+      "retrieved_at_utc": "2026-10-20T15:32:54.236645Z",
+      "source_ref": "2c23258be8e387754e146f3055e2464dca840fe6c08596e18869f0d32544a1d2:paragraph:2",
+      "source_url": "https://www.si.com/nba/magic/onsi/orlando-magic-provide-franz-wagner-injury-update-early-exit-preseason-finale-01m56by3dhpy",
+      "supporting_excerpt_short": "Jase Richardson is considered day-to-day with low back soreness.",
+      "team": "Orlando Magic",
+      "uncertainty_flags": [
+        "unversioned_source_payload"
+      ]
+    }
+  ]
+}

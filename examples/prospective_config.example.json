@@ -10,6 +10,8 @@
   "injury_team_catalog": true,
   "extended_team_stats": true,
   "research_diagnostics": true,
+  "dated_article_research": true,
+  "extraction_format_recovery": true,
   "timing_tolerance_seconds": 300,
   "budget": {
     "max_queries": 8,

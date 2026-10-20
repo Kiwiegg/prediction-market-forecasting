@@ -24,7 +24,7 @@ def summarize_research(audit, findings, prices):
             "validated_findings": sum(any(r["url"] in urls for r in f["source_references"]) for f in findings),
             "supporting_references": sorted(referenced),
             "url_status": [{"url": u, "status": ("retrieved_usable" if sources[u]["usable"] else sources[u]["reason"])
-                if u in sources else "disallowed_source_url" if not allowed_page(u) else "not_retrieved_budget_or_abort"} for u in dict.fromkeys(urls)],
+                if u in sources else "disallowed_source_url" if not allowed_page(u, dated_articles=audit.get("dated_article_research", False)) else "not_retrieved_budget_or_abort"} for u in dict.fromkeys(urls)],
             "rejection_reasons": dict(Counter(sources[u]["reason"] for u in set(urls)
                 if u in sources and not sources[u]["usable"]))})
     reasons = Counter(d["reason"] for d in audit.get("decisions", []) if d.get("reason"))

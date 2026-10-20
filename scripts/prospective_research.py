@@ -25,10 +25,14 @@ CATEGORIES = ("injury_update", "lineup_availability", "roster_transaction", "tea
 TERMS = {"injury_update": "injury status update", "lineup_availability": "lineup availability",
          "roster_transaction": "roster signed waived traded", "team_development": "team coaching development"}
 DEFAULT_DOMAINS = ("nba.com", "espn.com", "apnews.com", "reuters.com")
+# Extra publishers were checked against captured public article HTML, not search
+# snippets. Only their basketball article paths qualify under the new policy.
+ARTICLE_DOMAINS = DEFAULT_DOMAINS + ("si.com", "orlandosentinel.com")
 FORBIDDEN = re.compile(r"\b(kalshi|polymarket|moneyline|betting|odds|win probability|prediction|forecast|"
                        r"defeated|beat|victory|victories|score|scored|win|wins|loss|losses|won|lost)\b|\b\d{1,3}\s*[-–]\s*\d{1,3}\b", re.I)
 RELEVANT = re.compile(r"injur|illness|questionable|doubtful|probable|ruled out|available|lineup|starter|"
                       r"signed|waived|traded|transaction|coach|suspend|surgery|return|rest", re.I)
+INJURY_STATUS = re.compile(r"\bday-to-day\b|\bsoreness\b", re.I)
 
 
 @dataclass(frozen=True)
@@ -65,12 +69,37 @@ class Ledger:
         self.cost += cost
 
 
-def allowed_page(url, domains=DEFAULT_DOMAINS):
+def allowed_page(url, domains=DEFAULT_DOMAINS, *, dated_articles=False):
     try:
         parsed = urllib.parse.urlsplit(url)
         host, port = (parsed.hostname or "").lower(), parsed.port
     except (TypeError, ValueError):
         return False
+    if dated_articles:
+        domains = ARTICLE_DOMAINS
+        path = urllib.parse.unquote(parsed.path).lower().rstrip("/")
+        # Do not spend article slots on live trackers, indexes or team widgets.
+        if (not path or re.search(r"/(injuries|injury-report|standings|roster|schedule|archive|stats|teams?)(?:/|$)", path)
+                or path.endswith(".pdf")):
+            return False
+        if host == "si.com" or host.endswith(".si.com"):
+            if not re.fullmatch(r"/nba/(?:[^/]+/)+[^/]+", path):
+                return False
+        if host == "orlandosentinel.com" or host.endswith(".orlandosentinel.com"):
+            if not re.fullmatch(r"/\d{4}/\d{2}/\d{2}/[^/]+", path):
+                return False
+        if host == "espn.com" or host.endswith(".espn.com"):
+            if not path.startswith("/nba/story/"):
+                return False
+        if host == "apnews.com" or host.endswith(".apnews.com"):
+            if not path.startswith("/article/"):
+                return False
+        if host == "reuters.com" or host.endswith(".reuters.com"):
+            if not path.startswith("/sports/"):
+                return False
+        if host == "nba.com" or host.endswith(".nba.com"):
+            if not re.search(r"/news/[^/]+", path):
+                return False
     return (parsed.scheme == "https" and not parsed.username and not parsed.password and port in (None, 443)
             and any(host == d or host.endswith("." + d) for d in domains)
             and not re.search(r"kalshi|polymarket|/scoreboard|/boxscore|/game/|/odds|/betting|/scores|/results", url, re.I))
@@ -97,7 +126,7 @@ class ArticleParser(HTMLParser):
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
         if tag == "meta":
-            key = attrs.get("property", attrs.get("name", "")).lower()
+            key = (attrs.get("property") or attrs.get("name") or "").lower()
             value = attrs.get("content")
             if value and key in ("article:published_time", "datepublished", "pubdate"):
                 self.published.append(value)
@@ -126,7 +155,108 @@ class ArticleParser(HTMLParser):
             self.current.append(data)
 
 
-def validate_page(url, body, meta, cutoff, enforce_retrieval=False):
+class DatedArticleParser(ArticleParser):
+    """Add explicit article clocks; never use JSON-LD text as model evidence.
+
+    Related-story JSON-LD must not lend its timestamps to the fetched page.
+    Keep the original parser for immutable captures whose settings omit this
+    policy, so their queries, decisions and packet hashes reproduce unchanged.
+    """
+    ARTICLE_TYPES = {"Article", "NewsArticle", "SportsArticle", "ReportageNewsArticle", "BlogPosting"}
+    PUB_META = {"article:published_time", "datepublished", "pubdate", "parsely-pub-date",
+                "dc.date.issued", "dcterms.issued"}
+    MOD_META = {"article:modified_time", "datemodified", "og:updated_time",
+                "dc.date.modified", "dcterms.modified"}
+
+    def __init__(self):
+        super().__init__()
+        self.ld_active, self.ld_buffer, self.ld_blocks = False, [], []
+        self.timestamp_fields = []
+
+    def field(self, kind, field, value, append=True):
+        self.timestamp_fields.append({"kind": kind, "field": field, "value": value})
+        if append:
+            (self.published if kind == "published" else self.modified).append(value)
+
+    def handle_starttag(self, tag, attrs):
+        super().handle_starttag(tag, attrs)
+        attrs = dict(attrs)
+        if tag == "script" and (attrs.get("type") or "").lower().split(";")[0].strip() == "application/ld+json":
+            self.ld_active, self.ld_buffer = True, []
+        if tag == "meta":
+            key = (attrs.get("property") or attrs.get("name") or "").lower()
+            value = attrs.get("content")
+            if value and key in self.PUB_META:
+                self.field("published", "meta:" + key, value,
+                           append=key not in {"article:published_time", "datepublished", "pubdate"})
+            if value and key in self.MOD_META:
+                self.field("modified", "meta:" + key, value,
+                           append=key not in {"article:modified_time", "datemodified"})
+        # Only explicitly labeled publication/modification values, never a bare
+        # <time>, arbitrary JS dates, dateCreated or an HTTP Last-Modified header.
+        props = (attrs.get("itemprop") or "").lower().split()
+        value = attrs.get("datetime", attrs.get("content"))
+        for prop, kind in (("datepublished", "published"), ("datemodified", "modified")):
+            if prop in props and value:
+                self.field(kind, "itemprop:" + prop, value)
+
+    def handle_data(self, data):
+        if self.ld_active:
+            self.ld_buffer.append(data)
+        super().handle_data(data)
+
+    def handle_endtag(self, tag):
+        if tag == "script" and self.ld_active:
+            self.ld_blocks.append("".join(self.ld_buffer))
+            self.ld_active, self.ld_buffer = False, []
+        super().handle_endtag(tag)
+
+    def article_metadata(self, url):
+        def nodes(value):
+            if isinstance(value, list):
+                for item in value:
+                    yield from nodes(item)
+            elif isinstance(value, dict):
+                yield value
+                yield from nodes(value.get("@graph", []))
+
+        def identity(value):
+            return value.get("@id", value.get("url")) if isinstance(value, dict) else value
+
+        def normalized(value):
+            if not isinstance(value, str):
+                raise ValueError("Invalid article identity")
+            return urllib.parse.urldefrag(urllib.parse.urljoin(url, value))[0].rstrip("/")
+
+        articles = []
+        for block in self.ld_blocks:
+            for node in nodes(json.loads(block)):
+                types = node.get("@type", [])
+                types = [types] if isinstance(types, str) else types
+                if not isinstance(types, list) or any(not isinstance(t, str) for t in types):
+                    raise ValueError("Malformed JSON-LD type")
+                types = {t.rstrip("/").rsplit("/", 1)[-1] for t in types}
+                if not types & (self.ARTICLE_TYPES | {"LiveBlogPosting"}):
+                    continue
+                refs = [identity(node[k]) for k in ("url", "mainEntityOfPage", "@id") if k in node]
+                matches = [normalized(ref) == normalized(url) for ref in refs]
+                if matches and not any(matches):
+                    continue  # unrelated recommendation, not this article
+                if matches and not all(matches):
+                    raise ValueError("Conflicting article identity")
+                if "LiveBlogPosting" in types:
+                    raise ValueError("Dynamic live article")
+                articles.append((node, bool(refs)))
+        if len(articles) > 1 and any(not bound for _, bound in articles):
+            raise ValueError("Ambiguous unbound articles")
+        for node, _ in articles:
+            for key, kind in (("datePublished", "published"), ("dateModified", "modified")):
+                if key in node:
+                    self.field(kind, "jsonld:" + key, node[key])
+        return self.timestamp_fields
+
+
+def validate_page(url, body, meta, cutoff, enforce_retrieval=False, *, dated_articles=False):
     decision = {"source_id": meta["source_id"], "url": url, "usable": False, "reason": None,
                 "retrieved_at_utc": meta["retrieved_at_utc"], "body_sha256": meta["body_sha256"]}
     if enforce_retrieval and timestamp(meta["retrieved_at_utc"]) > cutoff:
@@ -135,20 +265,32 @@ def validate_page(url, body, meta, cutoff, enforce_retrieval=False):
     if meta["http_status"] != 200 or meta.get("truncated"):
         decision["reason"] = "page_unavailable_or_truncated"
         return decision
-    parser = ArticleParser()
+    if dated_articles and not allowed_page(url, dated_articles=True):
+        decision["reason"] = "disallowed_source_url"
+        return decision
+    parser = DatedArticleParser() if dated_articles else ArticleParser()
     parser.feed(body.decode("utf-8", errors="replace"))
     try:
+        if dated_articles:
+            if parser.ld_active:
+                raise ValueError("Unclosed JSON-LD script")
+            decision["timestamp_fields"] = parser.article_metadata(url)
+            if any(not isinstance(v, str) for v in parser.published + parser.modified):
+                raise ValueError("Timestamp must be a string")
         published = {timestamp(v) for v in parser.published}
         modified = {timestamp(v) for v in parser.modified}
         if len(published) != 1:
             raise ValueError("missing or conflicting publication metadata")
         pub = published.pop()
-    except (ValueError, TypeError):
+    except (ValueError, TypeError, RecursionError):
         decision["reason"] = "publication_time_unverifiable"
         return decision
     bound = min(cutoff, timestamp(meta["retrieved_at_utc"])) if enforce_retrieval else cutoff
     if pub > bound or any(v > bound for v in modified):
         decision["reason"] = "published_or_modified_after_cutoff"
+        return decision
+    if dated_articles and any(v < pub for v in modified):
+        decision["reason"] = "modification_precedes_publication"
         return decision
     snippets = [p for p in parser.paragraphs if RELEVANT.search(p) and not FORBIDDEN.search(p)]
     decision.update(usable=bool(snippets), reason=None if snippets else "no_safe_relevant_article_text",
@@ -159,7 +301,7 @@ def validate_page(url, body, meta, cutoff, enforce_retrieval=False):
     return decision
 
 
-def validate_findings(candidates, sources, game, cutoff):
+def validate_findings(candidates, sources, game, cutoff, *, format_recovery=False):
     if not isinstance(candidates, list) or any(not isinstance(c, dict) for c in candidates):
         raise ValueError("Agent findings must be a list of objects")
     refs = {snippet["source_ref"]: (source, snippet) for source in sources if source.get("usable")
@@ -186,11 +328,20 @@ def validate_findings(candidates, sources, game, cutoff):
         claim, ref = candidate.get("claim", ""), candidate.get("source_ref")
         if category not in CATEGORIES or team not in teams or ref not in refs:
             decision["reason"] = "invalid_category_team_or_source_reference"
-        elif not isinstance(claim, str) or not 1 <= len(claim) <= 400 or FORBIDDEN.search(claim) or not RELEVANT.search(claim):
+        elif not isinstance(claim, str) or not 1 <= len(claim) <= 400 or FORBIDDEN.search(claim) or not (
+                RELEVANT.search(claim) or format_recovery and INJURY_STATUS.search(claim)):
             decision["reason"] = "unsafe_or_out_of_scope_claim"
         else:
             source, snippet = refs[ref]
             text = " ".join(snippet["excerpt"].split())
+            if format_recovery and claim not in text:
+                # Bind an ASCII-case-only difference to the single original
+                # source span. The emitted claim is still literally verbatim;
+                # no words, punctuation, negation or qualifiers are repaired.
+                spans = list(re.finditer(re.escape(claim), text, re.I | re.ASCII))
+                if len(spans) == 1:
+                    original_claim, claim = claim, spans[0].group()
+                    decision["source_case_normalization"] = {"original_claim": original_claim, "verbatim_claim": claim}
             if claim not in text or player and player.lower() not in text.lower():
                 decision["reason"] = "claim_or_player_not_supported_by_excerpt"
             elif timestamp(source["published_at_utc"]) > cutoff:
@@ -304,30 +455,45 @@ class JsonGatewayProvider:
         return response.get("findings", [])
 
 
-def planned_queries(game, budget):
+def planned_queries(game, budget, *, dated_articles=False):
+    if dated_articles:
+        # Two queries cover both teams and all four categories; do not expand
+        # default spending just because a larger query budget is configured.
+        teams = '(' + ' OR '.join('"' + game[s + "_name"] + '"' for s in ("home", "away")) + ')'
+        sites = '(' + ' OR '.join('site:' + d for d in ARTICLE_DOMAINS) + ')'
+        # Negative terms are documented Brave operators. Dynamic endpoints are
+        # additionally rejected locally; search operators alone are not gates.
+        exclusions = ' -standings -tracker -"injury report" -"depth chart"'
+        themes = ('(injury OR lineup OR availability)', '(signed OR waived OR traded OR coach)')
+        return [teams + ' ' + theme + ' ' + sites + exclusions for theme in themes][:budget.max_queries]
     return [game[side + "_name"] + " " + TERMS[category]
             for category in CATEGORIES for side in ("home", "away")][:budget.max_queries]
 
 
 def research(game, cutoff, provider, fetch_page, budget, prices, now=None, mode="prospective", use_model=False,
-             live_window=False, clock=time.time, diagnostics=False):
+             live_window=False, clock=time.time, diagnostics=False, dated_articles=False, format_recovery=False):
     now = time.time() if now is None else now
     prospective_guard(game, cutoff, now, mode)
     ledger = Ledger(budget)
     sources, raw_search, audit = [], [], []
     captures = []
     urls = set()
-    queries = planned_queries(game, budget)
+    queries = planned_queries(game, budget, dated_articles=dated_articles)
     try:
-        for query in queries:
+        for query_index, query in enumerate(queries):
             ledger.reserve(queries=1, tokens=getattr(type(provider), "search_token_bound", 8000), cost=prices["query_usd"])
             results = provider.search(query, cutoff)
             raw_search.append({"query": query, "results": results})  # audit-only, never passed to model
             if not isinstance(results, list) or any(not isinstance(r, dict) or not isinstance(r.get("url"), str) for r in results):
                 raise ValueError("Search results must contain explicit source URLs")
+            query_pages = 0
+            # Leave room for the second topic, while allowing it to use any
+            # unspent first-query allowance. Legacy captures keep their order.
+            query_page_limit = ((budget.max_pages + len(queries) - 1) // len(queries)
+                                if dated_articles and query_index == 0 else budget.max_pages)
             for result in results:
                 url = result.get("url", "")
-                if url in urls or not allowed_page(url):
+                if url in urls or not allowed_page(url, dated_articles=dated_articles):
                     reason = ("duplicate_source_url" if url in urls else "disallowed_source_url") if diagnostics else "duplicate_or_disallowed_source"
                     audit.append({"url": url, "reason": reason})
                     continue
@@ -336,13 +502,18 @@ def research(game, cutoff, provider, fetch_page, budget, prices, now=None, mode=
                         audit.append({"url": url, "reason": "page_budget_exhausted"})
                         continue
                     break
+                if dated_articles and query_pages >= query_page_limit:
+                    audit.append({"url": url, "reason": "query_page_budget_exhausted"})
+                    continue
                 urls.add(url)
                 ledger.reserve(pages=1, cost=prices["page_usd"])
+                query_pages += 1
                 meta, body = fetch_page(url)
                 captures.append((url, body, meta))
         if live_window:
             cutoff = clock()
-        sources = [validate_page(url, body, meta, cutoff, enforce_retrieval=live_window) for url, body, meta in captures]
+        sources = [validate_page(url, body, meta, cutoff, enforce_retrieval=live_window,
+                    dated_articles=dated_articles) for url, body, meta in captures]
         safe = [{"source_id": s["source_id"], "published_at_utc": s["published_at_utc"],
                  "snippets": s["snippets"]} for s in sources if s["usable"]]
         # No statistical features, game outcomes, prices, file paths or provider
@@ -356,15 +527,16 @@ def research(game, cutoff, provider, fetch_page, budget, prices, now=None, mode=
                 cost=input_bound * prices["input_usd_per_million"] / 1e6
                      + budget.max_output_tokens * prices["output_usd_per_million"] / 1e6)
             candidates = provider.extract(context, budget.max_output_tokens)
-        findings, decisions = validate_findings(candidates, sources, game, cutoff)
+        findings, decisions = validate_findings(candidates, sources, game, cutoff, format_recovery=format_recovery)
     except (BudgetExceeded, ValueError, TypeError, KeyError, OSError) as exc:
         audit.append({"reason": str(exc), "error_type": type(exc).__name__})
         candidates, findings, decisions = [], [], []
         if diagnostics and captures and not sources:
             if live_window:
                 cutoff = clock()
-            sources = [validate_page(url, body, meta, cutoff, enforce_retrieval=live_window) for url, body, meta in captures]
-    return {"news": news_section(findings, sources, use_model),
+            sources = [validate_page(url, body, meta, cutoff, enforce_retrieval=live_window,
+                        dated_articles=dated_articles) for url, body, meta in captures]
+    result = {"news": news_section(findings, sources, use_model),
         "audit": {"captured_at_utc": iso(now), "cutoff_utc": iso(cutoff), "mode": mode,
             "retrieval_bound_enforced": live_window,
             "model_extraction_enabled": use_model,
@@ -372,6 +544,9 @@ def research(game, cutoff, provider, fetch_page, budget, prices, now=None, mode=
                 "tokens": ledger.tokens, "estimated_cost_usd": ledger.cost},
             "raw_search_results": raw_search, "sources_and_validation": sources, "decisions": audit,
             "agent_candidates": candidates, "finding_decisions": decisions}}
+    if dated_articles:
+        result["audit"]["dated_article_research"] = True
+    return result
 
 
 def news_section(findings, sources, use_model):

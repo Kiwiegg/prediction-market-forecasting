@@ -12,7 +12,7 @@ from unittest.mock import Mock, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from collect_prospective import (assemble, choose_game, load_for_consumer, plan, replay,
-    run_components, save_completed, verify_bundle, write_json)
+    reprocess_capture, run_components, save_completed, verify_bundle, write_json)
 from evidence_documents import canonical, digest
 from historical_injuries import report_url
 from investigate_kalshi import timestamp, iso
@@ -174,6 +174,24 @@ class RealProviderContractTests(unittest.TestCase):
                 transport.request("test", "GET", "https://example.invalid", None, {}, 100)
 
     @patch.dict(os.environ, {"ANTHROPIC_API_KEY": "fixture"})
+    def test_whole_json_fence_recovery_rejects_prose_and_malformed_json(self):
+        for enabled in (False, True):
+            for wrapper, accepted in ((lambda s: '```json\n' + s + '\n```', enabled),
+                                      (lambda s: 'Explanation\n```json\n' + s + '\n```', False),
+                                      (lambda s: '```json\n' + s[:-1] + '\n```', False)):
+                with self.subTest(enabled=enabled, accepted=accepted), tempfile.TemporaryDirectory() as tmp:
+                    response = model_response()
+                    response['content'][0]['text'] = wrapper(response['content'][0]['text'])
+                    p, opener = self.provider(tmp, [response])
+                    p.config = dict(CONFIG, extraction_format_recovery=enabled)
+                    if accepted:
+                        self.assertEqual(p.extract({'sources': []}, 1000), [])
+                    else:
+                        with self.assertRaises(ProviderError):
+                            p.extract({'sources': []}, 1000)
+                    opener.open.assert_called_once()
+
+    @patch.dict(os.environ, {"ANTHROPIC_API_KEY": "fixture"})
     def test_configurable_gateway_and_response_byte_boundary(self):
         with tempfile.TemporaryDirectory() as tmp:
             http = CapturedHTTP(tmp, True, Mock(), clock=lambda: T)
@@ -243,6 +261,46 @@ class ProspectiveSourceTests(unittest.TestCase):
 
 class IntegratedProspectiveTests(unittest.TestCase):
     @patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "fixture", "ANTHROPIC_API_KEY": "fixture"})
+    def test_offline_reprocess_preserves_original_and_records_new_creation_time(self):
+        with tempfile.TemporaryDirectory() as tmp, patch('prospective_sources.parse_pdf', side_effect=parsed_fixture):
+            folder, output = Path(tmp) / 'original', Path(tmp) / 'derived'
+            fixture(folder)
+            session = SourceSession(folder / 'raw', True)
+            games, decisions = discover(session, T)
+            game = choose_game(games, T)
+            candidate = {'category': 'injury_update', 'team': 'Atlanta Hawks', 'player': 'Example Player',
+                         'claim': 'Questionable with an ankle injury.',
+                         'source_ref': digest(PAGE.encode()) + ':paragraph:1'}
+            response = model_response([candidate])
+            response['content'][0]['text'] = '```json\n' + response['content'][0]['text'] + '\n```'
+            def opened(req, **kwargs):
+                return Response(canonical({'web': {'results': [{'url': PAGE}]}} if req.method == 'GET' else response))
+            config = dict(CONFIG, extraction_format_recovery=False)
+            transport = CapturedHTTP(folder / 'provider_captures', True, Mock(), clock=lambda: T + 6)
+            transport.opener.open.side_effect = opened
+            provider = BraveAnthropicProvider(config, folder / 'provider_captures', True, True, transport)
+            clocks = iter([T + 2, T + 3, T + 4, T + 10, T + 20, T + 21])
+            packet, lineage, run = run_components(folder, config, session, game, T, True, True,
+                                                 clock=lambda: next(clocks), provider=provider)
+            original = save_completed(folder, packet, lineage, run, {'started_at': T, 'games': games, 'decisions': decisions})
+            before = {str(p.relative_to(folder)): p.read_bytes() for p in folder.rglob('*') if p.is_file()}
+            self.assertEqual(original['injury_news']['news']['findings'], [])
+            with patch('urllib.request.OpenerDirector.open', side_effect=AssertionError('No provider retry or live fetch')):
+                derived = reprocess_capture(folder, output, clock=lambda: T + 40)
+                self.assertEqual(replay(folder), original)
+                self.assertEqual(replay(output), derived)
+                self.assertEqual(load_for_consumer(output, 'direct_llm'), load_for_consumer(output, 'leap'))
+            self.assertEqual(before, {str(p.relative_to(folder)): p.read_bytes() for p in folder.rglob('*') if p.is_file()})
+            self.assertEqual(len(derived['injury_news']['news']['findings']), 1)
+            self.assertEqual(derived['snapshot_timing']['packet_created_at_utc'], iso(T + 40))
+            self.assertEqual(derived['snapshot_timing']['actual_snapshot_utc'], original['snapshot_timing']['actual_snapshot_utc'])
+            derivation = json.loads((output / 'run.json').read_text())['derivation']
+            self.assertEqual(derivation['network_calls'], 0)
+            self.assertEqual(derivation['original_packet_sha256'], original['evidence_snapshot_sha256'])
+            with self.assertRaises(ValueError):
+                reprocess_capture(folder, folder / 'child', clock=lambda: T + 40)
+
+    @patch.dict(os.environ, {"BRAVE_SEARCH_API_KEY": "fixture", "ANTHROPIC_API_KEY": "fixture"})
     def test_frozen_end_to_end_capture_consumer_identity_and_offline_reproduction(self):
         with tempfile.TemporaryDirectory() as tmp, patch("prospective_sources.parse_pdf", side_effect=parsed_fixture):
             folder = Path(tmp)
@@ -281,7 +339,7 @@ class IntegratedProspectiveTests(unittest.TestCase):
             with patch("urllib.request.OpenerDirector.open", side_effect=AssertionError("No network during replay")):
                 self.assertEqual(replay(folder), frozen)
             self.assertEqual(before, {str(p): p.read_bytes() for p in folder.rglob("*") if p.is_file()})
-            self.assertEqual(len(requests), 9)  # eight bounded searches and one extraction
+            self.assertEqual(len(requests), 3)  # two targeted searches and one extraction
             (folder / "lineage.json").write_text("{}")
             with self.assertRaises(ValueError):
                 verify_bundle(folder)
@@ -303,7 +361,10 @@ class IntegratedProspectiveTests(unittest.TestCase):
         with patch("urllib.request.OpenerDirector.open", side_effect=AssertionError("No cost plan must be offline")):
             preview = plan(CONFIG, game, T)
             self.assertEqual(preview["network_calls"], 0)
-            self.assertEqual(len(preview["planned_queries"]), 8)
+            self.assertEqual(len(preview["planned_queries"]), 2)
+            legacy = dict(CONFIG)
+            legacy.pop("dated_article_research")
+            self.assertEqual(len(plan(legacy, game, T)["planned_queries"]), 8)
 
 
 class SavedLiveCaptureTests(unittest.TestCase):
