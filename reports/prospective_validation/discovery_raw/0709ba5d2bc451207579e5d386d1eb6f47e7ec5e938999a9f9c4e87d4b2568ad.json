@@ -1,0 +1,29 @@
+{
+  "attempts": [
+    {
+      "finished_at_utc": "2026-10-20T02:28:19.299328Z",
+      "http_status": 404,
+      "started_at_utc": "2026-10-20T02:28:17.242074Z"
+    }
+  ],
+  "body_sha256": "e70ffda4da2385d85bda0b6cce7bbe9c051fd3a66b1e8f4b592c0ac00dd4dd9c",
+  "body_size": 1129,
+  "headers": {
+    "connection": "close",
+    "content-length": "1129",
+    "content-type": "text/html; charset=utf-8",
+    "date": "Tue, 20 Oct 2026 02:28:19 GMT",
+    "server": "envoy",
+    "set-cookie": "bm_sz=D2C450DE90A5CD3D87873143914AD8CD~YAAQzpUeuNNAoDuhAQAAcGMjVwECtGgAiNNCJKO1C92EpBz43RZvNb6VouLguRCY+lf2oQR9gdmJVu1XFvSklilWCFoBBnQFpChXOPGYGaFC2foCCaLcME0/8Tavw/16uwh77eaGw48LHgo2rO9wav4zISKud0isfaUj53b5+6z2l/gx7EZNk/7R6L8sNhBy2JlgOgWxTUFXwSCIEAuKgVeMc4/+F1OtiGbbKIKKAeIKK2Y5nrkAMNpHwEpPLvOGu0xT3oLzKpvD+FwNqeeICkxkAuvS3yYJFfD/rKyC+yHb0NjdP1aH1+u8iVMopPPEFB3/zMmZGwUM32oP5YAJl8+dtZQGpLD7ZQ+3~3289395~3160374; Domain=.nba.com; Path=/; Expires=Tue, 20 Oct 2026 06:28:19 GMT; Max-Age=14400",
+    "strict-transport-security": "max-age=86400",
+    "vary": "Accept-Encoding",
+    "x-envoy-upstream-service-time": "288",
+    "x-powered-by": "NBA",
+    "x-varnish": "33975054"
+  },
+  "http_status": 404,
+  "retrieved_at_utc": "2026-10-20T02:28:19.299328Z",
+  "source_id": "0709ba5d2bc451207579e5d386d1eb6f47e7ec5e938999a9f9c4e87d4b2568ad",
+  "truncated": false,
+  "url": "https://official.nba.com/nba-injury-report-2026-27-season/"
+}

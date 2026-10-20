@@ -1,0 +1,28 @@
+{
+  "attempts": [
+    {
+      "finished_at_utc": "2026-10-20T03:13:51.942402Z",
+      "http_status": 200,
+      "started_at_utc": "2026-10-20T03:13:48.686985Z"
+    }
+  ],
+  "body_sha256": "b00fc003e4ae84f45018a961cf6caeb10bbad4e4ab8904faa284d78d384fbf9d",
+  "body_size": 795374,
+  "headers": {
+    "access-control-allow-methods": "GET,PUT,POST,DELETE,OPTIONS,HEAD",
+    "access-control-allow-origin": "*",
+    "access-control-expose-headers": "content-length,location",
+    "cache-control": "max-age=1",
+    "connection": "Transfer-Encoding",
+    "content-type": "application/json;charset=UTF-8",
+    "date": "Tue, 20 Oct 2026 03:13:50 GMT",
+    "link": "<team_schedule.json#>; rel=\"describedby\"",
+    "transfer-encoding": "chunked",
+    "vary": "Accept-Encoding"
+  },
+  "http_status": 200,
+  "retrieved_at_utc": "2026-10-20T03:13:51.942402Z",
+  "source_id": "e8a32b5283f53bbe197a9706009d2e3a03959a8b5422e078dba04067e275b30c",
+  "truncated": false,
+  "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/25/schedule?season=2027&seasontype=2"
+}

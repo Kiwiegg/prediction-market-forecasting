@@ -1,0 +1,24 @@
+{
+  "search_provider": "brave",
+  "llm_provider": "anthropic",
+  "model": "claude-haiku-4-5-20251001",
+  "search_key_env": "BRAVE_SEARCH_API_KEY",
+  "llm_key_env": "ANTHROPIC_API_KEY",
+  "discovery_days": 3,
+  "max_public_requests": 190,
+  "max_injury_reports": 8,
+  "injury_team_catalog": true,
+  "budget": {
+    "max_queries": 8,
+    "max_pages": 8,
+    "max_tokens": 320000,
+    "max_output_tokens": 2000,
+    "max_estimated_cost_usd": 0.35
+  },
+  "prices": {
+    "query_usd": 0.01,
+    "page_usd": 0,
+    "input_usd_per_million": 3,
+    "output_usd_per_million": 15
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "attempts": [
+    {
+      "finished_at_utc": "2026-10-20T02:28:17.240009Z",
+      "http_status": 403,
+      "started_at_utc": "2026-10-20T02:28:15.964930Z"
+    }
+  ],
+  "body_sha256": "187da10e100b6fcb6852f1868941c6c840db43c5a2930de6c847a9334b60d2c2",
+  "body_size": 425,
+  "headers": {
+    "connection": "close",
+    "content-length": "425",
+    "content-type": "text/html",
+    "date": "Tue, 20 Oct 2026 02:28:17 GMT",
+    "expires": "Tue, 20 Oct 2026 02:28:17 GMT",
+    "mime-version": "1.0",
+    "strict-transport-security": "max-age=86400",
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "sameorigin",
+    "x-xss-protection": "1; mode=block"
+  },
+  "http_status": 403,
+  "retrieved_at_utc": "2026-10-20T02:28:17.240009Z",
+  "source_id": "9c59f21af6ee1eb0e58ff4c36d499b74022af42b51818316da0d34bf6e611575",
+  "truncated": false,
+  "url": "https://cdn.nba.com/static/json/staticData/scheduleLeagueV2.json"
+}

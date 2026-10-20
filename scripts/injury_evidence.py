@@ -9,8 +9,8 @@ from investigate_kalshi import iso, timestamp, write_csv
 from shared_evidence import freeze_packet
 
 
-def official_section(game, bundle):
-    cutoff = timestamp(game["recorded_start_utc"]) - 86400
+def official_section(game, bundle, cutoff=None):
+    cutoff = timestamp(game["recorded_start_utc"]) - 86400 if cutoff is None else cutoff
     candidates = bundle["cutoff_candidates"].get(iso(cutoff), [])
     chosen = latest_eligible(candidates, cutoff)
     official = {"collection_mode": "historical_approved_official_only",

@@ -252,8 +252,8 @@ class SavedInjuryEvidenceTests(unittest.TestCase):
     def test_coverage_reconciles_with_all_200_packets(self):
         packets = [json.loads(l) for l in (DATA / "evidence_packets.jsonl").read_text().splitlines()]
         summary = json.loads((DATA / "injury_summary.json").read_text())
-        rows = list(csv.DictReader((DATA / "injury_coverage.csv").open()))
-        monthly = list(csv.DictReader((DATA / "injury_coverage_by_month.csv").open()))
+        rows = list(csv.DictReader((DATA / "injury_coverage.csv").read_text().splitlines()))
+        monthly = list(csv.DictReader((DATA / "injury_coverage_by_month.csv").read_text().splitlines()))
         self.assertEqual(len(rows), 200)
         self.assertEqual({r["game_id"] for r in rows}, {p["game_id"] for p in packets})
         players = [x for p in packets for side in ("home", "away") for x in p["injury_news"]["official_injury"][side]["players"]]

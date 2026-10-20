@@ -1,0 +1,39 @@
+{
+  "attempts": [
+    {
+      "finished_at_utc": "2026-10-20T03:13:58.224078Z",
+      "http_status": 200,
+      "started_at_utc": "2026-10-20T03:13:53.889599Z"
+    }
+  ],
+  "body_sha256": "b5a3b0b09aa6f7fa4a43166de3fcdaad111a275d98b50f95b7617a113eec33eb",
+  "body_size": 129547,
+  "headers": {
+    "cache-control": "max-age=300",
+    "connection": "Transfer-Encoding",
+    "content-type": "text/html; charset=UTF-8",
+    "date": "Tue, 20 Oct 2026 03:13:58 GMT",
+    "server": "envoy",
+    "set-cookie": "bm_sz=B1823162991CED7C5DCB8B8AAC032A3D~YAAQcRXWF7C4xjuhAQAAGC1NVwFMv9fzyzU4pxP1Qbxtx6onR/992w02wWP9FoYs1ITY3mnGtMyA7jjjH7OgDVt5z0LTn2lrZNJ3KtfdbzF2R0gg7yP5lrp2wss+9Fth0zGDFslsuuIjUXAgbPAjcWqvCprwoa+c2YnfEyBlDJ9NGCkYdm36G7z0DXOfNovzt/vdSvGKpbc6GEvMR3ta9HatYMNkjMqgH9h0GKlXkTbaNM//BcP3OgF4ho6eLZ5Em01c0xvsw5q214C9YIWIpLYjhRt+FWryv2CD64wjWjc2YiZYqbaY0BOcZdATDovXie5oWitUwxXLie4iF7Rx2fAUVRXp+1pmMrCC~3622213~4602181; Domain=.nba.com; Path=/; Expires=Tue, 20 Oct 2026 07:13:55 GMT; Max-Age=14397",
+    "strict-transport-security": "max-age=86400",
+    "transfer-encoding": "chunked",
+    "vary": "Accept-Encoding",
+    "x-akamai-transformed": "0 129440 0 -",
+    "x-cache-ability": "cacheable",
+    "x-content-type-options": "nosniff",
+    "x-envoy-upstream-service-time": "2639",
+    "x-frame-options": "SAMEORIGIN",
+    "x-full-ttl": "300.000",
+    "x-hits": "0",
+    "x-powered-by": "NBA",
+    "x-status": "",
+    "x-varnish": "34193799",
+    "x-vcl-version": "NBA.com prod 1.7b",
+    "x-xss-protection": "1; mode=block"
+  },
+  "http_status": 200,
+  "retrieved_at_utc": "2026-10-20T03:13:58.224078Z",
+  "source_id": "1f3e0e44c5cec00340a3fec1925e04a8f1145d630a55212c1060f3749811abdc",
+  "truncated": false,
+  "url": "https://official.nba.com/nba-injury-report-2025-26-season/"
+}

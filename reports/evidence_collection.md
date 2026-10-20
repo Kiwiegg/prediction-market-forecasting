@@ -41,6 +41,8 @@ Future direct-LLM and LEAP-inspired consumers must both call `shared_evidence.lo
 
 ## Bounded prospective research
 
+**Integrated collector:** new live CLI runs (including the `prospective_research.py` entrypoint) now delegate to `collect_prospective.py`. Read [prospective_pipeline.md](prospective_pipeline.md) for real Brave/Anthropic adapters, authoritative schedule discovery with explicit fallback, complete statistics/official-injury inputs, actual snapshot timing and the saved public-source validation. The module-level news helpers and legacy gateway/replay functions described below remain available for reuse and old captured-component tests; the older standalone `--game` CLI is superseded by the integrated CLI's `--game-id`/discovery commands.
+
 `scripts/prospective_research.py` composes a configurable JSON search/model gateway, allowlisted page capture, deterministic validation, optional one-shot extraction and shared freezing. It accepts schedule-only game identity JSON. Before constructing providers, it requires the game to be upcoming and the live cutoff to be within the preceding five minutes. Historical mode/dates are rejected before any provider call. Historical collection is a different official-only code path with no search capability. Offline replay only revalidates saved prospective captures and never searches.
 
 The four categories are injury updates, lineup availability, roster transactions and significant team developments. Search queries are deterministic, interleaving the two teams across categories. Defaults cap a run at **4 queries, 4 pages, 64,000 reserved tokens, 1,000 output tokens and $0.10 estimated cost**. Budgets are checked before each call; query/page/token reservations and conservative operator-supplied cost estimates are recorded. Search responses are capped at 8 KB, pages at 5 MB, and model responses at an explicit bounded size. Byte-based input reservations conservatively bound tokenizer use for the JSON context. These are estimates and local request bounds, not a guarantee about a provider's billing or honesty. Paid POSTs are not retried automatically; failed responses are retained.
@@ -70,21 +72,11 @@ python3 -m venv .venv
 
 The committed raw cache is sufficient for a complete offline rebuild, including PDF extraction. `.venv/bin/python scripts/historical_injuries.py` explicitly permits free official GETs for **absent** cached requests; existing failures are preserved. Do not delete failures or silently replace captures to improve reported coverage.
 
-For a future live run, copy [research_config.example.json](../examples/research_config.example.json), supply compatible HTTPS gateway endpoints, provider/model names, conservative prices and credentials via the named environment variable. The example endpoints are placeholders and prices are illustrative, not advertised vendor rates. The gateway contract is intentionally vendor-neutral; it is not a bundled adapter for a particular commercial service:
+For a complete prospective run, use [prospective_pipeline.md](prospective_pipeline.md) and [prospective_config.example.json](../examples/prospective_config.example.json). The unified CLI discovers one upcoming game and requires separate public-network, search and inference opt-ins. It records the actual snapshot instead of using a supplied historical game/cutoff.
 
-* Search POST: `{query, before_utc, categories, max_results}`; response `{results: [{url, ...}]}`. Search-side date filtering is only a hint; fetched-page timestamps are independently checked.
-* Model POST: `{model, max_output_tokens, tools: [], task, context}`; response `{findings: [{category, team, player, claim, source_ref}], usage: {input_tokens, output_tokens}}`. Usage must fit the reservation. Tool calls are forbidden.
+The earlier [research_config.example.json](../examples/research_config.example.json) remains documentation for the library-level `JsonGatewayProvider` contract, not the integrated CLI configuration:
 
-The game JSON permits only `game_id`, timezone-aware `recorded_start_utc`, `home_id`, `away_id`, `home_name`, `away_name`, and optional `neutral_site`. It must describe an actually upcoming game. The live snapshot cutoff is the invocation time; no arbitrary historical cutoff argument exists.
+* Search POST: `{query, before_utc, categories, max_results}`; response `{results: [{url, ...}]}`.
+* Model POST: `{model, max_output_tokens, tools: [], task, context}`; response `{findings: [{category, team, player, claim, source_ref}], usage: {input_tokens, output_tokens}}`.
 
-```sh
-# Explicit network/cost opt-in; collects sources without calling a model.
-.venv/bin/python scripts/prospective_research.py --game /path/to/upcoming.json \
-  --config /path/to/research_config.json --output /path/to/capture --allow-network
-
-# A separate opt-in additionally enables one bounded model extraction.
-.venv/bin/python scripts/prospective_research.py --game /path/to/upcoming.json \
-  --config /path/to/research_config.json --output /path/to/capture --allow-network --allow-model
-```
-
-Without model opt-in, usable collected pages are marked `not_extracted`; they are not silently converted to findings. Raw requests/responses/pages, provider/model identity, prompt/context, extraction response, budget reservations and all validation decisions stay in the capture's audit files. Credentials are never written. `research_snapshot_manifest.json` pins an immutable hashed audit capture for offline replay. Frozen evidence contains source facts only, separated from rejected candidates and model interpretation. No live search or model inference was run as part of this implementation; provider behavior is exercised with deterministic fakes in tests.
+The same optional model-gateway contract is supported by the integrated adapter alongside its real Anthropic default. Old `--game`/`--allow-model` standalone commands have been replaced by schedule discovery, `--game-id` and the integrated opt-ins. Library functions for original captured-news tests remain available. No paid search or inference was run during either implementation; the new actual public-source validation is documented separately.

@@ -5,7 +5,6 @@ no network. A model sees only filtered article excerpts, never raw pages/search
 results, files, tools, historical results, or prices.
 """
 
-import argparse
 import gzip
 import json
 import os
@@ -15,8 +14,6 @@ import urllib.parse
 import urllib.request
 import urllib.error
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
-from html import unescape
 from html.parser import HTMLParser
 from math import isfinite
 from pathlib import Path
@@ -50,7 +47,9 @@ class BudgetExceeded(ValueError):
 class Ledger:
     def __init__(self, budget):
         self.budget, self.queries, self.pages, self.tokens, self.cost = budget, 0, 0, 0, 0.0
-        if min(budget.max_queries, budget.max_pages, budget.max_tokens, budget.max_output_tokens) < 0 or not isfinite(budget.max_estimated_cost_usd) or budget.max_estimated_cost_usd < 0:
+        if (any(type(v) is not int or v < 0 for v in (budget.max_queries, budget.max_pages, budget.max_tokens, budget.max_output_tokens))
+                or type(budget.max_estimated_cost_usd) not in (int, float)
+                or not isfinite(budget.max_estimated_cost_usd) or budget.max_estimated_cost_usd < 0):
             raise ValueError("Budgets must be nonnegative")
 
     def reserve(self, queries=0, pages=0, tokens=0, cost=0.0):
@@ -127,9 +126,12 @@ class ArticleParser(HTMLParser):
             self.current.append(data)
 
 
-def validate_page(url, body, meta, cutoff):
+def validate_page(url, body, meta, cutoff, enforce_retrieval=False):
     decision = {"source_id": meta["source_id"], "url": url, "usable": False, "reason": None,
                 "retrieved_at_utc": meta["retrieved_at_utc"], "body_sha256": meta["body_sha256"]}
+    if enforce_retrieval and timestamp(meta["retrieved_at_utc"]) > cutoff:
+        decision["reason"] = "retrieved_after_snapshot"
+        return decision
     if meta["http_status"] != 200 or meta.get("truncated"):
         decision["reason"] = "page_unavailable_or_truncated"
         return decision
@@ -144,7 +146,8 @@ def validate_page(url, body, meta, cutoff):
     except (ValueError, TypeError):
         decision["reason"] = "publication_time_unverifiable"
         return decision
-    if pub > cutoff or any(v > cutoff for v in modified):
+    bound = min(cutoff, timestamp(meta["retrieved_at_utc"])) if enforce_retrieval else cutoff
+    if pub > bound or any(v > bound for v in modified):
         decision["reason"] = "published_or_modified_after_cutoff"
         return decision
     snippets = [p for p in parser.paragraphs if RELEVANT.search(p) and not FORBIDDEN.search(p)]
@@ -163,10 +166,21 @@ def validate_findings(candidates, sources, game, cutoff):
             for snippet in source["snippets"]}
     accepted, decisions, seen = [], [], {}
     teams = {game[side + "_name"] for side in ("home", "away")}
-    candidates = sorted(candidates, key=lambda c: (0 if c.get("source_ref") in refs and
-        refs[c["source_ref"]][0]["authority"] == "official" else 1,
-        -timestamp(refs[c["source_ref"]][0]["published_at_utc"]) if c.get("source_ref") in refs else 0))
+    valid = []
     for index, candidate in enumerate(candidates):
+        if (set(candidate) != {"category", "team", "player", "claim", "source_ref"}
+                or any(not isinstance(candidate.get(k), str) for k in ("category", "team", "claim", "source_ref"))
+                or candidate["player"] is not None and not isinstance(candidate["player"], str)):
+            decisions.append({"candidate_index": index, "accepted": False, "reason": "malformed_candidate_schema"})
+        else:
+            valid.append((index, candidate))
+    def priority(pair):
+        c = pair[1]
+        source = refs.get(c["source_ref"])
+        return (0 if source and source[0]["authority"] == "official" else 1,
+                -timestamp(source[0]["published_at_utc"]) if source else 0)
+    candidates = sorted(valid, key=priority)
+    for index, candidate in candidates:
         decision = {"candidate_index": index, "accepted": False, "reason": None}
         category, team, player = candidate.get("category"), candidate.get("team"), candidate.get("player")
         claim, ref = candidate.get("claim", ""), candidate.get("source_ref")
@@ -290,17 +304,23 @@ class JsonGatewayProvider:
         return response.get("findings", [])
 
 
-def research(game, cutoff, provider, fetch_page, budget, prices, now=None, mode="prospective", use_model=False):
+def planned_queries(game, budget):
+    return [game[side + "_name"] + " " + TERMS[category]
+            for category in CATEGORIES for side in ("home", "away")][:budget.max_queries]
+
+
+def research(game, cutoff, provider, fetch_page, budget, prices, now=None, mode="prospective", use_model=False,
+             live_window=False, clock=time.time):
     now = time.time() if now is None else now
     prospective_guard(game, cutoff, now, mode)
     ledger = Ledger(budget)
     sources, raw_search, audit = [], [], []
+    captures = []
     urls = set()
-    queries = [game[side + "_name"] + " " + TERMS[category]
-               for category in CATEGORIES for side in ("home", "away")][:budget.max_queries]
+    queries = planned_queries(game, budget)
     try:
         for query in queries:
-            ledger.reserve(queries=1, tokens=8000, cost=prices["query_usd"])
+            ledger.reserve(queries=1, tokens=getattr(type(provider), "search_token_bound", 8000), cost=prices["query_usd"])
             results = provider.search(query, cutoff)
             raw_search.append({"query": query, "results": results})  # audit-only, never passed to model
             if not isinstance(results, list) or any(not isinstance(r, dict) or not isinstance(r.get("url"), str) for r in results):
@@ -315,7 +335,10 @@ def research(game, cutoff, provider, fetch_page, budget, prices, now=None, mode=
                 urls.add(url)
                 ledger.reserve(pages=1, cost=prices["page_usd"])
                 meta, body = fetch_page(url)
-                sources.append(validate_page(url, body, meta, cutoff))
+                captures.append((url, body, meta))
+        if live_window:
+            cutoff = clock()
+        sources = [validate_page(url, body, meta, cutoff, enforce_retrieval=live_window) for url, body, meta in captures]
         safe = [{"source_id": s["source_id"], "published_at_utc": s["published_at_utc"],
                  "snippets": s["snippets"]} for s in sources if s["usable"]]
         # No statistical features, game outcomes, prices, file paths or provider
@@ -324,7 +347,7 @@ def research(game, cutoff, provider, fetch_page, budget, prices, now=None, mode=
                    "cutoff_utc": iso(cutoff), "allowed_categories": CATEGORIES, "sources": safe}
         candidates = []
         if use_model and safe:
-            input_bound = len(canonical(context)) + 1024
+            input_bound = len(canonical(context)) + getattr(type(provider), "input_token_overhead", 1024)
             ledger.reserve(tokens=input_bound + budget.max_output_tokens,
                 cost=input_bound * prices["input_usd_per_million"] / 1e6
                      + budget.max_output_tokens * prices["output_usd_per_million"] / 1e6)
@@ -335,6 +358,7 @@ def research(game, cutoff, provider, fetch_page, budget, prices, now=None, mode=
         candidates, findings, decisions = [], [], []
     return {"news": news_section(findings, sources, use_model),
         "audit": {"captured_at_utc": iso(now), "cutoff_utc": iso(cutoff), "mode": mode,
+            "retrieval_bound_enforced": live_window,
             "model_extraction_enabled": use_model,
             "budgets": asdict(budget), "usage_upper_bounds": {"queries": ledger.queries, "pages": ledger.pages,
                 "tokens": ledger.tokens, "estimated_cost_usd": ledger.cost},
@@ -396,60 +420,10 @@ def replay_capture(folder):
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--game", help="Schedule-only game JSON; no evaluation files")
-    parser.add_argument("--config", help="Provider endpoints/model and explicit conservative price estimates")
-    parser.add_argument("--output", default="research_capture")
-    parser.add_argument("--dry-run", action="store_true")
-    parser.add_argument("--allow-network", action="store_true")
-    parser.add_argument("--allow-model", action="store_true")
-    parser.add_argument("--replay", help="Replay a previously captured prospective run offline")
-    args = parser.parse_args()
-    if args.replay:
-        if args.allow_network or args.allow_model:
-            parser.error("Offline replay cannot enable network/model calls")
-        print(json.dumps({"snapshot_sha256": replay_capture(args.replay)["evidence_snapshot_sha256"]}))
-        return
-    config = json.loads(Path(args.config).read_text()) if args.config else {}
-    budget = Budget(**config.get("budget", {}))
-    if args.dry_run or not args.allow_network:
-        print(json.dumps({"dry_run": True, "network_calls": 0, "model_calls": 0,
-            "budget": asdict(budget), "scope": CATEGORIES,
-            "notice": "No provider, game data, directories or paid services are accessed."}, indent=2))
-        return
-    if not args.game or not args.config:
-        parser.error("Live opt-in requires --game and --config")
-    game = json.loads(Path(args.game).read_text())
-    if set(game) - {"game_id", "recorded_start_utc", "home_id", "away_id", "home_name", "away_name", "neutral_site"}:
-        raise ValueError("Research accepts schedule-only identities, not evaluation data")
-    cutoff, now = time.time(), time.time()
-    prospective_guard(game, cutoff, now, "prospective")
-    prices = config["prices"]
-    if any(prices.get(k) is None or not isfinite(prices[k]) or prices[k] < 0 for k in (
-            "query_usd", "page_usd", "input_usd_per_million", "output_usd_per_million")):
-        raise ValueError("Explicit nonnegative provider cost estimates are required")
-    out = Path(args.output)
-    provider = JsonGatewayProvider(config, out / "provider_captures", True, args.allow_model)
-    documents = DocumentStore(out / "raw", False, allowed_page)
-    result = research(game, cutoff, provider, documents.get, budget, prices, now=now, use_model=args.allow_model)
-    out.mkdir(parents=True, exist_ok=True)
-    result["audit"].update(game=game, provider=config.get("provider", "json_gateway"), model=config.get("model"),
-                         conservative_prices=prices)
-    audit_bytes = canonical(result["audit"]) + b"\n"
-    audit_key = digest(audit_bytes)
-    audit_path = out / "provider_captures" / (audit_key + ".audit.json")
-    audit_path.parent.mkdir(parents=True, exist_ok=True)
-    if audit_path.exists() and audit_path.read_bytes() != audit_bytes:
-        raise ValueError("Immutable research audit capture changed")
-    audit_path.write_bytes(audit_bytes)
-    (out / "research_audit.json").write_text(json.dumps(result["audit"], sort_keys=True, indent=2) + "\n")
-    (out / "validated_news.json").write_text(json.dumps(result["news"], sort_keys=True, indent=2) + "\n")
-    from shared_evidence import freeze_packet
-    frozen = freeze_packet(prospective_packet(game, cutoff, result["news"]), out / "evidence_captures")
-    (out / "research_snapshot_manifest.json").write_text(json.dumps({"audit_sha256": audit_key,
-        "evidence_snapshot_sha256": frozen["evidence_snapshot_sha256"]}, indent=2) + "\n")
-    (out / "evidence_packet.json").write_bytes(canonical(frozen) + b"\n")
-    print(json.dumps({"findings": len(result["news"]["findings"]), "usage": result["audit"]["usage_upper_bounds"]}, indent=2))
+    # Keep the familiar entrypoint, but all new live runs use the unified
+    # schedule-verified collector and its actual snapshot clock.
+    from collect_prospective import main as collect_main
+    collect_main()
 
 
 if __name__ == "__main__":

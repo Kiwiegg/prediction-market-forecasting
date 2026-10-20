@@ -1,0 +1,28 @@
+{
+  "attempts": [
+    {
+      "finished_at_utc": "2026-10-20T03:13:45.297587Z",
+      "http_status": 200,
+      "started_at_utc": "2026-10-20T03:13:43.980403Z"
+    }
+  ],
+  "body_sha256": "db437c3a1ff45b3e7d8d3878acb4aa91834cad5ec7884f6617cd6883392006db",
+  "body_size": 28710,
+  "headers": {
+    "access-control-allow-methods": "GET,PUT,POST,DELETE,OPTIONS,HEAD",
+    "access-control-allow-origin": "*",
+    "access-control-expose-headers": "content-length,location",
+    "cache-control": "max-age=10",
+    "connection": "close",
+    "content-length": "28710",
+    "content-type": "application/json;charset=UTF-8",
+    "date": "Tue, 20 Oct 2026 03:13:45 GMT",
+    "link": "<scoreboard.json#>; rel=\"describedby\"",
+    "vary": "Accept-Encoding"
+  },
+  "http_status": 200,
+  "retrieved_at_utc": "2026-10-20T03:13:45.297587Z",
+  "source_id": "54f9b3458bdd65fe8233befedd1468905c2e3347f23c51723cc9f38dce37e8f7",
+  "truncated": false,
+  "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261022&limit=1000"
+}

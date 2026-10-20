@@ -12,12 +12,25 @@ SNAPSHOT_KEY = "evidence_snapshot_sha256"
 def validate_packet(packet):
     allowed = {"schema_version", "game_id", "recorded_tipoff_utc", "cutoff_utc", "neutral_site",
         "reconstruction_status", "point_in_time_verified", "schedule_asof_cutoff_verified", "home", "away",
-        "injury_news", SNAPSHOT_KEY}
-    if set(packet) - allowed or allowed - {SNAPSHOT_KEY} - set(packet):
+        "injury_news", SNAPSHOT_KEY, "snapshot_timing"}
+    if set(packet) - allowed or allowed - {SNAPSHOT_KEY, "snapshot_timing"} - set(packet):
         raise ValueError("Unapproved model-facing packet fields")
     cutoff = timestamp(packet["cutoff_utc"])
     if cutoff >= timestamp(packet["recorded_tipoff_utc"]):
         raise ValueError("Evidence cutoff must precede tipoff")
+    if "snapshot_timing" in packet:
+        timing = packet["snapshot_timing"]
+        if set(timing) != {"target_cutoff_utc", "collection_started_at_utc", "actual_snapshot_utc",
+                "packet_created_at_utc", "deviation_seconds", "status", "strict_t24h_eligible"}:
+            raise ValueError("Unapproved timing fields")
+        target = timestamp(packet["recorded_tipoff_utc"]) - 86400
+        deviation = round(cutoff - target, 6)
+        if (timestamp(timing["target_cutoff_utc"]) != target or timestamp(timing["actual_snapshot_utc"]) != cutoff
+                or not timestamp(timing["collection_started_at_utc"]) <= cutoff <= timestamp(timing["packet_created_at_utc"])
+                or timing["deviation_seconds"] != deviation
+                or timing["status"] != ("late" if deviation > 0 else "early" if deviation < 0 else "at_target")
+                or timing["strict_t24h_eligible"] != (deviation == 0)):
+            raise ValueError("Inconsistent or backdated snapshot timing")
     team_keys = {"team_id", "team_name", "designation", "regular_season_record", "recent_regular_season",
                  "rest_at_cutoff", "omitted_features"}
     for side in ("home", "away"):
@@ -73,6 +86,10 @@ def validate_packet(packet):
                 raise ValueError("Unapproved source reference fields")
             if timestamp(ref["published_at_utc"]) > cutoff or ref["supported_claim"] not in ref["supporting_excerpt"]:
                 raise ValueError("News reference does not substantiate claim at cutoff")
+            if "snapshot_timing" in packet and timestamp(ref["retrieved_at_utc"]) > cutoff:
+                raise ValueError("News retrieved after actual snapshot")
+        if "snapshot_timing" in packet and timestamp(finding["retrieved_at_utc"]) > cutoff:
+            raise ValueError("News retrieved after actual snapshot")
         if not any(finding["claim"] == r["supported_claim"] for r in finding["source_references"]):
             raise ValueError("Primary news claim has no supporting reference")
     return packet

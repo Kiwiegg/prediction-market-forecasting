@@ -1,0 +1,24 @@
+{
+  "attempts": [
+    {
+      "finished_at_utc": "2026-10-20T03:14:00.198265Z",
+      "http_status": 200,
+      "started_at_utc": "2026-10-20T03:13:58.256987Z"
+    }
+  ],
+  "body_sha256": "9133e21f5de866c269df1d9e6e49bf20cf84b9e856313cabfbdb4e1845895e99",
+  "body_size": 134851,
+  "headers": {
+    "cache-control": "max-age=133",
+    "connection": "Transfer-Encoding",
+    "content-type": "application/json",
+    "date": "Tue, 20 Oct 2026 03:13:59 GMT",
+    "transfer-encoding": "chunked",
+    "vary": "Accept-Encoding"
+  },
+  "http_status": 200,
+  "retrieved_at_utc": "2026-10-20T03:14:00.198265Z",
+  "source_id": "2dc85dd2afcd073269fb0f8cc0811dc6da628b1de18304c16334ae9967b84470",
+  "truncated": false,
+  "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams"
+}

@@ -4,6 +4,8 @@ A reproducible **200-game** expansion of the Kalshi NBA 2025–26 feasibility st
 
 Read the [dataset methodology](reports/dataset_methodology.md), [shared evidence collection guide](reports/evidence_collection.md), [generated coverage report](data/nba_2025_26/coverage_report.md), and [injury coverage report](data/nba_2025_26/injury_coverage_report.md). All dataset and schedule point-in-time verification flags remain **false**: source event/publication clocks support retrospective reconstruction, while historical payload versions and schedule revisions are unverified.
 
+The [one-game prospective collector](reports/prospective_pipeline.md) now integrates schedule discovery, existing statistical reconstruction, official injury PDFs and real Brave Search / Anthropic extraction adapters. Network, paid search and paid inference require separate explicit opt-ins. The [actual validation report](reports/prospective_validation/README.md) distinguishes the successful free-source capture/offline replay from untested paid calls and exact T−24h timing. The historical dataset is unchanged by this prospective implementation.
+
 ```sh
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
@@ -18,7 +20,15 @@ python3 -m venv .venv
 .venv/bin/python -m unittest discover -s tests -v
 
 # Prospective research dry-run: no network/model calls or spending.
-.venv/bin/python scripts/prospective_research.py --dry-run
+.venv/bin/python scripts/collect_prospective.py --dry-run
+
+# Offline plan with a real captured upcoming game and deterministic queries.
+.venv/bin/python scripts/collect_prospective.py --dry-run \
+  --schedule-capture reports/prospective_validation/one_game_public_capture_complete
+
+# Reproduce the committed public-source packet without credentials or network.
+.venv/bin/python scripts/collect_prospective.py --replay \
+  reports/prospective_validation/one_game_public_capture_complete
 ```
 
 The builder checks all 30 saved team schedules, reconciles 1,230 games/82 per team, and preserves the locked 200-game selection before joining Kalshi. The selection allocates slots proportionally across all seven season months and ranks fixed hashes of game IDs within each month. Prices, outcomes, and data availability do not affect selection; unavailable observations never trigger replacement draws. Injury enrichment changes neither sampling, statistical features nor market-price selection. `--workers` controls concurrent public GET requests (default 4).
@@ -27,7 +37,7 @@ Rebuilds overwrite derived exports in the existing `data/nba_2025_26/` directory
 
 The official season page is not a complete historical index. Within an explicit four-hour candidate grid, **130/200 games** have a report supported by the official object's timestamp, containing **1,047 player/status rows**; 12 rows flag uncertain/incomplete reason extraction. Of 400 team-games, 187 are reported, 73 are not yet submitted, and 140 are unavailable. **Independently verified historical publication: 0/200; globally verified latest report: 0/200.** Origin timestamps are not independent proof of historical public visibility. Early-season forbidden URLs remain missing; no current-news backfill or healthy-player inference is used.
 
-`shared_evidence.load_game_snapshot` binds every future forecasting consumer to the same frozen packet hash. Prospective research has configurable query/page/token/cost budgets, timestamp/reference validation and separate network/model opt-ins. It cannot run live research for historical games. The [collection guide](reports/evidence_collection.md) documents the vendor-neutral gateway contract, configuration, immutable captures, offline replay and limitations. No live paid search or inference was run.
+`shared_evidence.load_game_snapshot` binds every future forecasting consumer to the same frozen packet hash. The integrated prospective collector adds a hash-pinned audit/source bundle and `load_for_consumer` for both future methods. Prospective `cutoff_utc` is the actual snapshot; separate timing fields record nominal T−24h, creation and deviation. Both committed live attempts are late and explicitly ineligible for strict T−24h evaluation. No live paid search or inference was run. See the [prospective guide](reports/prospective_pipeline.md) for real provider configuration, budgets, free discovery, explicit paid opt-ins and immutable replay. The earlier [collection guide](reports/evidence_collection.md) continues to specify historical extraction and the reusable news component.
 
 The preferred market proxy is `preferred_midpoint_price`: the newest valid two-sided YES bid/ask candle ending at or before the cutoff with **candle-end lag <=20 minutes**. It stores the actual selected candle timestamp, lag, bid, ask, spread and midpoint. **Candle-end lag does not establish actual quote age or prove quotes were refreshed at that time**; actual quote age remains unknown. Missing quotes stay missing and never receive a trade-price fallback. The original exact-cutoff `midpoint_price` and separate `last_trade_price` are retained; trades older than 15 minutes remain flagged.
 
