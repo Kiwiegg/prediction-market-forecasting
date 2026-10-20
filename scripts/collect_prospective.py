@@ -181,7 +181,17 @@ def audit_text(packet, lineage):
         lines.append(f"* {side}: {team['state']}; flags: {team['uncertainty_flags']}")
         for player in team["players"]:
             lines.append(f"  * {player['player']}: {player['status']}; {player['reason']}; reference {player['source_ref']}; flags {player['uncertainty_flags']}")
-    lines += ["", "## News findings", "", "Method: bounded model extraction followed by deterministic citation, timestamp, team and verbatim-support checks."]
+    news_audit = lineage["news"]
+    extraction_calls = sum(r["method"] == "POST" for r in news_audit.get("provider_requests", []))
+    usable_pages = sum(s.get("usable", False) for s in news_audit.get("sources_and_validation", []))
+    lines += ["", "## News findings", "",
+              f"Extraction enabled: {news_audit.get('model_extraction_enabled', False)}; inference requests: {extraction_calls}; validated source pages: {usable_pages}."]
+    if extraction_calls:
+        lines.append("Method: bounded model extraction followed by deterministic citation, timestamp, team and verbatim-support checks. See provider usage/errors below; an attempted request does not prove successful extraction.")
+    elif news_audit.get("model_extraction_enabled") and not usable_pages:
+        lines.append("Extraction skipped: no article passed source and timestamp validation. No model request was made.")
+    else:
+        lines.append("No model request was made; see research opt-ins, budget reservations and rejection decisions below.")
     for finding in packet["injury_news"]["news"]["findings"]:
         lines.append(f"* [{finding['category']}] {finding['claim']} — {finding['source_url']} (published {finding['published_at_utc']}; retrieved {finding['retrieved_at_utc']}).")
         for ref in finding["source_references"]:
