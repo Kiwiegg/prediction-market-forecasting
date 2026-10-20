@@ -173,12 +173,14 @@ class SavedDatasetTests(unittest.TestCase):
 
     def test_packets_allowlist_and_recomputation(self):
         root = {"schema_version", "game_id", "recorded_tipoff_utc", "cutoff_utc", "neutral_site",
-                "reconstruction_status", "point_in_time_verified", "schedule_asof_cutoff_verified", "home", "away"}
+                "reconstruction_status", "point_in_time_verified", "schedule_asof_cutoff_verified", "home", "away",
+                "injury_news", "evidence_snapshot_sha256"}
         team = {"team_id", "team_name", "designation", "regular_season_record", "recent_regular_season",
                 "rest_at_cutoff", "omitted_features"}
         for g, p, audit in zip(self.manifest["games"], self.packets, self.lineage):
             self.assertEqual(set(p), root)
-            self.assertEqual(make_packet(g, self.history), (p, audit))
+            base = {k: v for k, v in p.items() if k not in ("injury_news", "evidence_snapshot_sha256")}
+            self.assertEqual(make_packet(g, self.history), (base, audit))
             self.assertFalse(p["point_in_time_verified"])
             self.assertFalse(p["schedule_asof_cutoff_verified"])
             for side in ("home", "away"):

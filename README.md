@@ -1,23 +1,33 @@
 # Historical NBA forecasting dataset
 
-A reproducible **200-game** expansion of the Kalshi NBA 2025–26 feasibility study, with separate market evaluation data and blinded pregame team packets. Python 3.10+ and its standard library are sufficient. No LLM forecasting, prompt strategies, or trading are implemented.
+A reproducible **200-game** expansion of the Kalshi NBA 2025–26 feasibility study, with separate market evaluation data and frozen pregame team/injury packets. Python 3.10+ and the pinned PDF parser are required for the expanded build. No probability forecasting, LEAP implementation, or trading is implemented.
 
-Read the [dataset methodology](reports/dataset_methodology.md), [generated coverage report](data/nba_2025_26/coverage_report.md), and [evaluation CSV](data/nba_2025_26/evaluation.csv). All dataset and schedule point-in-time verification flags remain **false**: source event/publication clocks support retrospective reconstruction, while historical payload versions and schedule revisions are unverified.
+Read the [dataset methodology](reports/dataset_methodology.md), [shared evidence collection guide](reports/evidence_collection.md), [generated coverage report](data/nba_2025_26/coverage_report.md), and [injury coverage report](data/nba_2025_26/injury_coverage_report.md). All dataset and schedule point-in-time verification flags remain **false**: source event/publication clocks support retrospective reconstruction, while historical payload versions and schedule revisions are unverified.
 
 ```sh
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+
 # Rebuild the expanded dataset from saved responses, without network access.
-python3 scripts/build_dataset.py --offline
+.venv/bin/python scripts/build_dataset.py --offline
 
 # Rebuild in place, reusing saved responses and fetching only absent requests.
-python3 scripts/build_dataset.py
+.venv/bin/python scripts/build_dataset.py
 
 # Run leakage, temporal-boundary, blinding, lineage and consistency checks.
-python3 -m unittest discover -s tests -v
+.venv/bin/python -m unittest discover -s tests -v
+
+# Prospective research dry-run: no network/model calls or spending.
+.venv/bin/python scripts/prospective_research.py --dry-run
 ```
 
-The builder checks all 30 saved team schedules, reconciles 1,230 games/82 per team, and preserves the locked 200-game selection before joining Kalshi. The selection allocates slots proportionally across all seven season months and ranks fixed hashes of game IDs within each month. Prices, outcomes, and data availability do not affect selection; unavailable observations never trigger replacement draws. This price-quality update changes neither sampling nor team-feature definitions. `--workers` controls concurrent public GET requests (default 4).
+The builder checks all 30 saved team schedules, reconciles 1,230 games/82 per team, and preserves the locked 200-game selection before joining Kalshi. The selection allocates slots proportionally across all seven season months and ranks fixed hashes of game IDs within each month. Prices, outcomes, and data availability do not affect selection; unavailable observations never trigger replacement draws. Injury enrichment changes neither sampling, statistical features nor market-price selection. `--workers` controls concurrent public GET requests (default 4).
 
-Rebuilds overwrite derived exports in the existing `data/nba_2025_26/` directory. Saved responses are immutable caches keyed by request URL, including failed requests. Offline replay raises an error for absent responses and verifies saved body hashes. This extraction update requires no additional API requests: raw sources, source hashes, the selection manifest and evidence packets are preserved.
+Rebuilds overwrite derived exports in the existing `data/nba_2025_26/` directory. Saved responses are immutable caches keyed by request URL, including failed requests. Offline replay raises an error for absent responses and verifies saved body hashes. The committed official injury captures are sufficient for offline PDF re-extraction; no inference is required. Existing Kalshi/ESPN captures, hashes, outcomes and statistical features are preserved.
+
+The official season page is not a complete historical index. Within an explicit four-hour candidate grid, **130/200 games** have a report supported by the official object's timestamp, containing **1,047 player/status rows**; 12 rows flag uncertain/incomplete reason extraction. Of 400 team-games, 187 are reported, 73 are not yet submitted, and 140 are unavailable. **Independently verified historical publication: 0/200; globally verified latest report: 0/200.** Origin timestamps are not independent proof of historical public visibility. Early-season forbidden URLs remain missing; no current-news backfill or healthy-player inference is used.
+
+`shared_evidence.load_game_snapshot` binds every future forecasting consumer to the same frozen packet hash. Prospective research has configurable query/page/token/cost budgets, timestamp/reference validation and separate network/model opt-ins. It cannot run live research for historical games. The [collection guide](reports/evidence_collection.md) documents the vendor-neutral gateway contract, configuration, immutable captures, offline replay and limitations. No live paid search or inference was run.
 
 The preferred market proxy is `preferred_midpoint_price`: the newest valid two-sided YES bid/ask candle ending at or before the cutoff with **candle-end lag <=20 minutes**. It stores the actual selected candle timestamp, lag, bid, ask, spread and midpoint. **Candle-end lag does not establish actual quote age or prove quotes were refreshed at that time**; actual quote age remains unknown. Missing quotes stay missing and never receive a trade-price fallback. The original exact-cutoff `midpoint_price` and separate `last_trade_price` are retained; trades older than 15 minutes remain flagged.
 
@@ -30,7 +40,10 @@ Expanded files under `data/nba_2025_26/`:
 | `selection_manifest.json` | Locked identities, rule, hashes, and monthly quotas |
 | `schedule_frame.jsonl` | Schedule-only projections, including excluded Cup/postponed fixtures |
 | `evidence_packets.jsonl` | **LLM-facing input only**: one allowlisted pregame packet per game |
+| `evidence_snapshot_manifest.json`, `evidence_captures/` | Active game/cutoff hashes and immutable packets shared by all future consumers |
 | `evidence_lineage.jsonl` | Audit-only feature game IDs and source references; keep outside LLM inputs |
+| `injury_raw/`, `injury_extractions.json`, `injury_lineage.jsonl` | Official PDFs/HTML/errors, hashes, clocks, deterministic parsing, candidate decisions and uncertainty |
+| `injury_coverage.csv`, `injury_coverage_by_month.csv`, `injury_summary.json`, `injury_coverage_report.md` | Injury coverage, player counts, team states, missingness and publication limitations |
 | `evaluation.csv` | Target outcomes, exact/preferred/strictly earlier quote midpoints, separate trade prices, ages/lags, sensitivity eligibility, missingness and verification flags |
 | `game_history.jsonl` | Audit-only normalized completed-game facts and event/publication/update clocks |
 | `candle_observations.csv` | Minute observations in two-hour windows ending at each cutoff |
@@ -57,7 +70,7 @@ python3 scripts/investigate_kalshi.py --offline
 python3 scripts/investigate_kalshi.py --output data/new_investigation
 
 # Check cutoff selection and the saved sample.
-python3 -m unittest discover -s tests -v
+.venv/bin/python -m unittest discover -s tests -v
 ```
 
 The default output directory is `data/kalshi_nba_2025_26`. Existing responses are reused by URL; use a new directory for a fresh collection. Network failures and HTTP errors are retained. Incomplete discovery or failure to establish 20 finalized markets exits unsuccessfully. Public APIs and their archived coverage can change, so a new collection need not reproduce identical responses.

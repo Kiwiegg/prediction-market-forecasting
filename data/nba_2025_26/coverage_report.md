@@ -6,6 +6,8 @@ Missing cutoff midpoints: 86; missing last-trade prices: 8. Of the latter, 8 hav
 
 These are retrospective reconstructions. Zero games have a verified as-of schedule version. Raw retrieval times, source event/publication clocks, and reconstructed assumptions are distinct. See the methodology in ../../reports/dataset_methodology.md.
 
+Official injury enrichment has separate [coverage and publication limitations](injury_coverage_report.md). The same selection, statistical features and 20-minute quote policy are retained. Evidence snapshots include injury/news facts but remain unverified as historical public snapshots.
+
 ## Quote coverage and before/after comparison
 
 The exact-cutoff calculation is retained at 114/200 (57.0%). The new preferred proxy covers 200/200 (100.0%), an increase of 86 games over exact-cutoff coverage. The sample, original price calculations, outcomes, packets, and raw sources are preserved in place.

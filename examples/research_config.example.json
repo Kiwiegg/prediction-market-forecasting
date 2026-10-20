@@ -1,0 +1,20 @@
+{
+  "provider": "operator_configured_json_gateway",
+  "search_endpoint": "https://search-gateway.invalid/search",
+  "model_endpoint": "https://model-gateway.invalid/extract",
+  "model": "configure-an-extraction-model",
+  "api_key_env": "NBA_RESEARCH_GATEWAY_TOKEN",
+  "budget": {
+    "max_queries": 4,
+    "max_pages": 4,
+    "max_tokens": 64000,
+    "max_output_tokens": 1000,
+    "max_estimated_cost_usd": 0.10
+  },
+  "prices": {
+    "query_usd": 0.01,
+    "page_usd": 0,
+    "input_usd_per_million": 1,
+    "output_usd_per_million": 5
+  }
+}

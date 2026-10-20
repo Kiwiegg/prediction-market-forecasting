@@ -1,0 +1,43 @@
+{
+  "attempts": [
+    {
+      "finished_at_utc": "2026-10-19T19:14:35.681070Z",
+      "http_status": 0,
+      "started_at_utc": "2026-10-19T19:12:24.748900Z"
+    },
+    {
+      "finished_at_utc": "2026-10-19T20:02:05.714279Z",
+      "http_status": 0,
+      "started_at_utc": "2026-10-19T19:14:36.689434Z"
+    },
+    {
+      "finished_at_utc": "2026-10-19T20:02:08.636975Z",
+      "http_status": 200,
+      "started_at_utc": "2026-10-19T20:02:07.718590Z"
+    }
+  ],
+  "body_sha256": "33beea65346136d97ac0396134ed54d04d3200cf7a5e46d940635a92561929b3",
+  "body_size": 74168,
+  "headers": {
+    "accept-ranges": "bytes",
+    "connection": "close",
+    "content-length": "74168",
+    "content-type": "application/pdf",
+    "date": "Mon, 19 Oct 2026 20:02:08 GMT",
+    "etag": "\"ed557827c2475bdce47207e7529f7df6\"",
+    "last-modified": "Thu, 19 Feb 2026 00:15:05 GMT",
+    "server": "AmazonS3",
+    "strict-transport-security": "max-age=86400",
+    "x-amz-id-2": "/iSFnhDRJzARfZklqarCzwSw7VCSlPeO6KZzDEz4ZoK9g3GVlNZWd7SnlTOUpDUleL2urwSisQQ=",
+    "x-amz-request-id": "KZG6G997T3DPPNKR",
+    "x-amz-server-side-encryption": "AES256",
+    "x-amz-version-id": "wPPx_VfqhILfx437_2WDTvLloF6KmYg_",
+    "x-content-type-options": "nosniff",
+    "x-xss-protection": "1; mode=block"
+  },
+  "http_status": 200,
+  "retrieved_at_utc": "2026-10-19T20:02:08.636975Z",
+  "source_id": "00d25f1b3704918d422086fab8e9bb4438c499e0758778d58b5ab12f27f86023",
+  "truncated": false,
+  "url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-02-18_07_15PM.pdf"
+}

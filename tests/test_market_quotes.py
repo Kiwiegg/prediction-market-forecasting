@@ -98,11 +98,15 @@ class SavedQuoteDatasetTests(unittest.TestCase):
         # Frozen before this price-only change; do not change features or sampling.
         expected = {
             "selection_manifest.json": "fe8171c1ef7ed831c1ca1492f37bc6120d3b822b2f690fd7221a2c8d27ad1d92",
-            "evidence_packets.jsonl": "fee2f469b1ac21095df3abd1ef95f22f22cab4d253f99f72e2286ecd7b59d7f3",
             "evidence_lineage.jsonl": "af4cd1458882b7f79f7a1cc89c00f4fb2cc7af724b86b3968eeb1ac0736c5520",
         }
         for name, digest in expected.items():
             self.assertEqual(hashlib.sha256((DATA / name).read_bytes()).hexdigest(), digest)
+        packets = [json.loads(line) for line in (DATA / "evidence_packets.jsonl").read_text().splitlines()]
+        statistical_projection = "".join(json.dumps({k: v for k, v in p.items() if k not in (
+            "injury_news", "evidence_snapshot_sha256")}, sort_keys=True) + "\n" for p in packets)
+        self.assertEqual(hashlib.sha256(statistical_projection.encode()).hexdigest(),
+                         "fee2f469b1ac21095df3abd1ef95f22f22cab4d253f99f72e2286ecd7b59d7f3")
 
     def test_all_200_quotes_against_independent_exported_observations(self):
         self.assertEqual(len(self.rows), 200)

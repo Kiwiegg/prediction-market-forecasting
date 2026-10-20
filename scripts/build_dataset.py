@@ -439,6 +439,10 @@ def run(args):
                source_id(f"{SPORT}/summary", {"event": g["game_id"]})) for g in frame]
     save_jsonl(out / "game_history.jsonl", history)
     packets, evidence_lineage = zip(*(make_packet(g, history) for g in selected))
+    from historical_injuries import collect_injuries
+    from injury_evidence import enrich_packets
+    injury_bundle = collect_injuries(out, selected, offline=args.offline, workers=args.workers)
+    packets = enrich_packets(out, selected, packets, injury_bundle)
     save_jsonl(out / "evidence_packets.jsonl", packets)
     save_jsonl(out / "evidence_lineage.jsonl", evidence_lineage)
     cutoff = api.get("/historical/cutoff")
@@ -521,6 +525,9 @@ def write_report(out, s, cover, rows):
         "These are retrospective reconstructions. Zero games have a verified as-of schedule version. "
         "Raw retrieval times, source event/publication clocks, and reconstructed assumptions are distinct. "
         "See the methodology in ../../reports/dataset_methodology.md.", "",
+        "Official injury enrichment has separate [coverage and publication limitations](injury_coverage_report.md). "
+        "The same selection, statistical features and 20-minute quote policy are retained. "
+        "Evidence snapshots include injury/news facts but remain unverified as historical public snapshots.", "",
         "## Quote coverage and before/after comparison", "",
         f"The exact-cutoff calculation is retained at {s['midpoints']}/{s['selected_games']} "
         f"({100 * s['midpoints'] / s['selected_games']:.1f}%). The new preferred proxy covers "

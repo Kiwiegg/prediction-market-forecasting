@@ -1,0 +1,28 @@
+{
+  "attempts": [
+    {
+      "finished_at_utc": "2026-10-19T15:04:06.559335Z",
+      "http_status": 403,
+      "started_at_utc": "2026-10-19T15:04:03.439539Z"
+    }
+  ],
+  "body_sha256": "4e2c0a58dac61f516df633e3b73c3b69c2da9390f9e260fb088c5c409f0558d3",
+  "body_size": 243,
+  "headers": {
+    "connection": "close",
+    "content-length": "243",
+    "content-type": "application/xml",
+    "date": "Mon, 19 Oct 2026 15:04:06 GMT",
+    "server": "AmazonS3",
+    "strict-transport-security": "max-age=86400",
+    "x-amz-id-2": "eKILSHBbdgpptkVU2HCie2cmu40/+mX05v3oB6ySNPzOj4/xZYJFptRa4mGz21TdcyyXABmAR44=",
+    "x-amz-request-id": "S6NNGNBZE3ET2ZXZ",
+    "x-content-type-options": "nosniff",
+    "x-xss-protection": "1; mode=block"
+  },
+  "http_status": 403,
+  "retrieved_at_utc": "2026-10-19T15:04:06.559335Z",
+  "source_id": "b2db6b4c2f4c0b3dc8597e5df8ad0d257566d731312af24e7dbee11607270f76",
+  "truncated": false,
+  "url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2025-11-10_06_45PM.pdf"
+}

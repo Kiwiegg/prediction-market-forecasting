@@ -1,0 +1,8 @@
+month,games,origin_timestamp_supported_reports,independently_verified_publication,globally_verified_latest,player_status_records,uncertain_player_records,reported_team_games,not_yet_submitted_team_games,unavailable_team_games,ambiguous_team_games
+2025-10,13,0,0,0,0,0,0,0,26,0
+2025-11,36,0,0,0,0,0,0,0,72,0
+2025-12,32,11,0,0,98,1,17,5,42,0
+2026-01,38,38,0,0,336,2,62,14,0,0
+2026-02,27,27,0,0,195,2,38,16,0,0
+2026-03,39,39,0,0,248,2,45,33,0,0
+2026-04,15,15,0,0,170,5,25,5,0,0

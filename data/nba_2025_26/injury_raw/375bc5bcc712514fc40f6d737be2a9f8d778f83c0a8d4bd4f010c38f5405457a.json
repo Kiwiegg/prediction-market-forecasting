@@ -1,0 +1,33 @@
+{
+  "attempts": [
+    {
+      "finished_at_utc": "2026-10-19T20:00:58.048214Z",
+      "http_status": 200,
+      "started_at_utc": "2026-10-19T20:00:56.732669Z"
+    }
+  ],
+  "body_sha256": "ec91f7a1970337e9371032c3277fd764efcc6dbfa275667e7052ece08e0aa862",
+  "body_size": 89443,
+  "headers": {
+    "accept-ranges": "bytes",
+    "connection": "close",
+    "content-length": "89443",
+    "content-type": "application/pdf",
+    "date": "Mon, 19 Oct 2026 20:00:57 GMT",
+    "etag": "\"abfda5602e580aae9d482dfc2bce35da\"",
+    "last-modified": "Thu, 19 Mar 2026 23:45:05 GMT",
+    "server": "AmazonS3",
+    "strict-transport-security": "max-age=86400",
+    "x-amz-id-2": "28NvlWFbf5uABVFcUCUkXXKEo35+7cg4lp7a3lz6+4UYD+85Ukw34U5fAP1aF9mN4svzKCAfz08=",
+    "x-amz-request-id": "CHKEGVB5C46C5G5M",
+    "x-amz-server-side-encryption": "AES256",
+    "x-amz-version-id": "MGtIwaCZJqy8yJ2zjQBqO20Jq_mA5h1e",
+    "x-content-type-options": "nosniff",
+    "x-xss-protection": "1; mode=block"
+  },
+  "http_status": 200,
+  "retrieved_at_utc": "2026-10-19T20:00:58.048214Z",
+  "source_id": "375bc5bcc712514fc40f6d737be2a9f8d778f83c0a8d4bd4f010c38f5405457a",
+  "truncated": false,
+  "url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-03-19_07_45PM.pdf"
+}

@@ -1,0 +1,33 @@
+{
+  "archive_http_status": 200,
+  "candidate_rejection_reasons": {
+    "document_unavailable": 1190,
+    "published_after_cutoff": 130
+  },
+  "games": 200,
+  "globally_verified_latest": 0,
+  "independently_verified_publication": 0,
+  "origin_timestamp_supported_reports": 130,
+  "player_status_records": 1047,
+  "policy": {
+    "approved_archive": "https://official.nba.com/nba-injury-report-2025-26-season/",
+    "approved_pdf_prefix": "https://ak-static.cms.nba.com/referee/injury/",
+    "candidate_interval_minutes": 15,
+    "independent_historical_public_capture_verified": false,
+    "latest_report_globally_verified": false,
+    "limitation": "Historical index unavailable; latest is only among the bounded approved candidates. Origin object timestamps support prior existence, not an independently captured public posting.",
+    "lookback_hours": 4,
+    "max_candidates_per_cutoff": 17,
+    "publication_policy": "matching_issue_and_creation_clocks_plus_official_origin_last_modified"
+  },
+  "report_http_statuses": {
+    "200": 242,
+    "403": 843
+  },
+  "team_game_states": {
+    "not_yet_submitted": 73,
+    "reported": 187,
+    "unavailable": 140
+  },
+  "uncertain_player_records": 12
+}

@@ -1,0 +1,33 @@
+{
+  "attempts": [
+    {
+      "finished_at_utc": "2026-10-19T15:23:49.763298Z",
+      "http_status": 0,
+      "started_at_utc": "2026-10-19T15:07:54.878894Z"
+    },
+    {
+      "finished_at_utc": "2026-10-19T15:23:51.986858Z",
+      "http_status": 403,
+      "started_at_utc": "2026-10-19T15:23:50.773352Z"
+    }
+  ],
+  "body_sha256": "b7e67ad0a5f025b468d421124d132a44297bfda1adba2bab946c7ae3cb59ce22",
+  "body_size": 263,
+  "headers": {
+    "connection": "close",
+    "content-length": "263",
+    "content-type": "application/xml",
+    "date": "Mon, 19 Oct 2026 15:23:52 GMT",
+    "server": "AmazonS3",
+    "strict-transport-security": "max-age=86400",
+    "x-amz-id-2": "nC/wYOAK4yyQ79amRgd6nm9f4mnycTW+6xS5KwOZHeun63yqU1341ZCPGxVE8a6olYA/zVuZ99sUYviJhUvvDB8W2O3ykAKa",
+    "x-amz-request-id": "1XHZ9315B7Y24F0W",
+    "x-content-type-options": "nosniff",
+    "x-xss-protection": "1; mode=block"
+  },
+  "http_status": 403,
+  "retrieved_at_utc": "2026-10-19T15:23:51.986858Z",
+  "source_id": "0db723454ce1311444d824ef4b0709c46ee101f14939b302d1b236a8c10bbf80",
+  "truncated": false,
+  "url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2025-12-21_07_45PM.pdf"
+}
