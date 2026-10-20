@@ -10,7 +10,7 @@ from evidence_documents import DocumentStore
 from historical_injuries import PREFIX, ET, parse_pdf
 from injury_evidence import official_section
 from investigate_kalshi import iso, timestamp
-from team_evidence import extract_history, team_facts
+from team_evidence import EXTENDED_FEATURES, extract_history, team_facts
 
 SPORT = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba"
 NBA_SCHEDULES = ("https://cdn.nba.com/static/json/staticData/scheduleLeagueV2_1.json",
@@ -164,14 +164,14 @@ def collect_history(session, game, now):
     return {"history": list(history.values()), "complete": complete, "decisions": audit}
 
 
-def statistical_sections(game, collected, cutoff):
+def statistical_sections(game, collected, cutoff, extended=True):
     sections, lineage = {}, {}
     for side in ("home", "away"):
         if collected["complete"].get(side):
-            facts, refs = team_facts(game[side + "_id"], cutoff, collected["history"], game["game_id"])
+            facts, refs = team_facts(game[side + "_id"], cutoff, collected["history"], game["game_id"], extended=extended)
         else:
             facts = {"omitted_features": [{"feature": feature, "reason": "prospective_season_schedule_unverified"}
-                for feature in ("regular_season_record", "recent_regular_season", "rest_at_cutoff")]}
+                for feature in ["regular_season_record", "recent_regular_season", "rest_at_cutoff"] + (sorted(EXTENDED_FEATURES) if extended else [])]}
             refs = {}
         sections[side] = {"team_id": game[side + "_id"], "team_name": game[side + "_name"], "designation": side, **facts}
         lineage[side] = refs

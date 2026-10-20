@@ -1,6 +1,7 @@
 """One model-facing packet contract and hash verification for every consumer."""
 
 import json
+from math import isfinite
 from pathlib import Path
 
 from evidence_documents import canonical, digest
@@ -20,8 +21,10 @@ def validate_packet(packet):
         raise ValueError("Evidence cutoff must precede tipoff")
     if "snapshot_timing" in packet:
         timing = packet["snapshot_timing"]
-        if set(timing) != {"target_cutoff_utc", "collection_started_at_utc", "actual_snapshot_utc",
-                "packet_created_at_utc", "deviation_seconds", "status", "strict_t24h_eligible"}:
+        required = {"target_cutoff_utc", "collection_started_at_utc", "actual_snapshot_utc",
+                "packet_created_at_utc", "deviation_seconds", "status", "strict_t24h_eligible"}
+        optional = {"timing_tolerance_seconds", "within_timing_tolerance"}
+        if not required <= set(timing) or set(timing) - required not in (set(), optional):
             raise ValueError("Unapproved timing fields")
         target = timestamp(packet["recorded_tipoff_utc"]) - 86400
         deviation = round(cutoff - target, 6)
@@ -31,8 +34,13 @@ def validate_packet(packet):
                 or timing["status"] != ("late" if deviation > 0 else "early" if deviation < 0 else "at_target")
                 or timing["strict_t24h_eligible"] != (deviation == 0)):
             raise ValueError("Inconsistent or backdated snapshot timing")
+        if optional <= set(timing):
+            tolerance = timing["timing_tolerance_seconds"]
+            if (type(tolerance) not in (int, float) or not isfinite(tolerance) or tolerance < 0
+                    or timing["within_timing_tolerance"] != (abs(deviation) <= tolerance)):
+                raise ValueError("Invalid practical timing tolerance")
     team_keys = {"team_id", "team_name", "designation", "regular_season_record", "recent_regular_season",
-                 "rest_at_cutoff", "omitted_features"}
+                 "rest_at_cutoff", "omitted_features", "regular_season_scoring", "regular_season_home_away"}
     for side in ("home", "away"):
         if set(packet[side]) - team_keys or packet[side]["designation"] != side:
             raise ValueError("Unapproved team packet fields")
@@ -42,6 +50,35 @@ def validate_packet(packet):
                 "rest_at_cutoff": {"hours_since_last_completed_game", "full_24h_days_since_last_completed_game"}}.items():
             if feature in packet[side] and set(packet[side][feature]) != keys:
                 raise ValueError("Unapproved statistical feature fields")
+        team = packet[side]
+        if "regular_season_home_away" in team:
+            splits = team["regular_season_home_away"]
+            if set(splits) != {"home", "away"}:
+                raise ValueError("Invalid split record schema")
+            for record in splits.values():
+                if (set(record) != {"games_completed", "wins", "losses"}
+                        or any(type(v) is not int or v < 0 for v in record.values())
+                        or record["wins"] + record["losses"] != record["games_completed"]):
+                    raise ValueError("Invalid split record")
+            if "regular_season_record" in team and any(sum(s[k] for s in splits.values()) != team["regular_season_record"][k] for k in ("games_completed", "wins", "losses")):
+                raise ValueError("Split records do not reconcile")
+        if "regular_season_scoring" in team:
+            score = team["regular_season_scoring"]
+            if set(score) != {"games_completed", "per_game", "total_point_differential", "average_point_differential"}:
+                raise ValueError("Invalid scoring schema")
+            rows = score["per_game"]
+            if (not isinstance(rows, list) or not rows or any(set(r) != {"game_id", "point_differential"}
+                    or not isinstance(r["game_id"], str) or r["game_id"] == packet["game_id"]
+                    or type(r["point_differential"]) is not int or r["point_differential"] == 0 for r in rows)
+                    or len({r["game_id"] for r in rows}) != len(rows)):
+                raise ValueError("Invalid per-game margins or target leakage")
+            total = sum(r["point_differential"] for r in rows)
+            if (type(score["games_completed"]) is not int or type(score["total_point_differential"]) is not int
+                    or type(score["average_point_differential"]) not in (int, float) or not isfinite(score["average_point_differential"])
+                    or score["games_completed"] != len(rows) or score["total_point_differential"] != total
+                    or "regular_season_record" in team and score["games_completed"] != team["regular_season_record"]["games_completed"]
+                    or score["average_point_differential"] != round(total / len(rows), 6)):
+                raise ValueError("Scoring aggregates do not reconcile")
         for omission in packet[side].get("omitted_features", []):
             if set(omission) != {"feature", "reason"}:
                 raise ValueError("Unapproved feature omission fields")

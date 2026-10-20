@@ -176,7 +176,7 @@ class SavedDatasetTests(unittest.TestCase):
                 "reconstruction_status", "point_in_time_verified", "schedule_asof_cutoff_verified", "home", "away",
                 "injury_news", "evidence_snapshot_sha256"}
         team = {"team_id", "team_name", "designation", "regular_season_record", "recent_regular_season",
-                "rest_at_cutoff", "omitted_features"}
+                "rest_at_cutoff", "omitted_features", "regular_season_scoring", "regular_season_home_away"}
         for g, p, audit in zip(self.manifest["games"], self.packets, self.lineage):
             self.assertEqual(set(p), root)
             base = {k: v for k, v in p.items() if k not in ("injury_news", "evidence_snapshot_sha256")}

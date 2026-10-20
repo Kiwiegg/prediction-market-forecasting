@@ -55,6 +55,7 @@ class CapturedHTTP:
             if urllib.parse.urlsplit(url).scheme != "https":
                 raise ProviderError("Provider requires HTTPS")
             started = iso(self.clock())
+            monotonic_started = time.perf_counter()
             error = None
             req = urllib.request.Request(url, data=canonical(payload) if payload is not None else None,
                                          headers=headers, method=method)
@@ -66,6 +67,7 @@ class CapturedHTTP:
             except (OSError, urllib.error.URLError) as exc:
                 body, status, error = type(exc).__name__.encode(), 0, type(exc).__name__
             meta = {**request_record, "source_id": key, "started_at_utc": started,
+                "latency_seconds": round(time.perf_counter() - monotonic_started, 6),
                 "retrieved_at_utc": iso(self.clock()), "http_status": status, "error": error,
                 "body_sha256": digest(body), "truncated": len(body) > max_bytes,
                 "response_byte_limit": max_bytes}

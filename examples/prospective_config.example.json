@@ -8,6 +8,9 @@
   "max_public_requests": 190,
   "max_injury_reports": 8,
   "injury_team_catalog": true,
+  "extended_team_stats": true,
+  "research_diagnostics": true,
+  "timing_tolerance_seconds": 300,
   "budget": {
     "max_queries": 8,
     "max_pages": 8,

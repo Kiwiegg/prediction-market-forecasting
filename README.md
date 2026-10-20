@@ -6,6 +6,8 @@ Read the [dataset methodology](reports/dataset_methodology.md), [shared evidence
 
 The [one-game prospective collector](reports/prospective_pipeline.md) now integrates schedule discovery, existing statistical reconstruction, official injury PDFs and real Brave Search / Anthropic extraction adapters. Network, paid search and paid inference require separate explicit opt-ins. The [actual validation report](reports/prospective_validation/README.md) distinguishes the successful free-source capture/offline replay from untested paid calls and exact T−24h timing. The historical dataset is unchanged by this prospective implementation.
 
+The [focused follow-up](reports/prospective_improvements_validation.md) adds per-query quality diagnostics, separate latency/usage/cost accounting, a configurable practical timing window, and shared point-differential/home-away features. The same 200-game dataset is enriched in place from saved results; original selection, labels, market data and cutoffs remain unchanged. Older successful prospective captures remain immutable and replay to their original hashes.
+
 ```sh
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt

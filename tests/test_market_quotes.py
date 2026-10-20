@@ -94,17 +94,27 @@ class SavedQuoteDatasetTests(unittest.TestCase):
             for c in csv.DictReader(f):
                 cls.candles[c["game_id"]].append(c)
 
-    def test_price_only_update_preserves_selection_and_blinded_evidence(self):
-        # Frozen before this price-only change; do not change features or sampling.
+    def test_preserves_selection_and_original_blinded_features(self):
+        # Preserve the original selection and pre-extension statistical projection.
         expected = {
             "selection_manifest.json": "fe8171c1ef7ed831c1ca1492f37bc6120d3b822b2f690fd7221a2c8d27ad1d92",
-            "evidence_lineage.jsonl": "af4cd1458882b7f79f7a1cc89c00f4fb2cc7af724b86b3968eeb1ac0736c5520",
         }
         for name, digest in expected.items():
             self.assertEqual(hashlib.sha256((DATA / name).read_bytes()).hexdigest(), digest)
         packets = [json.loads(line) for line in (DATA / "evidence_packets.jsonl").read_text().splitlines()]
-        statistical_projection = "".join(json.dumps({k: v for k, v in p.items() if k not in (
-            "injury_news", "evidence_snapshot_sha256")}, sort_keys=True) + "\n" for p in packets)
+        from team_evidence import make_packet
+        games = json.loads((DATA / "selection_manifest.json").read_text())["games"]
+        history = [json.loads(l) for l in (DATA / "game_history.jsonl").read_text().splitlines()]
+        legacy = [make_packet(g, history, extended=False) for g in games]
+        audit_projection = "".join(json.dumps(a, sort_keys=True) + "\n" for _, a in legacy)
+        self.assertEqual(hashlib.sha256(audit_projection.encode()).hexdigest(),
+                         "af4cd1458882b7f79f7a1cc89c00f4fb2cc7af724b86b3968eeb1ac0736c5520")
+        for packet, (base, _) in zip(packets, legacy):
+            for side in ("home", "away"):
+                projected = {k: v for k, v in packet[side].items() if k not in ("regular_season_scoring", "regular_season_home_away")}
+                projected["omitted_features"] = [o for o in projected["omitted_features"] if o["feature"] not in ("regular_season_scoring", "regular_season_home_away")]
+                self.assertEqual(projected, base[side])
+        statistical_projection = "".join(json.dumps(p, sort_keys=True) + "\n" for p, _ in legacy)
         self.assertEqual(hashlib.sha256(statistical_projection.encode()).hexdigest(),
                          "fee2f469b1ac21095df3abd1ef95f22f22cab4d253f99f72e2286ecd7b59d7f3")
 

@@ -19,6 +19,7 @@ from prospective_research import (Budget, Ledger, allowed_page, planned_queries,
 from prospective_sources import (SourceSession, collect_history, collect_official, discover,
                                  official_at_snapshot, statistical_sections)
 from research_providers import BraveAnthropicProvider
+from research_diagnostics import summarize_research
 from shared_evidence import freeze_packet, load_game_snapshot
 
 
@@ -42,7 +43,8 @@ def choose_game(games, now, game_id=None):
 
 def check_config(config):
     if set(config) - {"search_provider", "llm_provider", "model", "model_endpoint", "search_key_env", "llm_key_env",
-            "discovery_days", "max_public_requests", "max_injury_reports", "injury_team_catalog", "budget", "prices"}:
+            "discovery_days", "max_public_requests", "max_injury_reports", "injury_team_catalog", "budget", "prices",
+            "extended_team_stats", "research_diagnostics", "timing_tolerance_seconds"}:
         raise ValueError("Unknown configuration fields; credentials must be environment variables")
     if config.get("search_provider") != "brave" or config.get("llm_provider") not in {"anthropic", "json_gateway"}:
         raise ValueError("Choose a supported search and extraction provider")
@@ -55,6 +57,9 @@ def check_config(config):
             raise ValueError("Credential configuration must name an environment variable")
     budget = Budget(**config.get("budget", {}))
     Ledger(budget)
+    tolerance = config.get("timing_tolerance_seconds", 0)
+    if type(tolerance) not in (int, float) or not isfinite(tolerance) or tolerance < 0:
+        raise ValueError("Timing tolerance must be finite nonnegative seconds")
     prices = config["prices"]
     for key in ("query_usd", "page_usd", "input_usd_per_million", "output_usd_per_million"):
         if type(prices.get(key)) not in (int, float) or not isfinite(prices[key]) or prices[key] < 0:
@@ -72,6 +77,8 @@ def plan(config, game=None, now=None):
         "target_cutoff_utc": iso(timestamp(game["recorded_start_utc"]) - 86400) if game else None,
         "planned_queries": planned_queries(game, budget) if game else [], "research_budget": asdict(budget),
         "max_public_requests": config.get("max_public_requests", 190),
+        "timing_tolerance_seconds": config.get("timing_tolerance_seconds", 0),
+        "target_deviation_seconds_now": round(now - timestamp(game["recorded_start_utc"]) + 86400, 6) if game else None,
         "credentials_present": {"search": bool(os.environ.get(config.get("search_key_env", "BRAVE_SEARCH_API_KEY"))),
                                 "inference": bool(os.environ.get(config.get("llm_key_env", "ANTHROPIC_API_KEY")))},
         "expected_outputs": ["evidence_packet.json", "evidence_snapshot_manifest.json", "bundle_manifest.json",
@@ -79,10 +86,10 @@ def plan(config, game=None, now=None):
         "limitation": None if game else "Supply an existing --schedule-capture for offline game selection; discover separately with free network opt-in."}
 
 
-def assemble(game, history, injuries, news, started, snapshot, created):
+def assemble(game, history, injuries, news, started, snapshot, created, extended=True, tolerance=None):
     prospective_guard(game, snapshot, snapshot, "prospective")
     packet = prospective_packet(game, snapshot, news)
-    stats, stat_lineage = statistical_sections(game, history, snapshot)
+    stats, stat_lineage = statistical_sections(game, history, snapshot, extended=extended)
     official, injury_lineage = official_at_snapshot(game, injuries, snapshot)
     packet.update(stats)
     packet["injury_news"]["official_injury"] = official
@@ -91,6 +98,8 @@ def assemble(game, history, injuries, news, started, snapshot, created):
     packet["snapshot_timing"] = {"target_cutoff_utc": iso(target), "collection_started_at_utc": iso(started),
         "actual_snapshot_utc": iso(snapshot), "packet_created_at_utc": iso(created), "deviation_seconds": delta,
         "status": "late" if delta > 0 else "early" if delta < 0 else "at_target", "strict_t24h_eligible": delta == 0}
+    if tolerance is not None:
+        packet["snapshot_timing"].update(timing_tolerance_seconds=tolerance, within_timing_tolerance=abs(delta) <= tolerance)
     return packet, {"statistics": stat_lineage, "injuries": injury_lineage,
                     "statistical_missingness": history["decisions"]}
 
@@ -127,9 +136,12 @@ def run_components(folder, config, session, game, started, allow_search=False, a
         def validation_clock():
             return mark("research_validation")
         news_result = research(game, begin, provider, documents.get, check_config(config), config["prices"],
-            now=begin, use_model=allow_model, live_window=True, clock=validation_clock)
+            now=begin, use_model=allow_model, live_window=True, clock=validation_clock,
+            diagnostics=config.get("research_diagnostics", False))
         news_result["audit"]["provider_requests"] = provider.http.calls
         news_result["audit"]["actual_provider_usage"] = provider.usage
+    if config.get("research_diagnostics"):
+        news_result["audit"]["diagnostics"] = summarize_research(news_result["audit"], news_result["news"]["findings"], config["prices"])
     snapshot, created = mark("snapshot"), mark("created")
     # A game that starts/completes during collection cannot be published as prospective.
     prospective_guard(game, snapshot, snapshot, "prospective")
@@ -139,7 +151,8 @@ def run_components(folder, config, session, game, started, allow_search=False, a
     for meta in news_result["audit"].get("sources_and_validation", []) + news_result["audit"].get("provider_requests", []):
         if timestamp(meta["retrieved_at_utc"]) > snapshot:
             raise ValueError("Research response retrieved after actual snapshot")
-    packet, lineage = assemble(game, history, injuries, news_result["news"], started, snapshot, created)
+    packet, lineage = assemble(game, history, injuries, news_result["news"], started, snapshot, created,
+        extended=config.get("extended_team_stats", False), tolerance=config.get("timing_tolerance_seconds"))
     lineage["public_sources"] = session.records
     if history["history"]:
         lineage["historical_game_facts"] = history["history"]  # audit only, never model context
@@ -155,6 +168,8 @@ def audit_text(packet, lineage):
         f"Actual snapshot: {timing['actual_snapshot_utc']}; packet created: {timing['packet_created_at_utc']}.",
         f"Timing: **{timing['status']}**, deviation {timing['deviation_seconds']} seconds; strict T−24h eligible: **{timing['strict_t24h_eligible']}**.",
         "", "## Structured statistics", ""]
+    if "timing_tolerance_seconds" in timing:
+        lines.insert(-3, f"Practical timing window: ±{timing['timing_tolerance_seconds']} seconds; within window: **{timing['within_timing_tolerance']}**. This does not change exact-time eligibility or source cutoffs.")
     for side in ("home", "away"):
         team = packet[side]
         lines.append(f"* {team['team_name']}: " + json.dumps({k: v for k, v in team.items() if k not in {"team_id", "team_name", "designation"}}, sort_keys=True))
@@ -173,6 +188,18 @@ def audit_text(packet, lineage):
             lines.append(f"  * {ref['source_ref']}: {ref['supporting_excerpt']}")
     if not packet["injury_news"]["news"]["findings"]:
         lines.append("No validated findings; " + str(packet["injury_news"]["news"]["missing_reason"]) + ". This does not imply availability.")
+    diagnostics = lineage["news"].get("diagnostics")
+    if diagnostics:
+        lines += ["", "## Research quality diagnostics", "", json.dumps(diagnostics["counters"], sort_keys=True), "",
+            "Per-query attribution overlaps when searches discover the same source; do not sum these rows.", "",
+            "| Query | Results | Retrieved pages | Rejected pages | Validated findings |",
+            "| --- | ---: | ---: | ---: | ---: |"]
+        for query in diagnostics["searches"]:
+            lines.append("| " + str(query["query"]).replace("|", "\\|") + " | " + " | ".join(str(query.get(k, 0)) for k in (
+                "results_discovered", "pages_retrieved", "pages_rejected", "validated_findings")) + " |")
+        for title, key in (("Provider latency (seconds)", "provider_latency_seconds"), ("Reported token usage", "reported_token_usage"),
+                           ("Estimated costs (USD; not invoices)", "estimated_cost_usd"), ("Rejection reasons", "rejection_reasons")):
+            lines += ["", "### " + title, "", json.dumps(diagnostics[key], sort_keys=True)]
     lines += ["", "## Rejections and limitations", ""]
     for meta in lineage["public_sources"]:
         if meta["http_status"] != 200 or meta.get("truncated"):
@@ -190,11 +217,20 @@ def audit_text(packet, lineage):
 
 
 def save_completed(folder, packet, lineage, run, discovery):
+    if (folder / "bundle_manifest.json").exists():
+        manifest = verify_bundle(folder)
+        payload = {k: v for k, v in packet.items() if k != "evidence_snapshot_sha256"}
+        if manifest["packet_sha256"] != digest(canonical(payload)) or any(json.loads((folder / name).read_text()) != value
+                for name, value in (("lineage.json", lineage), ("run.json", run), ("discovery.json", discovery))):
+            raise ValueError("Successful bundle is immutable; retry in a separate directory")
+        return load_game_snapshot(folder, packet["game_id"])
     frozen = freeze_packet(packet, folder / "evidence_captures")
     write_json(folder / "evidence_packet.json", frozen)
     write_json(folder / "lineage.json", lineage)
     write_json(folder / "run.json", run)
     write_json(folder / "discovery.json", discovery)
+    if "diagnostics" in lineage["news"]:
+        write_json(folder / "research_diagnostics.json", lineage["news"]["diagnostics"])
     write_json(folder / "evidence_snapshot_manifest.json", {"games": [{"game_id": frozen["game_id"],
         "cutoff_utc": frozen["cutoff_utc"], "sha256": frozen["evidence_snapshot_sha256"],
         "capture_file": "evidence_captures/" + frozen["evidence_snapshot_sha256"] + ".json"}]})
@@ -245,6 +281,13 @@ def replay(folder):
     return load_for_consumer(folder, "leap")
 
 
+def new_capture_directory(path):
+    try:
+        path.mkdir(parents=True, exist_ok=False)
+    except FileExistsError as exc:
+        raise ValueError("Capture already exists; retry with a new --output directory") from exc
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", default="examples/prospective_config.example.json")
@@ -254,17 +297,27 @@ def main():
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--discover", action="store_true", help="Free public schedule GETs only")
     parser.add_argument("--live", action="store_true", help="Collect one upcoming game")
+    parser.add_argument("--live-test", action="store_true", help="Explicitly authorize one search and at most one extraction; requires all paid opt-ins")
     parser.add_argument("--allow-network", action="store_true")
     parser.add_argument("--allow-search", action="store_true", help="Opt into paid Brave search")
     parser.add_argument("--allow-inference", action="store_true", help="Separately opt into paid extraction")
     parser.add_argument("--replay", help="Offline verification/reproduction of a completed capture")
     args = parser.parse_args()
     if args.replay:
-        if args.live or args.discover or args.allow_network or args.allow_search or args.allow_inference:
+        if args.live or args.live_test or args.discover or args.allow_network or args.allow_search or args.allow_inference:
             parser.error("Replay cannot enable live providers")
         print(json.dumps({"reproduced_sha256": replay(args.replay)["evidence_snapshot_sha256"]}))
         return
     config = json.loads(Path(args.config).read_text())
+    # Missing fields in immutable older runs retain their original behavior on replay.
+    config.setdefault("extended_team_stats", True)
+    config.setdefault("research_diagnostics", True)
+    config.setdefault("timing_tolerance_seconds", 0)
+    if args.live_test:
+        if not all((args.live, args.allow_network, args.allow_search, args.allow_inference)):
+            parser.error("--live-test requires --live --allow-network --allow-search --allow-inference")
+        config["budget"] = dict(config["budget"], max_queries=min(config["budget"]["max_queries"], 1),
+                                max_pages=min(config["budget"]["max_pages"], 2))
     check_config(config)
     now = time.time()
     if args.dry_run or not (args.live or args.discover):
@@ -288,7 +341,7 @@ def main():
     if args.allow_inference and not os.environ.get(config.get("llm_key_env", "ANTHROPIC_API_KEY")):
         parser.error("Anthropic credential unavailable; no inference calls made")
     out = Path(args.output or ("captures/prospective/" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S.%fZ")))
-    out.mkdir(parents=True, exist_ok=False)
+    new_capture_directory(out)
     session = SourceSession(out / "raw", False, config.get("max_public_requests", 190))
     try:
         games, decisions = discover(session, now, config.get("discovery_days", 3))
@@ -299,6 +352,8 @@ def main():
             return
         game = choose_game(games, time.time(), args.game_id)
         packet, lineage, run = run_components(out, config, session, game, now, args.allow_search, args.allow_inference)
+        if args.live_test:
+            run["operator_live_test"] = True
         frozen = save_completed(out, packet, lineage, run, discovery)
         assert load_for_consumer(out, "direct_llm") == load_for_consumer(out, "leap")
         print(json.dumps({"capture_directory": str(out), "sha256": frozen["evidence_snapshot_sha256"],

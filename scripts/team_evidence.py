@@ -4,6 +4,16 @@ from math import floor
 
 from investigate_kalshi import iso, timestamp
 
+EXTENDED_FEATURES = {"regular_season_scoring", "regular_season_home_away"}
+
+
+def exact_score(value):
+    if type(value) is int and value >= 0:
+        return value
+    if isinstance(value, str) and value.isascii() and value.isdigit():
+        return int(value)
+    raise ValueError("Final scores must be nonnegative integers")
+
 
 def extract_history(game, response, source):
     """Require a timestamped End Game score and game-specific recap clocks."""
@@ -40,10 +50,10 @@ def extract_history(game, response, source):
         row["issue"] = "completion_or_team_mismatch"
         return row
     try:
-        hp, ap = int(end["homeScore"]), int(end["awayScore"])
+        hp, ap = exact_score(end["homeScore"]), exact_score(end["awayScore"])
         if hp == ap or timestamp(row["end_utc"]) < timestamp(game["recorded_start_utc"]):
             raise ValueError("bad final score or clock")
-        header_hp, header_ap = int(teams["home"]["score"]), int(teams["away"]["score"])
+        header_hp, header_ap = exact_score(teams["home"]["score"]), exact_score(teams["away"]["score"])
         if (hp > ap) != (header_hp > header_ap) or header_hp == header_ap:
             raise ValueError("End Game and header disagree on winner")
         row["end_game_score_matches_header"] = hp == header_hp and ap == header_ap
@@ -64,8 +74,7 @@ def extract_history(game, response, source):
     except (ValueError, TypeError):
         row["issue"] = "invalid_source_clock"
         return row
-    # Only W/L is used as a feature. Corrections that preserve the winner do not
-    # justify an exact points/margin feature; leave exact scores blank and flag it.
+    # Corrections preserving only the winner support W/L, never exact margins.
     row.update(home_won=hp > ap, available_by_utc=iso(max(clocks)))
     if row["end_game_score_matches_header"]:
         row.update(home_points=hp, away_points=ap)
@@ -74,13 +83,15 @@ def extract_history(game, response, source):
     return row
 
 
-def team_facts(team_id, cutoff, history, target_id):
+def team_facts(team_id, cutoff, history, target_id, extended=True):
     # Candidate starts must precede the cutoff. The target is excluded explicitly.
     candidates = [h for h in history if not h.get("excluded_fixture") and h["game_id"] != target_id
                   and team_id in (h["home_id"], h["away_id"])
                   and timestamp(h["recorded_start_utc"]) < cutoff]
-    eligible = [h for h in candidates if h["available_by_utc"]
-                and timestamp(h["available_by_utc"]) <= cutoff]
+    eligible = [h for h in candidates if h["available_by_utc"] and h["end_utc"]
+                and timestamp(h["end_utc"]) <= cutoff
+                and timestamp(h["available_by_utc"]) <= cutoff
+                and all(timestamp(h[k]) <= cutoff for k in ("recap_published_utc", "recap_modified_utc", "event_updated_utc") if h.get(k))]
     eligible.sort(key=lambda h: (timestamp(h["end_utc"]), h["game_id"]))
     # A known ongoing game has no final result at T. Unknown/corrected/publication-
     # delayed results can make a complete historical record unreconstructible.
@@ -98,6 +109,32 @@ def team_facts(team_id, cutoff, history, target_id):
         lineage["regular_season_record"] = [h["game_id"] for h in regular]
     else:
         omitted.append({"feature": "regular_season_record", "reason": "incomplete_timestamped_history"})
+    if extended:
+        if regular_blockers:
+            omitted.extend({"feature": f, "reason": "incomplete_timestamped_history"} for f in sorted(EXTENDED_FEATURES))
+        else:
+            splits = {}
+            for venue in ("home", "away"):
+                part = [h for h in regular if h[venue + "_id"] == team_id]
+                wins = sum(won(h) for h in part)
+                splits[venue] = {"games_completed": len(part), "wins": wins, "losses": len(part) - wins}
+            facts["regular_season_home_away"] = splits
+            lineage["regular_season_home_away"] = [h["game_id"] for h in regular]
+            scores_verified = all(h.get("end_game_score_matches_header") is True
+                and type(h.get("home_points")) is int and type(h.get("away_points")) is int
+                and min(h["home_points"], h["away_points"]) >= 0
+                and h["home_points"] != h["away_points"]
+                and (h["home_points"] > h["away_points"]) == h["home_won"] for h in regular)
+            if regular and scores_verified:
+                margins = [{"game_id": h["game_id"], "point_differential":
+                    (h["home_points"] - h["away_points"]) * (1 if h["home_id"] == team_id else -1)} for h in regular]
+                total = sum(r["point_differential"] for r in margins)
+                facts["regular_season_scoring"] = {"games_completed": len(margins), "per_game": margins,
+                    "total_point_differential": total, "average_point_differential": round(total / len(margins), 6)}
+                lineage["regular_season_scoring"] = [h["game_id"] for h in regular]
+            else:
+                omitted.append({"feature": "regular_season_scoring", "reason":
+                    "no_completed_games" if not regular else "unverified_final_scores"})
     recent = regular[-5:]
     recent_blocked = bool(regular_blockers)
     if recent and not recent_blocked:
@@ -130,7 +167,7 @@ def team_facts(team_id, cutoff, history, target_id):
     return facts, audit
 
 
-def make_packet(game, history):
+def make_packet(game, history, extended=True):
     """Construct from schedule-only identities and allowlisted past team facts."""
     cutoff = timestamp(game["recorded_start_utc"]) - 86400
     packet = {"schema_version": 1, "game_id": game["game_id"],
@@ -142,7 +179,7 @@ def make_packet(game, history):
     audit = {"game_id": game["game_id"], "cutoff_utc": iso(cutoff),
              "schedule_source_ids": game["schedule_source_ids"]}
     for side in ("home", "away"):
-        facts, team_audit = team_facts(game[side + "_id"], cutoff, history, game["game_id"])
+        facts, team_audit = team_facts(game[side + "_id"], cutoff, history, game["game_id"], extended=extended)
         packet[side] = {"team_id": game[side + "_id"], "team_name": game[side + "_name"],
                         "designation": side, **facts}
         audit[side] = team_audit

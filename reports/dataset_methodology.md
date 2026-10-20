@@ -38,7 +38,7 @@ Market and trade routes use their separate archive cutoffs. This historical seas
 
 ## Reconstructible team facts
 
-Features are recomputed from individual game summaries, never copied from ESPN's retrospective team record, last-five widget, rankings, or standings. The extractor requires an explicit timestamped **End Game** play, final header status, matching teams, and agreement on the winner between the play and final header. Exact score disagreements with the same winner are flagged; exact points are omitted and no score/margin feature is built. Winner disagreements are unusable.
+Features are recomputed from individual game summaries, never copied from ESPN's retrospective team record, last-five widget, rankings, or standings. The extractor requires an explicit timestamped **End Game** play, final header status, matching teams, and agreement on the winner between the play and final header. Exact score disagreements with the same winner support W/L only; exact points and scoring features remain unavailable. Winner disagreements are unusable. Scores must be nonnegative integers; fractional, negative and boolean values are rejected.
 
 The game-specific recap must have the correct game ID, type `Recap`, and publication/modification timestamps; the event's `meta.lastUpdatedAt` must exist too. A fact's conservative recorded availability bound is the **maximum of End Game, recap publication, recap modification, and event update clocks**. Only facts whose bound is at or before the cutoff can contribute. These clocks are fields in later-retrieved sources, not independent archived captures of an unchanged historical payload.
 
@@ -46,10 +46,14 @@ The game-specific recap must have the correct game ID, type `Recap`, and publica
 | --- | --- |
 | Regular-season record | Wins/losses from completed eligible regular-season games, ordered by completion. If an earlier potentially completed game lacks a usable result/clock or has a later availability bound, omit the full record rather than report a partial record as complete. Known ongoing games supply no result. |
 | Recent performance | W/L sequence and counts over at most five latest eligible completed regular-season games. Omit if none exist or unresolved regular-season history prevents establishing the window. |
+| Regular-season scoring | `regular_season_scoring` contains each completed game's team-relative point differential (with past game ID), their total and arithmetic mean, oldest completion first. Require exact End Game/header score agreement for **every** eligible regular-season game. Omit the entire feature for incomplete timestamped history, any unverified exact score, or no completed games; never average a hidden partial subset. Prior source clocks must precede cutoff. |
+| Home/away splits | `regular_season_home_away` contains completed-game W/L records by recorded schedule designation, including neutral-site games under their recorded designation. Both splits sum to the full regular-season record. Omit for incomplete timestamped regular-season history. A genuine empty split is 0–0, distinct from source failure. |
 | Home/away | Recorded schedule designation plus neutral-site flag; designation does not necessarily imply home-court advantage. Historical schedule version remains unverified. |
 | Rest at cutoff | Hours and completed 24-hour periods since the latest reliably completed game in the season feed, including the Cup final. Omit for an ongoing/unresolved latest game or no previous game in the feed. Preseason/offseason rest and rest at future tipoff are not reconstructed. |
 
 A genuine 0–0 season record is distinct from an omitted record. Every omission has a reason. Each feature's game IDs resolve through `game_history.jsonl` to raw source IDs, completion/publication/update clocks, and retrieval metadata. The target game is explicitly excluded even if malformed timestamps would otherwise admit it. Games between the cutoff and target tipoff never contribute results.
+
+The same scoring/split constructor serves new prospective packets at their actual snapshot cutoff. Historical enrichment reuses committed responses and overwrites packets/lineage in place; selection, labels, prices and historical cutoffs do not change. Original statistical fields are protected by a projection hash. Older immutable prospective captures replay with their original frozen settings and hashes, rather than being retroactively enriched. New captures enable the additive fields by default. These remain retrospective reconstructions under the existing source-clock/version limitations, not independently verified historical payloads.
 
 ## What the timestamps establish
 

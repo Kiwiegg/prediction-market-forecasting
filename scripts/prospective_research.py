@@ -310,7 +310,7 @@ def planned_queries(game, budget):
 
 
 def research(game, cutoff, provider, fetch_page, budget, prices, now=None, mode="prospective", use_model=False,
-             live_window=False, clock=time.time):
+             live_window=False, clock=time.time, diagnostics=False):
     now = time.time() if now is None else now
     prospective_guard(game, cutoff, now, mode)
     ledger = Ledger(budget)
@@ -328,9 +328,13 @@ def research(game, cutoff, provider, fetch_page, budget, prices, now=None, mode=
             for result in results:
                 url = result.get("url", "")
                 if url in urls or not allowed_page(url):
-                    audit.append({"url": url, "reason": "duplicate_or_disallowed_source"})
+                    reason = ("duplicate_source_url" if url in urls else "disallowed_source_url") if diagnostics else "duplicate_or_disallowed_source"
+                    audit.append({"url": url, "reason": reason})
                     continue
                 if ledger.pages >= budget.max_pages:
+                    if diagnostics:
+                        audit.append({"url": url, "reason": "page_budget_exhausted"})
+                        continue
                     break
                 urls.add(url)
                 ledger.reserve(pages=1, cost=prices["page_usd"])
@@ -356,6 +360,10 @@ def research(game, cutoff, provider, fetch_page, budget, prices, now=None, mode=
     except (BudgetExceeded, ValueError, TypeError, KeyError, OSError) as exc:
         audit.append({"reason": str(exc), "error_type": type(exc).__name__})
         candidates, findings, decisions = [], [], []
+        if diagnostics and captures and not sources:
+            if live_window:
+                cutoff = clock()
+            sources = [validate_page(url, body, meta, cutoff, enforce_retrieval=live_window) for url, body, meta in captures]
     return {"news": news_section(findings, sources, use_model),
         "audit": {"captured_at_utc": iso(now), "cutoff_utc": iso(cutoff), "mode": mode,
             "retrieval_bound_enforced": live_window,
