@@ -1,0 +1,13 @@
+{
+  "scope": "One explicitly operator-authorized new attempt for each of the 40 failed development LEAP requests; no successful observation or missing-evidence group is re-elicited",
+  "authorization": "why did they 403? can you retry the failed runs and merge with the old results if they worked",
+  "original_run_completion_sha256": "d0adf601e8b1f0d0e30d633230dc95096278a39c7396fa43050ba0a0b5ddf71c",
+  "maximum_new_requests": 40,
+  "maximum_reserved_cost_usd": 1.20,
+  "planned_reserved_cost_usd": 1.154553,
+  "stop_rule": "Stop this batch at the first unsuccessful retry; never automatically retry a retry",
+  "merge_rule": "Retain every original successful/skipped record; replace an originally failed record only with its successful authorized retry, preserving identical wire/request/group/evidence/model/prompt identity and source lineage",
+  "original_records": "Remain immutable, including errors and private HTTP responses",
+  "methodology_changes": false,
+  "evaluation_scope": "Same existing development IDs only; no reserved evaluation access, new evidence or searches"
+}
