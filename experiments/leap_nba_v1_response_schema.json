@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "likelihood_ratio": {"type": "number", "description": "Finite likelihood ratio from 0.05 through 20 inclusive; locally validated, never clipped."},
+    "evidence_sufficiency": {"type": "string", "enum": ["adequate", "limited", "insufficient"]}
+  },
+  "required": ["likelihood_ratio", "evidence_sufficiency"],
+  "additionalProperties": false
+}

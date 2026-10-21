@@ -1,0 +1,18 @@
+{
+  "A_team_strength": {
+    "fields": ["regular_season_record", "recent_regular_season", "regular_season_scoring", "regular_season_home_away"],
+    "availability": "At least one completed game in an included statistical field; zero games and unavailable sources remain distinct omissions."
+  },
+  "B_schedule_venue": {
+    "fields": ["neutral_site", "rest_at_cutoff"],
+    "availability": "Known home/away designation suffices, even when rest is absent. No inferred travel, back-to-back schedule, or tipoff rest."
+  },
+  "C_player_availability": {
+    "fields": ["injury_news.official_injury", "injury_news.news.findings[injury_update,lineup_availability]"],
+    "availability": "At least one non-ambiguous official player status in a timestamp-verified report, or a validated injury/lineup news finding. Submission state and uncertainty retained. Submission/unavailable/ambiguous-only reports skip with reason; unlisted players are not healthy by implication."
+  },
+  "D_additional_news": {
+    "fields": ["injury_news.news.findings[roster_transaction,team_development]"],
+    "availability": "At least one validated nonduplicate finding. Deduplicate normalized team/player/claim, and source-reference plus supported-claim identities; exclude identities already in player-availability news. No semantic invention or reclassification."
+  }
+}
