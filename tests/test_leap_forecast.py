@@ -9,7 +9,7 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from compare_forecasts import compare_experiments, compare_rows, METHODS
+from compare_forecasts import compare_experiments, compare_rows, replay_sanitized, METHODS
 from direct_forecast import load_evidence
 from evidence_documents import canonical, digest
 from forecast_split import ROOT, DEFAULT_DATA, DEFAULT_SPLIT, load_split
@@ -330,6 +330,21 @@ class RunnerTests(unittest.TestCase):
 
 
 class ComparisonTests(unittest.TestCase):
+    def test_public_paid_artifact_arithmetic_replay_and_tamper_rejection(self):
+        import shutil
+        source = ROOT/"reports/leap_nba_v1_pilot"
+        with patch("urllib.request.OpenerDirector.open", side_effect=AssertionError("Public replay cannot call providers")):
+            result = replay_sanitized(source)
+        self.assertEqual(result["paired"]["game_ids"], PILOT)
+        self.assertEqual(result["coverage"]["group_status_counts"], {"success": 13, "skipped_missing": 7})
+        self.assertEqual(result["coverage"]["paired_games"], 5)
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp)/"report"; shutil.copytree(source, target)
+            observations = json.loads((target/"observations.json").read_text())
+            observations["games"][0]["groups"][0]["likelihood_ratio"] = 2
+            (target/"observations.json").write_bytes(canonical(observations)+b"\n")
+            with self.assertRaises(ValueError): replay_sanitized(target)
+
     def test_end_to_end_sealed_mock_comparison_and_immutable_dataset(self):
         from direct_forecast import plan_experiment as direct_plan, run_experiment as direct_run
         from direct_forecast import DEFAULT_CONFIG as DIRECT_CONFIG

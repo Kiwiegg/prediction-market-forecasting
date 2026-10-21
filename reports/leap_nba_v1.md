@@ -35,6 +35,11 @@ Run from the repository root. Existing Python dependencies suffice. Default beha
   --leap-run captures/leap_nba_v1/paid_development_five \
   --output captures/leap_nba_v1/paid_development_comparison
 
+# Public sanitized artifact replay also works in a fresh clone, with no key.
+# This verifies requests/group bindings and arithmetic, not private HTTP bytes.
+.venv/bin/python scripts/compare_forecasts.py \
+  --replay-sanitized reports/leap_nba_v1_pilot
+
 # Original direct-vs-market evaluator, separate from the five-method intersection.
 .venv/bin/python scripts/evaluate_forecasts.py \
   --forecast-run captures/direct_baseline_v1/paid_development_five \

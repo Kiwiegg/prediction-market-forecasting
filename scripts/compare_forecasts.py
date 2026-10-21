@@ -11,8 +11,9 @@ from direct_forecast import load_experiment as load_direct, verify_experiment as
 from evaluate_forecasts import EPSILON, brier, calibration, log_loss, market_probability, scores
 from evidence_documents import canonical, digest
 from forecast_split import DEFAULT_DATA, DEFAULT_SPLIT, immutable_json, load_split
-from leap_evidence import GROUPS, VARIANTS
-from leap_forecast import load_experiment as load_leap, verify_experiment as verify_leap, protect_paths
+from leap_evidence import GROUPS, VARIANTS, aggregate, frozen_assets, load_evidence
+from leap_forecast import (PILOT, load_experiment as load_leap, verify_experiment as verify_leap,
+    protect_paths, plan_experiment)
 
 METHODS = ("direct", "leap_raw", "leap_conservative", "kalshi", "constant_50")
 
@@ -127,16 +128,75 @@ def compare_experiments(direct_folder, leap_folder, output, dataset=DEFAULT_DATA
     return summary
 
 
+def replay_sanitized(folder, dataset=DEFAULT_DATA, split_path=DEFAULT_SPLIT):
+    """Public derived-artifact arithmetic replay; does not reparse private HTTP."""
+    folder, dataset = Path(folder), Path(dataset)
+    manifest = json.loads((folder / "manifest.json").read_text())
+    required = {"summary.json", "per_game.json", "observations.json"}
+    if (manifest.get("kind") != "evaluation_only_development_pilot" or set(manifest["files"]) != required
+            or manifest.get("provider_raw_responses_included") is not False):
+        raise ValueError("Only the sanitized development pilot is supported")
+    for name, sha in manifest["files"].items():
+        if digest((folder / name).read_bytes()) != sha:
+            raise ValueError("Sanitized report hash mismatch")
+    observations = json.loads((folder / "observations.json").read_text())
+    saved_rows = json.loads((folder / "per_game.json").read_text())
+    saved_summary = json.loads((folder / "summary.json").read_text())
+    if ([g["game_id"] for g in observations["games"]] != PILOT or [g["game_id"] for g in saved_rows] != PILOT
+            or observations["frozen_assets"] != frozen_assets() or saved_summary["subset"] != "development"):
+        raise ValueError("Sanitized replay is restricted to the frozen five development games")
+    plan, specs = plan_experiment(dataset, split_path, observations["config"], limit=5)
+    if plan["split_sha256"] != observations["split_sha256"]:
+        raise ValueError("Sanitized split differs")
+    direct, leap, cutoffs = [], [], {}
+    for saved, game in zip(saved_rows, observations["games"]):
+        packet = load_evidence(dataset, game["game_id"])
+        sha = packet["evidence_snapshot_sha256"]
+        if sha != game["evidence_sha256"] or sha != saved["evidence_sha256"]:
+            raise ValueError("Sanitized evidence differs from the unchanged dataset")
+        cutoffs[game["game_id"]] = packet["cutoff_utc"]
+        groups = game["groups"]
+        for r, s in zip(groups, [s for s in specs if s["game_id"] == game["game_id"]]):
+            if any(r[k] != s[k] for k in ("group", "evidence_sha256", "group_evidence_sha256", "usable", "missing_reason")) or r["request_sha256"] != s["key"]:
+                raise ValueError("Sanitized request/group hash differs")
+        aggregated = aggregate(groups)
+        if aggregated["variants"] != saved["variants"]:
+            raise ValueError("Sanitized posteriors do not reproduce")
+        leap.append({**game, **aggregated})
+        direct.append({"game_id": game["game_id"], "evidence_sha256": sha,
+            "status": saved["direct_status"], "home_win_probability": saved["direct"]})
+    labels = {}
+    with (dataset / "evaluation.csv").open() as f:
+        for row in csv.DictReader(f):
+            if row["game_id"] in PILOT:
+                if row["game_id"] in labels:
+                    raise ValueError("Duplicate selected label")
+                labels[row["game_id"]] = row
+    rows, summary = compare_rows(direct, leap, labels, cutoffs)
+    if rows != saved_rows or any(saved_summary[k] != v for k, v in summary.items()):
+        raise ValueError("Sanitized scores/contributions do not reproduce")
+    return summary
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--direct-run", type=Path, required=True)
-    p.add_argument("--leap-run", type=Path, required=True)
-    p.add_argument("--output", type=Path, required=True)
+    p.add_argument("--direct-run", type=Path)
+    p.add_argument("--leap-run", type=Path)
+    p.add_argument("--output", type=Path)
+    p.add_argument("--replay-sanitized", type=Path, help="Read-only public five-game arithmetic replay, without private provider bodies")
     p.add_argument("--dataset", type=Path, default=DEFAULT_DATA)
     p.add_argument("--split", type=Path, default=DEFAULT_SPLIT)
     p.add_argument("--authorize-evaluation", action="store_true")
     p.add_argument("--allow-mock", action="store_true")
     a = p.parse_args()
+    if a.replay_sanitized:
+        if a.direct_run or a.leap_run or a.output or a.authorize_evaluation or a.allow_mock:
+            p.error("Sanitized replay is read-only and restricted to the development pilot")
+        r = replay_sanitized(a.replay_sanitized, a.dataset, a.split)
+        print(json.dumps({"verified": True, "kind": "sanitized_arithmetic_replay", "private_raw_reparse": False,
+            "games": r["coverage"]["planned"], "network_calls": 0, "paired_scores": r["paired"]["scores"]}, indent=2)); return
+    if not a.direct_run or not a.leap_run or not a.output:
+        p.error("Specify both sealed runs and a separate output directory")
     r = compare_experiments(a.direct_run, a.leap_run, a.output, a.dataset, a.split, a.authorize_evaluation, a.allow_mock)
     print(json.dumps({"coverage": r["coverage"], "paired_scores": r["paired"]["scores"]}, indent=2))
 
