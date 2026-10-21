@@ -245,6 +245,8 @@ The complete suite passes **132 tests**. Both full paid runs and both pilots pas
 
 The new CSV exporter explicitly uses LF line endings, with a matching Git attribute, so its content hash survives fresh checkouts. This corrects export serialization only; numerical results, inference records and evaluation formulas are unchanged.
 
+A clean Git archive of `fdfb529`, containing neither credentials nor private captures, also passed public replay and all 132 tests. Private-cache checks above were separately performed in the original workspace.
+
 ```sh
 # No network, inference or credentials required:
 .venv/bin/python scripts/direct_forecast.py --verify captures/direct_baseline_v1/development_all
