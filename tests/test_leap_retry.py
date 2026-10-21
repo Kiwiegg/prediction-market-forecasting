@@ -22,6 +22,20 @@ def denied():
 
 
 class RetryTests(unittest.TestCase):
+    def test_public_merged_results_replay_and_retry_audit_reconcile(self):
+        from forecast_split import ROOT
+        from analyze_development import replay
+        with patch("urllib.request.OpenerDirector.open",side_effect=AssertionError("Public merged replay is offline")):
+            result=replay(ROOT/"reports/development_50/merged")
+        self.assertEqual((result["games"],result["paired_games"]),(50,40))
+        self.assertEqual({s["n"] for s in result["paired_scores"].values()},{40})
+        audit=json.loads((ROOT/"reports/development_50_retry_audit.json").read_text())
+        self.assertEqual(len(audit["selection_lineage"]),200)
+        self.assertEqual(sum(r["selection"]=="successful_authorized_retry" for r in audit["selection_lineage"]),15)
+        self.assertEqual(audit["retry_summary"]["not_attempted_after_stop"],24)
+        self.assertEqual(sum(r["retry_status"]=="failed" for r in audit["failed_request_audit"]),1)
+        self.assertAlmostEqual(audit["known_retry_token_cost_usd"]+audit["unknown_retry_usage_reserve_usd"],audit["retry_summary"]["estimated_response_cost_usd"])
+
     def original(self,root,failures=1):
         plan,specs=leap.plan_experiment(DEFAULT_DATA,DEFAULT_SPLIT,CONFIG,limit=1)
         opener=Mock();opener.open.side_effect=[denied() for _ in range(failures)]+[Response(reply()) for _ in range(3-failures)]
