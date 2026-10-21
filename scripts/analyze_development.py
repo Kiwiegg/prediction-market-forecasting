@@ -248,7 +248,7 @@ def results_csv(rows, packets):
     fields += [g + "_" + k for g in GROUPS for k in ("lr", "status", "sufficiency", "missing_reason")]
     fields += [m + "_" + k for m in METHODS for k in ("brier", "log_loss")]
     fields += [a + "_minus_" + b + "_brier" for a, b in COMPARISONS]
-    buffer = io.StringIO(newline=""); writer = csv.DictWriter(buffer, fieldnames=fields); writer.writeheader()
+    buffer = io.StringIO(newline=""); writer = csv.DictWriter(buffer, fieldnames=fields, lineterminator="\n"); writer.writeheader()
     for r in rows:
         p = packets[r["game_id"]]
         row = {k: r[k] for k in fields if k in r}

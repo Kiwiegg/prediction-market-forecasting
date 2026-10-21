@@ -243,6 +243,8 @@ All rows are evaluation-only development results. `—` means a failed LEAP game
 
 The complete suite passes **132 tests**. Both full paid runs and both pilots pass read-only private-cache verification. Public sanitized replay regenerates request/group identities, probabilities, scoring, diagnostics, bootstrap intervals, usage totals and CSV from the unchanged data, without credentials/network. All **7,827 protected pre-existing files** retain their original SHA-256 hashes, including historical data, original caches, pilots and forecasting code. New cache entries preserve all successful and failed raw replies privately. No credentials or raw provider bodies are included in Git.
 
+The new CSV exporter explicitly uses LF line endings, with a matching Git attribute, so its content hash survives fresh checkouts. This corrects export serialization only; numerical results, inference records and evaluation formulas are unchanged.
+
 ```sh
 # No network, inference or credentials required:
 .venv/bin/python scripts/direct_forecast.py --verify captures/direct_baseline_v1/development_all

@@ -128,6 +128,7 @@ class DevelopmentAnalysisTests(unittest.TestCase):
             with self.assertRaises(ValueError): reconstruct({"direct": [{"game_id":"unapproved"}], "leap": []})
 
     def test_completed_development_public_replay_is_offline_and_reconciles_coverage(self):
+        self.assertNotIn(b"\r", (ROOT/"reports/development_50/results.csv").read_bytes())
         with patch("urllib.request.OpenerDirector.open", side_effect=AssertionError("No network in public replay")):
             result = replay(ROOT/"reports/development_50")
         self.assertEqual(result["games"], 50)
