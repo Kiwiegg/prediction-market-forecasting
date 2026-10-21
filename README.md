@@ -1,6 +1,8 @@
 # Historical NBA forecasting dataset
 
-A reproducible **200-game** expansion of the Kalshi NBA 2025–26 feasibility study, with separate market evaluation data and frozen pregame team/injury packets. Python 3.10+ and the pinned PDF parser are required for the expanded build. No probability forecasting, LEAP implementation, or trading is implemented.
+A reproducible **200-game** expansion of the Kalshi NBA 2025–26 feasibility study, with separate market evaluation data, frozen pregame team/injury packets and a direct-LLM probability baseline. Python 3.10+ and the pinned PDF parser are required for the expanded build. No LEAP method, Bayesian aggregation or trading is implemented.
+
+The [direct baseline guide](reports/direct_baseline.md) documents a fixed prompt, hash-bound evidence-only requests, immutable request caching, cost limits and a separate paired evaluator. A [precommitted split](experiments/nba_2025_26_split.json) reserves **50 development / 150 evaluation** games by month. The [implementation report](reports/direct_baseline_implementation.md) records five successful paid development forecasts ($0.039423 conservative estimated cost); the evaluation subset remains unforecast and unscored. Historical results are exploratory because model memorization and historical source revisions cannot be ruled out. Prospective evidence remains the eventual primary out-of-sample evaluation.
 
 Read the [dataset methodology](reports/dataset_methodology.md), [shared evidence collection guide](reports/evidence_collection.md), [generated coverage report](data/nba_2025_26/coverage_report.md), and [injury coverage report](data/nba_2025_26/injury_coverage_report.md). All dataset and schedule point-in-time verification flags remain **false**: source event/publication clocks support retrospective reconstruction, while historical payload versions and schedule revisions are unverified.
 
@@ -22,6 +24,10 @@ python3 -m venv .venv
 
 # Run leakage, temporal-boundary, blinding, lineage and consistency checks.
 .venv/bin/python -m unittest discover -s tests -v
+
+# Direct baseline: no-cost plan; network/inference are never enabled by default.
+.venv/bin/python scripts/direct_forecast.py --plan
+.venv/bin/python scripts/forecast_split.py --check
 
 # Prospective research dry-run: no network/model calls or spending.
 .venv/bin/python scripts/collect_prospective.py --dry-run

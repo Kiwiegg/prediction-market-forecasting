@@ -190,9 +190,23 @@ class ProbabilityAndProviderTests(unittest.TestCase):
             self.assertEqual(r['home_win_probability'],.4)
             request=opener.open.call_args.args[0]
             self.assertEqual(json.loads(json.loads(request.data)['messages'][0]['content'])['evidence_snapshot_sha256'],spec['evidence_sha256'])
+        for bad in (dict(CONFIG,endpoint='https://gateway.example/forecast'), dict(CONFIG,api_key='not-a-real-key'),
+                    dict(config,endpoint='https://gateway.example/forecast?token=not-a-real-key')):
+            with self.assertRaises(ValueError):request_spec(load_evidence(DEFAULT_DATA,PILOT[0]),bad)
 
 
 class RunnerAndEvaluationTests(unittest.TestCase):
+    def test_verification_does_not_create_or_repair_missing_cache_records(self):
+        config=dict(CONFIG,provider='mock',model='offline-constant-0.5')
+        plan,specs=plan_experiment(DEFAULT_DATA,DEFAULT_SPLIT,config,limit=1)
+        with tempfile.TemporaryDirectory() as tmp:
+            output,cache=Path(tmp)/'run',Path(tmp)/'cache'
+            run_experiment(plan,specs,output,cache)
+            missing=cache/specs[0]['key']/'forecast.json';missing.unlink()
+            before={str(p):p.read_bytes() for p in Path(tmp).rglob('*') if p.is_file()}
+            with self.assertRaises(ValueError):verify_experiment(output)
+            self.assertEqual(before,{str(p):p.read_bytes() for p in Path(tmp).rglob('*') if p.is_file()})
+
     def test_mock_idempotency_offline_replay_and_refusal_to_overwrite(self):
         config=dict(CONFIG,provider='mock',model='offline-constant-0.5')
         plan,specs=plan_experiment(DEFAULT_DATA,DEFAULT_SPLIT,config,limit=2)

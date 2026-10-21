@@ -1,0 +1,223 @@
+{
+  "actual_input_tokens": 12766,
+  "actual_output_tokens": 75,
+  "completed_at_utc": "2026-10-21T01:27:21.174354Z",
+  "config": {
+    "generation": {
+      "max_tokens": 128,
+      "structured_json": true,
+      "temperature": 0.0
+    },
+    "input_overhead_token_bound": 4096,
+    "key_env": "ANTHROPIC_API_KEY",
+    "model": "claude-haiku-4-5-20251001",
+    "prices": {
+      "input_usd_per_million": 3.0,
+      "output_usd_per_million": 15.0
+    },
+    "prompt_version": "direct_home_win_v1",
+    "provider": "anthropic"
+  },
+  "estimated_response_cost_usd": 0.039423,
+  "forecasts": [
+    {
+      "error": null,
+      "estimated_cost_usd": 0.007224,
+      "evidence_sha256": "c8b8d26134591ec5f75f1ef7cc2ab13978e249d66cebb8cc79ee73bd5208d374",
+      "game_id": "401810544",
+      "generation_settings": {
+        "max_tokens": 128,
+        "structured_json": true,
+        "temperature": 0.0
+      },
+      "home_win_probability": 0.72,
+      "latency_seconds": 2.452658,
+      "prompt_version": "direct_home_win_v1",
+      "provider": "anthropic",
+      "provider_http_status": 200,
+      "raw_response_sha256": "88ffba56e5d9e697e4975579dc194ac4eaf33eadf256081b396271751557f436",
+      "record_created_at_utc": "2026-10-21T01:27:13.765333Z",
+      "request_sha256": "c96dba9da1ed54e19386262f15196c889e0fc7aaaa7228d56eef1d973d91557b",
+      "request_started_at_utc": "2026-10-21T01:27:11.310781Z",
+      "requested_model": "claude-haiku-4-5-20251001",
+      "response_retrieved_at_utc": "2026-10-21T01:27:13.763461Z",
+      "returned_model": "claude-haiku-4-5-20251001",
+      "status": "success",
+      "usage": {
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "inference_geo": "not_available",
+        "input_tokens": 2333,
+        "output_tokens": 15,
+        "service_tier": "standard",
+        "speed": "standard"
+      }
+    },
+    {
+      "error": null,
+      "estimated_cost_usd": 0.011349,
+      "evidence_sha256": "63c187c3d2b8fe3d6d9215bdb03db8359ba7d28bcda60a7f6d6cfa5747ddf4ca",
+      "game_id": "401810485",
+      "generation_settings": {
+        "max_tokens": 128,
+        "structured_json": true,
+        "temperature": 0.0
+      },
+      "home_win_probability": 0.38,
+      "latency_seconds": 1.77626,
+      "prompt_version": "direct_home_win_v1",
+      "provider": "anthropic",
+      "provider_http_status": 200,
+      "raw_response_sha256": "7e0fdddf406f45811166ca03ad49ba4c1dec08f296fc36df44ae079a92b88114",
+      "record_created_at_utc": "2026-10-21T01:27:15.567572Z",
+      "request_sha256": "2715c4e13f1ad3be3d2d06ef1676b4a97e5a7d866f53acf0ce8c8e7d716dd488",
+      "request_started_at_utc": "2026-10-21T01:27:13.788867Z",
+      "requested_model": "claude-haiku-4-5-20251001",
+      "response_retrieved_at_utc": "2026-10-21T01:27:15.565149Z",
+      "returned_model": "claude-haiku-4-5-20251001",
+      "status": "success",
+      "usage": {
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "inference_geo": "not_available",
+        "input_tokens": 3708,
+        "output_tokens": 15,
+        "service_tier": "standard",
+        "speed": "standard"
+      }
+    },
+    {
+      "error": null,
+      "estimated_cost_usd": 0.009885,
+      "evidence_sha256": "18739adb3564e4b49c0384a58ccf0105a7027754f08601bb2b01dccaf9e48f77",
+      "game_id": "401810279",
+      "generation_settings": {
+        "max_tokens": 128,
+        "structured_json": true,
+        "temperature": 0.0
+      },
+      "home_win_probability": 0.68,
+      "latency_seconds": 2.297713,
+      "prompt_version": "direct_home_win_v1",
+      "provider": "anthropic",
+      "provider_http_status": 200,
+      "raw_response_sha256": "5d3b30973acb35e348682d8558af7b3760f4de45d7953329173e57f3616d8142",
+      "record_created_at_utc": "2026-10-21T01:27:17.891019Z",
+      "request_sha256": "deecbf1e70640a80aede51690b0420d9290ba6e914837fc84d85017543fbf8b6",
+      "request_started_at_utc": "2026-10-21T01:27:15.591233Z",
+      "requested_model": "claude-haiku-4-5-20251001",
+      "response_retrieved_at_utc": "2026-10-21T01:27:17.888959Z",
+      "returned_model": "claude-haiku-4-5-20251001",
+      "status": "success",
+      "usage": {
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "inference_geo": "not_available",
+        "input_tokens": 3220,
+        "output_tokens": 15,
+        "service_tier": "standard",
+        "speed": "standard"
+      }
+    },
+    {
+      "error": null,
+      "estimated_cost_usd": 0.005748,
+      "evidence_sha256": "bd057ee3643312eae3c8d8606916ea2c44d372f0599ce7d59fc9a4b965fb089c",
+      "game_id": "401836746",
+      "generation_settings": {
+        "max_tokens": 128,
+        "structured_json": true,
+        "temperature": 0.0
+      },
+      "home_win_probability": 0.78,
+      "latency_seconds": 1.569285,
+      "prompt_version": "direct_home_win_v1",
+      "provider": "anthropic",
+      "provider_http_status": 200,
+      "raw_response_sha256": "32f010704f2a9e29f50c233868a8bad15601bc47a962bb6cee5ef55d3942872b",
+      "record_created_at_utc": "2026-10-21T01:27:19.491457Z",
+      "request_sha256": "e86366339e62042b8622958d6a65a8e0e5a8a9d0e4af8eab9f78f4c5e8522f4b",
+      "request_started_at_utc": "2026-10-21T01:27:17.917132Z",
+      "requested_model": "claude-haiku-4-5-20251001",
+      "response_retrieved_at_utc": "2026-10-21T01:27:19.486441Z",
+      "returned_model": "claude-haiku-4-5-20251001",
+      "status": "success",
+      "usage": {
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "inference_geo": "not_available",
+        "input_tokens": 1841,
+        "output_tokens": 15,
+        "service_tier": "standard",
+        "speed": "standard"
+      }
+    },
+    {
+      "error": null,
+      "estimated_cost_usd": 0.005217,
+      "evidence_sha256": "a370bec68e89433a36fc4e4950b495a0c13261f060d2b5a7e1b261aaf0092114",
+      "game_id": "401809808",
+      "generation_settings": {
+        "max_tokens": 128,
+        "structured_json": true,
+        "temperature": 0.0
+      },
+      "home_win_probability": 0.35,
+      "latency_seconds": 1.648104,
+      "prompt_version": "direct_home_win_v1",
+      "provider": "anthropic",
+      "provider_http_status": 200,
+      "raw_response_sha256": "8fc89189ccf9367bfbd693a7da473e59fae0124caee2b65993dcf0909abb31e2",
+      "record_created_at_utc": "2026-10-21T01:27:21.167018Z",
+      "request_sha256": "732468ad1fec1c7fe1db2b8d99f0dfae78d1eb94bb2673d17bdebcd16ffaa2ba",
+      "request_started_at_utc": "2026-10-21T01:27:19.515033Z",
+      "requested_model": "claude-haiku-4-5-20251001",
+      "response_retrieved_at_utc": "2026-10-21T01:27:21.163160Z",
+      "returned_model": "claude-haiku-4-5-20251001",
+      "status": "success",
+      "usage": {
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "inference_geo": "not_available",
+        "input_tokens": 1664,
+        "output_tokens": 15,
+        "service_tier": "standard",
+        "speed": "standard"
+      }
+    }
+  ],
+  "historical_data_files_unchanged": 7608,
+  "implementation_before_paid_calls": "b4e0fe4",
+  "offline_mock_successes": 5,
+  "offline_paid_replay_verified": true,
+  "paid_call_count": 5,
+  "paid_retries": 0,
+  "prompt_sha256": "e073236a57b397456d14ee003838162019af97f36d905a4a1b77cb57b176174c",
+  "protocol_commit": "f1e7258",
+  "provider_latency_seconds_total": 9.744019999999999,
+  "reserved_cost_upper_bound_usd": 0.196896,
+  "reserved_evaluation_forecasts_or_scores_produced": false,
+  "scope": "five fixed development games only; historical exploratory baseline",
+  "split_sha256": "300d87a9dbd8165934e1571453eb15a03f93616841c4a450514d42cc75a94043",
+  "subset": "development"
+}

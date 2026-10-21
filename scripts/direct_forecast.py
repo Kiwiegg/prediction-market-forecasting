@@ -52,7 +52,9 @@ def checked_config(config):
     if (set(config["prices"]) != {"input_usd_per_million", "output_usd_per_million"}
             or any(type(v) not in (int, float) or not math.isfinite(v) or v <= 0 for v in config["prices"].values())):
         raise ValueError("Explicit positive finite conservative token price estimates required")
-    if config["provider"] == "json_gateway" or "endpoint" in config:
+    if "endpoint" in config and config["provider"] != "json_gateway":
+        raise ValueError("Custom endpoint is allowed only for an explicitly selected JSON gateway")
+    if config["provider"] == "json_gateway":
         parsed = urllib.parse.urlsplit(config.get("endpoint", ""))
         if (parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password
                 or parsed.query or parsed.fragment or parsed.port not in (None, 443)):
@@ -331,6 +333,8 @@ def verify_experiment(folder, dataset=DEFAULT_DATA, split=DEFAULT_SPLIT, authori
         if record["status"] == "not_attempted_budget":
             continue
         cache = Path(cache_override or run["cache_directory"])
+        if not (cache / spec["key"] / "forecast.json").is_file():
+            raise ValueError("Offline verification requires the original immutable cache record")
         if cached_forecast(spec, run["config"], cache, allow_paid=False) != record:
             raise ValueError("Forecast cache and saved record differ")
         if record["status"] == "success" and record.get("raw_response"):
