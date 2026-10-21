@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "scope": "Existing fixed 50 development games only; no reserved outcome inspection or inference",
+  "forecasting_methodology_changes": false,
+  "inference_base_commit": "624ff1f8553057659b3e7a12ba300511c7e2f738",
+  "split_sha256": "300d87a9dbd8165934e1571453eb15a03f93616841c4a450514d42cc75a94043",
+  "pilot_reuse": {"direct_forecasts": 5, "leap_group_observations": 13},
+  "operator_additional_limits": {"direct_calls": 45, "leap_calls": 180, "estimated_cost_usd": 10.0, "paid_retries": 0},
+  "run_limits": {"direct_calls": 45, "direct_cost_usd": 2.0, "leap_calls": 180, "leap_cost_usd": 4.0},
+  "planned_new_calls": {"direct": 45, "leap": 114},
+  "planned_reservation_upper_bound_usd": {"direct": 1.638345, "leap": 3.32385, "combined": 4.962195},
+  "directionality": {
+    "criterion": "Strict dominance using supplied season win fraction and average point differential: home weaker if both are strictly lower; away weaker if both are strictly higher. Ties, discordant indicators, unavailable/nonfinite statistics or zero completed games are unassessable. Flag successful A LR>1 for weaker home, or LR<1 for weaker away. Never adjust or exclude a forecast.",
+    "features": ["regular_season_record.wins/games_completed", "regular_season_scoring.average_point_differential"],
+    "ignores_for_diagnostic_only": ["recent form", "home/away splits", "rest", "injuries", "outcomes"]
+  },
+  "lr_statistics": {
+    "successful_observations_only": true,
+    "neutral_comparison": "Exact LR equality to 1; exclude missing-group LR=1 from inferred-neutral counts",
+    "extreme_rule": "Existing frozen flag: LR<=0.1 or LR>=10; validation bounds remain [0.05,20]",
+    "quantiles": [0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 1.0],
+    "quantile_rule": "Linear interpolation at (n-1)*q; population standard deviation"
+  },
+  "stratification": {
+    "injuries": "Use pre-inference C.usable, separately from inference success/failure. Within each stratum compare all five methods on the same eligible intersection; report excluded IDs and group failure/source missingness separately.",
+    "sufficiency": "Per group adequate versus limited counts, LR/log-LR distributions, and paired full-forecast scores with stratum n. Labels are model judgments, not source verification; no causal interpretation."
+  },
+  "contributions": {
+    "summary": "Report successful inferred log-LRs separately from full-forecast log-LRs including legitimate missing-group zeros. On the shared paired intersection, report signed contributions and abs(full p-0.5)-abs(omission p-0.5), for each alpha.",
+    "leave_one_group_out": "Existing deterministic recomputation only; same full-model paired IDs; report omission-minus-full Brier and log loss"
+  },
+  "calibration": {
+    "bins": "Existing ten equal-width bins, final bin includes 1; preserve every count including zero",
+    "confidence": "Mean max(p,1-p), observed accuracy using p>=0.5 as home classification, their gap, mean abs(p-0.5), and number p<=0.1 or p>=0.9. Small bins are descriptive only; shrinkage necessarily moves p toward 0.5 and does not establish calibration improvement."
+  },
+  "bootstrap": {
+    "seed": 20261021,
+    "replicates": 10000,
+    "confidence_level": 0.95,
+    "unit": "game on identical complete five-method intersection",
+    "procedure": "Python random.Random(seed); draw n row indices with replacement per replicate; share those indices across all five comparisons; take mean paired per-game Brier differences; percentile interval at 0.025 and 0.975 using linear (n-1)*q interpolation. No model refits or new calls.",
+    "comparisons": [["leap_raw", "direct"], ["leap_conservative", "direct"], ["direct", "kalshi"], ["leap_raw", "kalshi"], ["leap_conservative", "kalshi"]],
+    "interpretation": "Descriptive only: development reuse, dependence across games/teams/time and historical knowledge contamination invalidate strong independent out-of-sample interpretations. No significance-based winner selection or tuning."
+  }
+}
