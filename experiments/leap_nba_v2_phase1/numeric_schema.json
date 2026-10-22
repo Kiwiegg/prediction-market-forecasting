@@ -1,0 +1,1 @@
+{"type":"object","properties":{"likelihood_ratio":{"type":"number","description":"Finite LR from 0.05 through 20. Insufficient placeholder must be 1."},"evidence_sufficiency":{"type":"string","enum":["adequate","limited","insufficient"]}},"required":["likelihood_ratio","evidence_sufficiency"],"additionalProperties":false}
