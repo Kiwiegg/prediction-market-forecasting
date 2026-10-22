@@ -1,0 +1,11 @@
+{
+  "excluded_existing_file": "README.md (new Phase 2 links only)",
+  "historical_data_files": 7608,
+  "original_files_changed": [],
+  "preservation_manifest_sha256": "80a2319abd514b2619f789743296029ac85d1fb869d40ac2fadfb510e2daf83f",
+  "protected_file_count": 10792,
+  "protocol_and_implementation_commit": "8520406",
+  "reference_commit": "6ebd3c3",
+  "scope": "All previously tracked files except README and all previous private captures, including v1/direct/synthetic observations; no evaluation-game inference or analysis.",
+  "split_file_sha256": "f8e456dbe1b53b5957bf469755b59b94afe621b89e78814c92ca3a3720b97e77"
+}

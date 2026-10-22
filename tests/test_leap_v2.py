@@ -217,6 +217,18 @@ class RunnerTests(unittest.TestCase):
 
 
 class ComparisonTests(unittest.TestCase):
+    def test_saved_paid_pilot_public_replay_without_private_captures(self):
+        original_open=Path.open
+        def guarded(p,*args,**kwargs):
+            if evidence.ROOT/"captures" in p.resolve().parents or p.name==".env":raise AssertionError("Public replay opened private captures/credential")
+            return original_open(p,*args,**kwargs)
+        with patch.object(Path,"open",guarded),patch("urllib.request.OpenerDirector.open",side_effect=AssertionError("Replay is offline")):
+            summary=compare.replay(evidence.ROOT/"reports/leap_nba_v2_pilot")
+        self.assertEqual(summary["coverage"]["paired_games"],5)
+        self.assertEqual({s["n"] for s in summary["paired"]["scores"].values()},{5})
+        self.assertEqual(summary["resources"]["new_direct_or_v1_calls"],0)
+        self.assertEqual(summary["resources"]["v2_saved_observations"]["reported_usage"],{"input_tokens":14286,"output_tokens":286})
+
     def test_paired_evaluation_missing_coverage_and_empty_intersection(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);plan,specs=evidence.plan_experiment(mock=True);runner.run_experiment(plan,specs,root/"run",root/"cache")
