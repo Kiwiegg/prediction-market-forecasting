@@ -1,0 +1,11 @@
+{
+  "provider":"anthropic",
+  "model":"claude-haiku-4-5-20251001",
+  "key_env":"ANTHROPIC_API_KEY",
+  "generation":{"temperature":0.0,"max_tokens":128},
+  "input_overhead_token_bound":4096,
+  "prices":{"input_usd_per_million":2.0,"output_usd_per_million":10.0},
+  "pilot_max_paid_requests":20,
+  "pilot_max_estimated_cost_usd":1.0,
+  "automatic_retries":0
+}

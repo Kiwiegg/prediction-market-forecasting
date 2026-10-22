@@ -1,0 +1,1 @@
+{"additionalProperties":false,"properties":{"evidence_sufficiency":{"enum":["adequate","limited","insufficient"],"type":"string"},"favored_side":{"enum":["home","away","neither"],"type":"string"},"strength":{"enum":["neutral","slight","moderate","strong","very_strong"],"type":"string"}},"required":["favored_side","strength","evidence_sufficiency"],"type":"object"}

@@ -1,0 +1,6 @@
+{
+  "A_team_strength": {"projection":"Phase 1 blind_packet, fixed Phase 1 seed", "labels":["X","Y","neither"], "fields":["regular_season_record","recent_regular_season","regular_season_scoring"], "availability":"At least one completed game in included fields; distinguish source-unavailable and zero completed games."},
+  "B_schedule_venue": {"projection":"v1 schedule context plus existing venue split records", "labels":["home","away","neither"], "fields":["neutral_site","rest_at_cutoff","regular_season_home_away"], "availability":"Known home/away designation suffices, even if rest/splits unavailable."},
+  "C_player_availability": {"projection":"Unchanged validated v1 availability projection and deduplication", "labels":["home","away","neither"], "fields":["official_injury","news.findings[injury_update,lineup_availability]"], "availability":"Existing verified report with nonambiguous player status or validated relevant news; no inferred health."},
+  "D_additional_news": {"projection":"Unchanged validated v1 additional-news projection and deduplication", "labels":["home","away","neither"], "fields":["news.findings[roster_transaction,team_development]"], "availability":"Existing validated nonduplicate findings only; historical not-collected skips, no backfill."}
+}
