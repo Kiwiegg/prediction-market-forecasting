@@ -2,6 +2,7 @@ import copy
 import io
 import json
 import os
+import shutil
 import sys
 import tempfile
 import unittest
@@ -26,6 +27,20 @@ class Response:
 
 
 class SyntheticTests(unittest.TestCase):
+    def test_saved_paid_synthetic_results_replay_without_private_files_or_network(self):
+        original_open=Path.open
+        def guarded(path,*args,**kwargs):
+            if any(s.ROOT/p in path.resolve().parents for p in ("data","captures")) or path.name==".env":raise AssertionError("Public replay accessed private or historical files")
+            return original_open(path,*args,**kwargs)
+        public=s.ROOT/"reports/leap_nba_v2_phase1"
+        with patch.object(Path,"open",guarded),patch("urllib.request.OpenerDirector.open",side_effect=AssertionError("Offline")):
+            result=evaluator.replay(public)
+        self.assertEqual(result["paired_schema_valid_cases"],30)
+        with tempfile.TemporaryDirectory() as tmp:
+            bundle=Path(tmp)/"public";shutil.copytree(public,bundle)
+            p=bundle/"metrics.json";p.write_text("{}")
+            with self.assertRaises(ValueError):evaluator.replay(bundle)
+
     def test_frozen_generator_semantics_blinding_and_wire_isolation(self):
         cases,config,assets,specs=s.make_specs()
         self.assertEqual((len(cases["cases"]),len(specs),len({r["key"] for r in specs})),(30,60,54))

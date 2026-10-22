@@ -1,0 +1,12 @@
+{
+  "changed_original_files": [],
+  "data_files": 7608,
+  "excluded_existing_file": "README.md (new experiment link only)",
+  "implementation_commit": "6dc9aa5",
+  "preservation_manifest_sha256": "24cf2fc02a5f2774b84f5a392e337ae0b94673f7820b0bb1e7a760388dadb967",
+  "preserved_files": 10154,
+  "protocol_commit": "3d10364",
+  "reference_commit": "bf72543",
+  "split_sha256": "f8e456dbe1b53b5957bf469755b59b94afe621b89e78814c92ca3a3720b97e77",
+  "validation": "Compared SHA-256 bytes for every previously tracked file except README.md and all previous private captures; no historical forecasts or outcome evaluation performed."
+}
