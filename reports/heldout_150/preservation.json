@@ -1,0 +1,9 @@
+{
+  "historical_data_files": 7608,
+  "original_files_changed": [],
+  "preservation_manifest_sha256": "038dd69b0c552bdeae606fa6a62c19bf0e99dd0fb95ed1987a4d7a736cbf7528",
+  "protected_original_files": 12372,
+  "protocol_commit": "3c420aff25a23f51afe823cc07b261fcddc4a7dc",
+  "reference_commit": "6b94ba3",
+  "scope": "All original tracked files except README plus all pre-existing private captures and cache files. New held-out requests append to the original shared caches; no prior record changed."
+}

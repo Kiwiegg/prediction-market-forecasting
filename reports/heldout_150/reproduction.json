@@ -1,0 +1,37 @@
+{
+  "evaluation_phase": {
+    "evaluation_initiated_at_utc": "2026-10-23T14:38:16.417036Z",
+    "note": "Created after successful private verification and before the first held-out outcome/market join. This is phase initiation, not an instrumented file-open timestamp.",
+    "private_completion_sha256": "7d6c3023d145af4306713ae753cf780cc85183e0d8067b205b8f269acd662d65",
+    "protocol_commit": "3c420aff25a23f51afe823cc07b261fcddc4a7dc",
+    "sealed_at_utc": "2026-10-23T14:37:46.366181Z"
+  },
+  "note": "Core replay artifacts are bound by manifest.json. This supplemental audit records validation and phase initiation; public hashes do not independently authenticate provider responses.",
+  "plan_file_sha256": "107802faa795986bec5c536eff29d58ddcb7491637b3d7c5c9d58d5c56838c81",
+  "protocol_commit": "3c420aff25a23f51afe823cc07b261fcddc4a7dc",
+  "python_version": "3.13.2",
+  "supplemental_hashes": {
+    "manifest.json": "aa2d791963dc483ead931c9819af2f8007c42e809c2f885183c0e0cbf3df55d2",
+    "preservation.json": "55c8175de404e4dc761af3bee6f26378ce716acba83fe897773075f4d145a627",
+    "report.md": "0006fe571dc01f6b5310b981d1ffb83fa39a4c59bee6179e3d5888043ce4bea8"
+  },
+  "tests": {
+    "clean_snapshot": 179,
+    "post_inference": 179,
+    "pre_inference": 179,
+    "skipped": 0
+  },
+  "validation": {
+    "calibration_totals_reconcile": true,
+    "clean_snapshot_replay": true,
+    "csv_records": 150,
+    "frozen_code_and_data_unchanged": true,
+    "market_intersection_games": 143,
+    "new_requests": 914,
+    "paid_retries": 0,
+    "primary_games": 143,
+    "private_cache_verify": true,
+    "public_replay": true,
+    "seven_method_games": 139
+  }
+}
