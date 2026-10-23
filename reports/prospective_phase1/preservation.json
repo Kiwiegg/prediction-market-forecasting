@@ -1,0 +1,9 @@
+{
+  "historical_data_files": 7608,
+  "original_files_changed": [],
+  "private_preservation_manifest_sha256": "b0b0e462f7adc2916d2f841ab6def4afe7f77caad522c0433b20ae26b991238b",
+  "protected_original_files": 22856,
+  "protocol_commit": "6df24ce",
+  "reference_commit": "819330b",
+  "scope": "All original tracked files except README and all original private captures/cache entries. Prospective Phase1 scratch captures excluded; no historical file or forecast modified."
+}

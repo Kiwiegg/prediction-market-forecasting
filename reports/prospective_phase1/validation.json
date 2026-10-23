@@ -1,0 +1,45 @@
+{
+  "frozen_asset_registry_sha256": "55b627cb652be92602a50dc8a7cb339cc5db10a9d4619f2ef759efca5b81890b",
+  "live": {
+    "anthropic_requests": 0,
+    "article_requests": 0,
+    "brave_requests": 0,
+    "eligible_live_packet": false,
+    "estimated_provider_cost_usd": 0,
+    "http_status": 403,
+    "provider_tokens": 0,
+    "schedule_window_eligibility": "unknown",
+    "source_fallbacks": 0,
+    "source_get_attempts": 1,
+    "stopped_on_first_access_denial": true
+  },
+  "offline_replay": {
+    "clean_snapshot_public": true,
+    "eligible_live_forecast": false,
+    "mode": "offline_mock",
+    "private_cache": true,
+    "public_sanitized": true,
+    "shared_packet_sha256": "cac5bf0e4524a9fbdeb12e4a3d2ea4ec96691382fd499ba9f875faea77bde197"
+  },
+  "preservation": {
+    "historical_data_files": 7608,
+    "original_files_changed": [],
+    "private_preservation_manifest_sha256": "b0b0e462f7adc2916d2f841ab6def4afe7f77caad522c0433b20ae26b991238b",
+    "protected_original_files": 22856,
+    "protocol_commit": "6df24ce",
+    "reference_commit": "819330b",
+    "scope": "All original tracked files except README and all original private captures/cache entries. Prospective Phase1 scratch captures excluded; no historical file or forecast modified."
+  },
+  "private_raw_responses_included": false,
+  "protocol_implementation_commit": "6df24ce6353b3f22f3a356a66635ce3c67f56f1e",
+  "tests": {
+    "clean_snapshot_environment_files_present": false,
+    "clean_snapshot_private_captures_present": false,
+    "clean_snapshot_seconds": 90.517,
+    "clean_snapshot_suite_passed": true,
+    "full_suite_passed": true,
+    "new_prospective_test_cases": 12,
+    "total": 191
+  },
+  "verified_scope": "Offline engineering validation and one failed live discovery only. No real forecast or scored prospective game."
+}

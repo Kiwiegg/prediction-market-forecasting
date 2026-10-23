@@ -1,0 +1,9 @@
+{
+  "discovery_audit.json": "849610246669d44a8a3a8ad4822b001000ec6a6f630c9c09ce1540ec1b4ab66f",
+  "dry_run.json": "39daea721618f77764cda3d917eb76637602863e64dc56d590071e6a5ee0bbd3",
+  "mock_validation/audit.json": "289dd5134b9d06cc6b4b3b5255d8b4a6aaf71df4c290641e25fc584d1ecfa56a",
+  "mock_validation/public_manifest.json": "9449cc90a907857cefdcb1f12ca352caea33ce097b626407cc602b9e79741913",
+  "preservation.json": "4fe80daf8e3f061327966ff43f2303f03b43a2cb13bee705cc197d2f2d99c889",
+  "report.md": "494c267dd9f4f0a9b94d20d852d08f2b1d19bfcf4fe3e07bf7b100aa013deaa1",
+  "validation.json": "8e758986667a6f84e8d6c850b00223ffe8befa0dd133df7a60eb1707ca72a4fd"
+}
