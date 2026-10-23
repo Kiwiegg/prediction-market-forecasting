@@ -3,11 +3,11 @@ import io
 import json
 import math
 import os
-import shutil
 import sys
 import tempfile
 import unittest
 import urllib.error
+from contextlib import contextmanager
 from pathlib import Path
 from unittest.mock import Mock,patch
 
@@ -30,11 +30,52 @@ def before(plan,specs,cache):
 
 def native_fixture(root):
     plan,specs=plan_experiment(scope="full-development",authorize_development=True);cache=root/"cache"
-    for s in specs[:20]:shutil.copytree(v2.DEFAULT_CACHE/s["key"],cache/s["key"])
+    # Genuine capture-format fixtures, with a local HTTP double only. A clean
+    # checkout must not depend on the operator's private paid pilot cache.
+    response={"role":"assistant","model":plan["config"]["model"],"stop_reason":"end_turn",
+        "usage":{"input_tokens":100,"output_tokens":24},"content":[{"type":"text","text":
+        '{"favored_side":"neither","strength":"neutral","evidence_sufficiency":"adequate"}'}]}
+    opener=Mock();opener.open.side_effect=lambda *args,**kwargs:Response(response)
+    with patch.dict(os.environ,{"ANTHROPIC_API_KEY":"fixture-never-export"}):
+        for s in specs[:20]:v2.cached_group(s,plan["config"],cache,True,factory(opener))
+    if opener.open.call_count!=13:raise AssertionError("Synthetic pilot fixture call count differs")
     return plan,specs,cache,before(plan,specs,cache)
 
 
+@contextmanager
+def synthetic_pilot_source(root):
+    # The production replay requires exact equality with the original pilot.
+    # Test a separate, synthetic pilot source without changing production data.
+    fixture=root/"source";reports=fixture/"reports"
+    pilot=reports/"leap_nba_v2_pilot";pilot.mkdir(parents=True)
+    (pilot/"observations.json").write_text(json.dumps({"games":execution.verify(root/"run")[1][:5]}))
+    (reports/"development_50").mkdir()
+    (reports/"development_50/merged").symlink_to(ROOT/"reports/development_50/merged",target_is_directory=True)
+    with patch.object(analysis,"ROOT",fixture):yield
+
+
 class AnalysisTests(unittest.TestCase):
+    def test_saved_paid_development_replay_without_private_files(self):
+        original_open=Path.open
+        def guarded(p,*args,**kwargs):
+            if ROOT/"captures" in p.resolve().parents or p.name==".env":raise AssertionError("Public replay touched private files")
+            return original_open(p,*args,**kwargs)
+        with patch.object(Path,"open",guarded),patch("urllib.request.OpenerDirector.open",side_effect=AssertionError("Replay is offline")):
+            summary=analysis.replay(ROOT/"reports/leap_nba_v2_development_50")
+        self.assertEqual(summary["coverage"]["leap_v2_raw"],50)
+        self.assertEqual(summary["comparisons"]["A_v2_development"]["n"],50)
+        self.assertEqual(summary["comparisons"]["B_seven_method"]["n"],40)
+        self.assertEqual(summary["resources"]["additional"]["claimed_or_reused_requests"],114)
+        self.assertEqual(summary["resources"]["reused"]["claimed_or_reused_requests"],13)
+
+    def test_probability_tie_rule_preserves_numerical_boundary_without_rounding(self):
+        rows=self.rows()[:1];r=rows[0];r.update(direct=.49999999999999994,kalshi=.5,outcome=0)
+        r["scores"]={m:{"brier":analysis.brier(r[m],0),"log_loss":analysis.log_loss(r[m],0)} for m in ("direct","kalshi","constant_50")}
+        scores=analysis.evaluated(rows,["direct","kalshi"])["scores"]
+        self.assertEqual(scores["direct"]["classification_accuracy"],1)
+        self.assertEqual(scores["kalshi"]["classification_accuracy"],0)
+        self.assertAlmostEqual(scores["direct"]["brier_score"],scores["kalshi"]["brier_score"])
+
     def rows(self):
         rows=[]
         for i,(p,y) in enumerate(((.1,0),(.9,1),(.5,0))):
@@ -130,13 +171,14 @@ class ExecutionTests(unittest.TestCase):
                 self.assertEqual(opener.open.call_count,1);self.assertEqual(original,{p:digest(p.read_bytes()) for p in original})
                 with self.assertRaises(ValueError):execution.execute(plan,specs,root/"second",cache,pre,True,factory(opener),root/"authorization.json")
                 if isinstance(response,Exception) and response.code==403:
-                    summary=analysis.export(root/"run",root/"public")
-                    self.assertEqual(summary["comparisons"]["A_v2_development"]["n"],5)
-                    self.assertEqual(summary["comparisons"]["B_seven_method"]["n"],5)
-                    audit=json.loads((root/"public/execution_audit.json").read_text())
-                    self.assertEqual((audit["new_claimed_attempts"],audit["unattempted_new_requests"]),(1,113))
-                    self.assertGreater(audit["resources"]["additional"]["unknown_usage_reserve_usd"],0)
-                    self.assertEqual(analysis.replay(root/"public"),summary)
+                    with synthetic_pilot_source(root):
+                        summary=analysis.export(root/"run",root/"public")
+                        self.assertEqual(summary["comparisons"]["A_v2_development"]["n"],5)
+                        self.assertEqual(summary["comparisons"]["B_seven_method"]["n"],5)
+                        audit=json.loads((root/"public/execution_audit.json").read_text())
+                        self.assertEqual((audit["new_claimed_attempts"],audit["unattempted_new_requests"]),(1,113))
+                        self.assertGreater(audit["resources"]["additional"]["unknown_usage_reserve_usd"],0)
+                        self.assertEqual(analysis.replay(root/"public"),summary)
                 for p in (root/"run").rglob("*"):
                     if p.is_file():self.assertNotIn(b"fixture-never-export",p.read_bytes())
 
@@ -150,9 +192,10 @@ class ExecutionTests(unittest.TestCase):
             with self.assertRaises(ValueError):execution.cache_state(specs,cache)
             execution.execute(plan,specs,root/"run",cache,pre,seal_interrupted=True)
             self.assertEqual(opener.open.call_count,1)
-            summary=analysis.export(root/"run",root/"public")
-            self.assertEqual(summary["comparisons"]["A_v2_development"]["n"],5)
-            self.assertEqual(analysis.replay(root/"public"),summary)
+            with synthetic_pilot_source(root):
+                summary=analysis.export(root/"run",root/"public")
+                self.assertEqual(summary["comparisons"]["A_v2_development"]["n"],5)
+                self.assertEqual(analysis.replay(root/"public"),summary)
 
     def test_uncertain_original_cache_blocks_all_new_calls(self):
         with tempfile.TemporaryDirectory() as tmp:

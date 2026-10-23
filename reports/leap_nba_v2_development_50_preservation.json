@@ -1,0 +1,12 @@
+{
+  "excluded_existing_file": "README.md (new full-development links only)",
+  "frozen_forecasting_commit": "8520406",
+  "historical_data_files": 7608,
+  "original_files_changed": [],
+  "pre_inference_analysis_commit": "8c08d52",
+  "preservation_manifest_sha256": "5c3d16f7062c2cd848a7f1f91408da0a94141525302f161c60dae4bb30798b40",
+  "protected_original_files": 11032,
+  "reference_commit": "99ca0d3",
+  "scope": "All previous tracked files except README plus every existing private capture/cache file, including v2 pilot and direct/v1/synthetic experiments. Only new v2 cache entries were appended.",
+  "split_file_sha256": "f8e456dbe1b53b5957bf469755b59b94afe621b89e78814c92ca3a3720b97e77"
+}
