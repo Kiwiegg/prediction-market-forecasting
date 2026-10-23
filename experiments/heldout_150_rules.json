@@ -1,0 +1,44 @@
+{
+  "version": "historical_heldout_150_v1",
+  "primary": {"methods": ["leap_v2_raw", "direct"], "metric": "Brier", "difference": "leap_v2_raw minus direct", "market_required": false, "v1_required": false},
+  "cohorts": {
+    "primary": ["leap_v2_raw", "direct"],
+    "A_v2_market": ["direct", "leap_v2_raw", "leap_v2_conservative", "kalshi", "constant_50"],
+    "B_seven_method": ["direct", "leap_v1_raw", "leap_v1_conservative", "leap_v2_raw", "leap_v2_conservative", "kalshi", "constant_50"]
+  },
+  "bootstrap": {
+    "seed": 20261023,
+    "replicates": 10000,
+    "confidence": 0.95,
+    "procedure": "Paired game-row resampling with replacement, shared row indices across pairs within cohort, 2.5/97.5 percentile endpoints with linear (B-1)*q interpolation. Descriptive historical uncertainty; no multiple-comparison winner selection.",
+    "pairs": {
+      "primary": [["leap_v2_raw", "direct"]],
+      "A_v2_market": [["leap_v2_raw", "direct"], ["leap_v2_conservative", "direct"], ["direct", "kalshi"], ["leap_v2_raw", "kalshi"], ["leap_v2_conservative", "kalshi"]],
+      "B_seven_method": [["leap_v2_raw", "leap_v1_raw"], ["leap_v2_conservative", "leap_v1_conservative"], ["leap_v1_raw", "direct"], ["leap_v1_conservative", "direct"]]
+    }
+  },
+  "metrics": {
+    "log_loss": "Natural log; original epsilon=1e-15 clipping for log loss only",
+    "calibration": "Existing 10 equal-width probability buckets with n, mean probability and observed frequency; retain empty buckets",
+    "classification": "Home iff p>=0.5, ties home; preserve stored floating-point probabilities without rounding",
+    "extreme": "p<=0.1 or p>=0.9 inclusive",
+    "market": "Unchanged preferred valid two-sided YES quote with candle end <=cutoff, lag<=1200 seconds; actual quote age unknown; no trade substitution",
+    "missingness": "Each named cohort uses exact common games with finalized verified outcome and every listed probability. Never replace missing prices, failed/insufficient forecasts or unattempted calls. Source-missing groups contribute LR1 only under frozen semantics. All 150 IDs, failure reasons and exclusions retained. Primary pair never conditioned on v1 or market availability."
+  },
+  "execution": {
+    "max_new_requests": 1200,
+    "max_additional_reserved_cost_usd": 40,
+    "automatic_retries": 0,
+    "order": "Existing evaluation hash run order; for each game direct, then all four v2 groups A-D, then v1 A-D. Order independent of labels, prices and responses. Primary methods receive priority within each game; denials can yield incomplete final game.",
+    "stop": "Global stop of new inference on first HTTP403 or other access denial (401/407/451, explicit top-level auth/permission error, denial HTML). Other failures are preserved without retries. Unknown claims never resend. Budget checked before every new request using cumulative conservative reservations and known recorded costs.",
+    "cache": "Original shared caches: captures/forecast_cache, captures/leap_nba_v1_cache, captures/leap_nba_v2_phase2_cache. Failed terminal requests reused, never retried; uncertain claims block new execution. Single immutable authorization binds output to plan.",
+    "timing": "All three methods sealed under one global completion manifest before any outcome/market join or held-out score inspection. Inference never imports evaluator or accesses labels/prices."
+  },
+  "diagnostics": {
+    "strength_directionality": "Original strict criterion: weaker only if season win fraction AND average point differential are both strictly lower. Common assessable successful strength observations for v1-v2 comparison. Missing/tied/discordant/source/inference exclusions explicit; never correct forecasts.",
+    "groups": "Success-only LR, signed log-LR and absolute log-LR distributions, home/away/neutral counts, qualitative categories and sufficiency; failed/insufficient/unattempted separate from legitimate source skips.",
+    "injury_dependence": "Preserve report states and source verification flags; report one-sided submission, injury strata, common A/B reinforcement and offline leave-one-group-out on explicit intersections. Never fit group weights.",
+    "development": "Compare already published development cohorts A n50 and B n40 against corresponding held-out cohorts with explicit IDs/n and cohort differences. These are different game sets, not paired generalization estimates; no combined development/held-out tuning."
+  },
+  "resources": "Record planned/cached/reserved/claimed/captured/success/invalid/insufficient/failure/unattempted counts by method and group, exact stopping reason, HTTP status, token usage and unknown-usage reserves. Rates retain frozen per-method values; cost estimates are not invoices. Latency sums are not wall-clock time. Shared alpha variants do not duplicate cost."
+}
