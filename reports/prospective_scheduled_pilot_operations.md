@@ -18,6 +18,9 @@ game. They are not a campaign or a custom long-running scheduling service.
 # Explicit OS approval may be required. No source/model network requests here.
 .venv/bin/python scripts/scheduled_prospective.py --install
 
+# Persist those exact definitions across login/reboot (user OS permission needed).
+.venv/bin/python scripts/install_scheduled_agents.py --install
+
 # Inspect the saved plan and installation/startup verification.
 .venv/bin/python scripts/scheduled_prospective.py
 .venv/bin/python scripts/scheduled_prospective.py --replay
