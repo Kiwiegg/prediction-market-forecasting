@@ -1,0 +1,61 @@
+{
+  "amendment_commit": "275b50823d7164889304db6eff6093d946020760",
+  "frozen_original_methods_and_packet_schema_unchanged": true,
+  "live": {
+    "anthropic_requests": 0,
+    "article_retrievals": 0,
+    "automatic_retries": 0,
+    "brave_queries": 0,
+    "discovery_completed_at_utc": "2026-10-24T11:21:43.983335Z",
+    "eligible_cutoff_games": 0,
+    "espn_http200": 32,
+    "estimated_provider_cost_usd": 0,
+    "evidence_packets_frozen": 0,
+    "forecasts_generated": 0,
+    "nba_http403": 1,
+    "nearest_game_timing": {
+      "actual_utc": "2026-10-24T11:21:43.983335Z",
+      "deviation_seconds": 33703.983335,
+      "exact_t24h": false,
+      "status": "late_outside_tolerance",
+      "target_cutoff_utc": "2026-10-24T02:00:00Z",
+      "within_tolerance": false
+    },
+    "provider_tokens": 0,
+    "reserved_provider_cost_usd": 0,
+    "source_requests": 33,
+    "started_at_utc": "2026-10-24T11:21:11.332318Z",
+    "team_corroboration_checks": 48,
+    "team_schedule_requests": 29,
+    "verified_upcoming_regular_season_games": 24
+  },
+  "original_stop_sha256": "9a801eff9b0983b38ea74ed6f7c36004b49d6da00121dc4f23f05d267ac002a9",
+  "preservation": {
+    "changed": [],
+    "historical_data_files": 7608,
+    "manifest_sha256": "c5f4015d98bf27c13c0cc3d8a26df4a521d3bf7b64d94c62300628319157aa37",
+    "original_stop_sha256": "9a801eff9b0983b38ea74ed6f7c36004b49d6da00121dc4f23f05d267ac002a9",
+    "protected_original_files": 23012,
+    "reference_commit": "02e2d2e"
+  },
+  "private_raw_responses_included": false,
+  "replay": {
+    "clean_checkout_public_mock": true,
+    "clean_checkout_sanitized_audit": true,
+    "private_original_mock": true,
+    "private_real_schedule_and_decisions": true,
+    "public_original_mock": true,
+    "public_scope": "Sanitized hashes and references only; original private documents required to reproduce schedule extraction.",
+    "sanitized_discovery_audit": true
+  },
+  "tests": {
+    "clean_checkout_env_file_or_private_captures_present": false,
+    "clean_checkout_passed": true,
+    "clean_checkout_provider_credentials_present": false,
+    "clean_checkout_suite_seconds": 79.83,
+    "new_discovery_tests": 9,
+    "preflight_passed": true,
+    "preflight_suite_seconds": 83.207,
+    "total": 200
+  }
+}

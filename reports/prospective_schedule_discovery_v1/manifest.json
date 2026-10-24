@@ -1,0 +1,9 @@
+{
+  "audit/audit.json": "68f7e5c58848a2b30d4f4e332b808b1b066aeccc10bafe077b60f69a1a2ac54d",
+  "audit/manifest.json": "ff106ae8dc1db47af30fa73eafb952eb2e5f22274cd56f9a7ea3feaa403145cf",
+  "games.csv": "700fe96ed5c0337dce9f851bc8446ce67f8d4968d6ad3e891578d1548acd39c1",
+  "preservation.json": "3e9f05c19c5a3d74b5855a05e77327b94166253f14a0acc5d6ad7d723ca95771",
+  "report.md": "3a3e886c9a12a59666df01480de072f8dcfe4caf2cd0efa66107b96baeca7dd7",
+  "sources.csv": "9aa9b7a0f6bdb8e9d7ac9a5c86c8b66f3356f28a889fea4913fc08980b51b141",
+  "validation.json": "6a8b68f70a532f30921361766dd086b91664aa8bbe5ae91034d0da3216b9b718"
+}
