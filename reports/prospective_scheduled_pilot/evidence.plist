@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>KeepAlive</key>
+	<false/>
+	<key>Label</key>
+	<string>org.nba.prospective.c9abaa9022d931c6e1c1.evidence</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Users/larrywu/Documents/prediction-market-forecasting/.venv/bin/python</string>
+		<string>/Users/larrywu/Documents/prediction-market-forecasting/scripts/scheduled_prospective.py</string>
+		<string>--run</string>
+		<string>--allow-network</string>
+		<string>--allow-inference</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>StandardErrorPath</key>
+	<string>/Users/larrywu/Documents/prediction-market-forecasting/captures/prospective_scheduled_pilot/evidence.stderr.log</string>
+	<key>StandardOutPath</key>
+	<string>/Users/larrywu/Documents/prediction-market-forecasting/captures/prospective_scheduled_pilot/evidence.stdout.log</string>
+	<key>StartCalendarInterval</key>
+	<dict>
+		<key>Day</key>
+		<integer>25</integer>
+		<key>Hour</key>
+		<integer>5</integer>
+		<key>Minute</key>
+		<integer>58</integer>
+		<key>Month</key>
+		<integer>10</integer>
+	</dict>
+	<key>WorkingDirectory</key>
+	<string>/Users/larrywu/Documents/prediction-market-forecasting</string>
+</dict>
+</plist>

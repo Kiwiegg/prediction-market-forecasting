@@ -1,0 +1,59 @@
+{
+  "live_to_date": {
+    "anthropic_requests": 0,
+    "article_requests": 0,
+    "automatic_source_retries": 0,
+    "brave_queries": 0,
+    "capture_claim_exists": false,
+    "credential_api_validity_tested": false,
+    "credential_readable_locally": true,
+    "espn_200": 32,
+    "estimated_provider_cost_usd": 0,
+    "evidence_packets": 0,
+    "forecasts": 0,
+    "inference_claim_exists": false,
+    "market_quotes": 0,
+    "nba_403": 1,
+    "provider_tokens": 0,
+    "public_enrollment_requests": 33,
+    "reserved_usd": 0
+  },
+  "login_persistence_commit": "0722d57d021d4600d0b7a99b08e23de19b7c360c",
+  "observed_at_utc": "2026-10-24T15:15:26Z",
+  "os": {
+    "login_timer_copies_installed": 2,
+    "real_reboot_tested": false,
+    "successful_no_cost_startup_probes": 2,
+    "tasks_loaded": 2
+  },
+  "preservation": {
+    "changed": [],
+    "historical_data_files": 7608,
+    "private_preservation_manifest_sha256": "9ebd248f94dccfc6f09ffb5f48c26e3c3501c37f624dd47dd7a0dc099a183651",
+    "protected_original_files": 23102,
+    "reference_commit": "0dfcdcd"
+  },
+  "private_raw_responses_included": false,
+  "replay": {
+    "clean_checkout_original_public_mock": true,
+    "clean_checkout_public_plan": true,
+    "enrollment_manifest_verified": true,
+    "private_fresh_enrollment": true,
+    "private_original_mock": true,
+    "public_original_mock": true,
+    "public_plan_scope": "sanitized plan/timers/assets only; no executed forecasts"
+  },
+  "status": "scheduled_pending",
+  "tests": {
+    "clean_checkout_env_or_private_captures_present": false,
+    "clean_checkout_passed": true,
+    "clean_checkout_seconds": 78.419,
+    "full_suite": 218,
+    "initial_preflight_seconds": 84.615,
+    "initial_worker_preflight_tests": 216,
+    "scheduler_and_installation_tests": 18,
+    "seconds": 83.347,
+    "suite_passed": true
+  },
+  "worker_protocol_commit": "bdc7bce993bc533054fb761ce55b33aa728d645d"
+}
