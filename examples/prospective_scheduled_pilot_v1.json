@@ -1,0 +1,14 @@
+{
+  "capture_offset_seconds": -120,
+  "market_launch_offset_seconds": -60,
+  "market_request_offset_seconds": -5,
+  "minimum_preparation_seconds": 300,
+  "operational_tolerance_seconds": 300,
+  "max_anthropic_requests": 20,
+  "max_brave_queries": 2,
+  "max_articles": 4,
+  "max_reserved_usd": 1.0,
+  "paid_news_collection": false,
+  "automatic_paid_retries": false,
+  "campaign_enabled": false
+}

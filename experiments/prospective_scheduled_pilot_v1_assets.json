@@ -1,0 +1,8 @@
+{
+  "examples/prospective_scheduled_pilot_v1.json": "4924b25ef6382d875a157576ac5dfe5d659d23fb183767a3b448017da9ba8abf",
+  "experiments/prospective_schedule_amendment_v1_assets.json": "476adf18125c21bf1a6e972c121b3144a814bd1e118e514273ba38cd3bb5beea",
+  "experiments/prospective_scheduled_pilot_v1.md": "e344b4eab633754b5822788573dc4b78dacfbbbcd1c3cb2992bcd4628b39cd72",
+  "scripts/scheduled_market.py": "8930fbb6ff3fe68d1e050e98010dcbf22db0f4888c2241853d544702c4bc7f94",
+  "scripts/scheduled_prospective.py": "cb4ba8670c8f7ad19c09a52942468f1fa002788a845823b33591820cfc0ac063",
+  "tests/test_scheduled_prospective.py": "ba477146d21730508d6a3dd2ad6f341f3334c93b34f902014f166891f6feadf7"
+}
