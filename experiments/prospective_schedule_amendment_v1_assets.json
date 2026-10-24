@@ -1,0 +1,6 @@
+{
+  "experiments/prospective_phase1_assets.json": "55b627cb652be92602a50dc8a7cb339cc5db10a9d4619f2ef759efca5b81890b",
+  "experiments/prospective_schedule_amendment_v1.md": "917323f44ca774c3bd9b31e4dc40d3e5f0dcda6bed866de3870eec819baceee6",
+  "scripts/prospective_discovery.py": "c0b9a6070be2365d97c1ccbbde7cd8a2605e24b7f143aa45414edf216514693b",
+  "tests/test_prospective_discovery.py": "15fa24540e48202623e0499b9154c6be53f0e6cc250c98dd0f13be71f3b8ed6d"
+}
