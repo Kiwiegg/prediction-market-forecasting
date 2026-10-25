@@ -1,0 +1,18 @@
+{
+  "protocol": "prospective_cloud_news_v1",
+  "evidence": {
+    "target_hours_before_tipoff": 24,
+    "collection_lead_minutes": 30,
+    "retrieval_deadline_offset_minutes": 0,
+    "packet_freeze_grace_minutes": 5,
+    "public_refresh_minutes_before_target": 2
+  },
+  "forecast": {"completion_grace_minutes": 15},
+  "research": {"max_queries": 2, "max_pages": 4, "max_tokens": 160000, "max_output_tokens": 1000, "max_estimated_cost_usd": 0.35, "max_extraction_calls": 1},
+  "budgets": {"forecast_calls": 9, "forecast_usd": 1.0, "per_game_usd": 1.35},
+  "scheduler": {"poll_seconds": 2, "workers": 4, "market_workers": 2, "discovery_days": 3},
+  "market": {"launch_seconds_before_target": 60, "quote_seconds_before_target": 5},
+  "excluded_game_ids": ["401909861"],
+  "cohort": "news_v1_separate_from_legacy_100",
+  "campaign_enabled": false
+}

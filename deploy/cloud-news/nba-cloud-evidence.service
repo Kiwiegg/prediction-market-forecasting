@@ -1,0 +1,30 @@
+[Unit]
+Description=NBA cloud news evidence and frozen forecasts
+Wants=network-online.target time-sync.target
+After=network-online.target time-sync.target
+ConditionPathExists=/etc/nba-cloud/activated
+ConditionPathExists=/var/lib/nba-cloud-news/volume.json
+RequiresMountsFor=/var/lib/nba-cloud-news /etc/nba-cloud
+
+[Service]
+Type=simple
+User=nba-cloud
+Group=nba-cloud
+WorkingDirectory=/opt/nba-forecasting
+EnvironmentFile=/etc/nba-cloud/secrets.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecCondition=/bin/sh -c 'test "$(/usr/bin/timedatectl show -p NTPSynchronized --value)" = yes'
+ExecStart=/opt/nba-forecasting/.venv/bin/python scripts/cloud_prospective.py --state /var/lib/nba-cloud-news --serve --allow-network --allow-search --allow-inference
+Restart=on-failure
+RestartSec=10
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/nba-cloud-news
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
