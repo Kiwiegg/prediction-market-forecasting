@@ -1,0 +1,17 @@
+{
+  "operational_protocol": "prospective_github_actions_v1",
+  "evidence_protocol": "prospective_cloud_news_v1",
+  "cohort": "news_v1_separate_from_legacy_100",
+  "campaign_id": "nba-news-initial-v1",
+  "campaign_ceiling_usd": 50.0,
+  "per_game_ceiling_usd": 1.35,
+  "initial_game_cap": 1,
+  "maximum_game_cap": 100,
+  "automatic_enrollment_enabled": false,
+  "dispatch_lookahead_minutes": 90,
+  "worker_max_minutes": 165,
+  "poll_seconds": 2,
+  "authorization_max_days": 31,
+  "maximum_snapshot_bytes": 268435456,
+  "storage_prefix": "nba-news-initial-v1"
+}

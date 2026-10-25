@@ -1,0 +1,101 @@
+name: Prospective NBA (disabled until authorized)
+on:
+  schedule:
+    - cron: '7,27,47 * * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'dry-run is offline; all other modes require separate activation'
+        type: choice
+        options: [dry-run, bootstrap, discover, authorize, expand, status, replay, live]
+        default: dry-run
+      game_id:
+        description: 'One verified game ID for initial authorization'
+        type: string
+      expires:
+        description: 'Explicit UTC authorization expiry, at most 31 days'
+        type: string
+      game_limit:
+        description: 'Expansion only: explicit cumulative game cap after first live success'
+        type: number
+        default: 1
+      automatic_enrollment:
+        description: 'Expansion only: authorize chronological automatic enrollment'
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: nba-prospective-news-v1-private-store
+  cancel-in-progress: false
+jobs:
+  offline:
+    if: github.event_name == 'workflow_dispatch' && inputs.mode == 'dry-run'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - run: |
+          python3 -m venv .venv
+          .venv/bin/pip install -r requirements.txt
+          .venv/bin/python scripts/actions_prospective.py
+          .venv/bin/python scripts/actions_prospective.py --validate-assets
+          .venv/bin/python -m unittest discover -s tests -q
+          .venv/bin/python scripts/cloud_prospective.py --replay-public reports/prospective_cloud_news_v1/simulation
+  private-worker:
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      github.sha == vars.NBA_ACTIONS_REVIEWED_SHA &&
+      ((github.event_name == 'schedule' && vars.NBA_ACTIONS_LIVE_ENABLED == 'true') ||
+       (github.event_name == 'workflow_dispatch' && inputs.mode == 'live' && vars.NBA_ACTIONS_LIVE_ENABLED == 'true') ||
+       (github.event_name == 'workflow_dispatch' && inputs.mode != 'dry-run' && inputs.mode != 'live' && vars.NBA_ACTIONS_ADMIN_ENABLED == 'true'))
+    environment: nba-prospective-live
+    runs-on: ubuntu-24.04
+    timeout-minutes: 190
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Install reviewed dependencies and verify clock/assets (no provider secrets)
+        run: |
+          umask 077
+          python3 -m venv .venv
+          .venv/bin/pip install -r requirements.txt -r deploy/github-actions/requirements.txt
+          .venv/bin/python scripts/actions_prospective.py --validate-assets
+          test "$(timedatectl show -p NTPSynchronized --value)" = yes
+      - name: Private bounded worker
+        env:
+          NBA_ACTIONS_BUCKET: ${{ secrets.NBA_ACTIONS_BUCKET }}
+          NBA_ACTIONS_ENDPOINT: ${{ secrets.NBA_ACTIONS_ENDPOINT }}
+          NBA_ACTIONS_STORE_UUID: ${{ secrets.NBA_ACTIONS_STORE_UUID }}
+          AWS_REGION: ${{ vars.NBA_STORAGE_REGION || 'auto' }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.NBA_STORAGE_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.NBA_STORAGE_SECRET_ACCESS_KEY }}
+          BRAVE_SEARCH_API_KEY: ${{ (github.event_name == 'schedule' || inputs.mode == 'live') && secrets.BRAVE_SEARCH_API_KEY || '' }}
+          ANTHROPIC_API_KEY: ${{ (github.event_name == 'schedule' || inputs.mode == 'live') && secrets.ANTHROPIC_API_KEY || '' }}
+          REQUESTED_MODE: ${{ inputs.mode }}
+          APPROVED_GAME_ID: ${{ inputs.game_id }}
+          AUTHORIZATION_EXPIRES: ${{ inputs.expires }}
+          APPROVED_GAME_LIMIT: ${{ inputs.game_limit }}
+          APPROVED_AUTOMATIC: ${{ inputs.automatic_enrollment }}
+        run: |
+          umask 077
+          args=(--state "$RUNNER_TEMP/nba-private-state" --allow-network)
+          mode="${REQUESTED_MODE:-live}"
+          case "$mode" in
+            bootstrap) args+=(--bootstrap) ;;
+            discover) args+=(--discover-only) ;;
+            authorize) args+=(--authorize --confirm-authorized-campaign --game-id "$APPROVED_GAME_ID" --expires "$AUTHORIZATION_EXPIRES" --max-games 1 --max-usd 50) ;;
+            expand)
+              args+=(--expand --confirm-authorized-campaign --expires "$AUTHORIZATION_EXPIRES" --max-games "$APPROVED_GAME_LIMIT" --max-usd 50)
+              if test "$APPROVED_AUTOMATIC" = true; then args+=(--automatic); fi
+              ;;
+            status) args+=(--status) ;;
+            replay) args+=(--replay) ;;
+            live) args+=(--live --allow-search --allow-inference) ;;
+            *) exit 2 ;;
+          esac
+          .venv/bin/python scripts/actions_prospective.py "${args[@]}"
+      # No upload-artifact, cache, raw log dump, or automatic retry step.

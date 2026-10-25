@@ -1,0 +1,2 @@
+# Optional deployment-only official AWS SDK. Historical/offline pipeline unchanged.
+boto3>=1.40.0,<2
