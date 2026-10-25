@@ -20,6 +20,11 @@ is the smallest implemented alternative; no research rule needs to change.
 [billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions),
 [limits](https://docs.github.com/en/actions/reference/limits).
 
+An active runner checks its saved catalog every minute and can add later games
+whose forecast deadlines fit its remaining165-minute lifetime. Others are labeled
+for handoff to a later dispatch. Runner-boundary delays can still cause misses;
+neither overlap support nor early launch eliminates GitHub scheduling uncertainty.
+
 | State option | Assessment |
 | --- | --- |
 | Actions artifacts/cache | Optional exports only: retention/eviction and no authoritative atomic cross-run claims |

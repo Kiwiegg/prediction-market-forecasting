@@ -159,6 +159,8 @@ class ActionsTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             state,game,clock,objects,cp=setup(Path(tmp));state.approve([game['game_id']],cloud.iso(clock[0]+86400),mock=True)
             early=actions.timing_plan([game],clock[0],state.config);self.assertEqual(early[0]['status'],'wait_on_runner')
+            deferred=campaign.enroll_catalog(state,{'games':[game]},cloud.windows(game,state.config)['forecast']-1)
+            self.assertEqual(deferred[0]['reason'],'handoff_to_later_dispatch')
             clock[0]+=11
             self.assertEqual(actions.timing_plan([game],clock[0],state.config)[0]['status'],'missed_no_backfill')
             result=campaign.enroll_catalog(state,{'games':[game]})

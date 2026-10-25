@@ -22,6 +22,10 @@ share bounded evidence/market pools. Paid sends remain globally serialized.
 Each runner works at most 165 minutes, with a 190-minute job timeout and no
 automatic job retry. Later dispatches can process newly due games. They cannot
 take over a persistent owner after interruption without explicit recovery.
+While active, the runner checks the saved catalog each minute for newly due
+games. It enrolls only games whose forecast deadline fits its remaining lifetime;
+others receive an explicit handoff reason. Job-boundary startup delays can still
+miss games. No new discovery or shortened evidence window rescues such gaps.
 
 The existing defaults remain T−30 acquisition, hard T publication/retrieval
 cutoff, freeze by T+5 and seal by T+15/before tipoff. Post-T extraction sees only

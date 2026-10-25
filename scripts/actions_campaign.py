@@ -120,7 +120,7 @@ class CampaignState(RemoteState):
             return result
 
 
-def enroll_catalog(state,catalog):
+def enroll_catalog(state,catalog,session_deadline=None):
     approval=state.campaign();cfg=settings();now=state.clock();decisions=[]
     # Catalog is a completed, hashed state stage, not arbitrary input game IDs.
     games=sorted(catalog['games'],key=lambda g:(cloud.windows(g,state.config)['target'],g['game_id']))
@@ -131,6 +131,7 @@ def enroll_catalog(state,catalog):
         elif gid in state.config['excluded_game_ids']:reason='protected_legacy_attempt'
         elif now>w['collect']:reason='missed_collection_start_no_backfill'
         elif w['collect']>now+cfg['dispatch_lookahead_minutes']*60:reason='outside_dispatch_horizon'
+        elif session_deadline is not None and w['forecast']>session_deadline:reason='handoff_to_later_dispatch'
         elif not approval['automatic_enrollment'] and gid not in approval['game_ids']:reason='not_authorized'
         elif len(state.jobs())>=approval['max_games']:reason='campaign_game_cap'
         else:

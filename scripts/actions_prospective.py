@@ -43,12 +43,12 @@ def catalog(state):
 
 def run_worker(state,sleep=time.sleep):
     state.campaign();state.check_circuit('paid');state.check_circuit('network')
-    found=catalog(state);decisions=enroll_catalog(state,found)
+    started=state.clock();stop=started+settings()['worker_max_minutes']*60
+    found=catalog(state);decisions=enroll_catalog(state,found,stop)
     state.event(None,'enrollment_decisions',decisions=decisions);state.sync()
     backend=cloud.LiveBackend(state,True);engine=cloud.Engine(state,backend)
     from cloud_market import MarketEngine
     market=MarketEngine(state,True)
-    started=state.clock();stop=started+settings()['worker_max_minutes']*60
     active=[]
     for key in state.jobs():
         w=cloud.windows(state.job(key)['game'],state.config)
@@ -58,9 +58,15 @@ def run_worker(state,sleep=time.sleep):
             state.stage(key,'workflow_missed',lambda f:{'eligible':False,'reason':'late_start_no_backfill'})
         if not state.has(key,'workflow_missed') and not state.has(key,'forecast') and w['forecast']>=state.clock():active.append(key)
     with ThreadPoolExecutor(max_workers=state.config['scheduler']['workers']) as evidence_pool, ThreadPoolExecutor(max_workers=state.config['scheduler']['market_workers']) as market_pool:
-        evidence_tasks={};market_tasks={}
+        evidence_tasks={};market_tasks={};next_enrollment=started+60
         while active and state.clock()<stop:
             state.campaign();state.checkpoints.assert_owner();state.check_circuit('paid');state.check_circuit('network')
+            if state.clock()>=next_enrollment:
+                later=enroll_catalog(state,found,stop)
+                new=[row for row in later if row['reason']=='enrolled_chronologically']
+                if new:state.event(None,'enrollment_decisions',decisions=new);state.sync()
+                active.extend(row['job_id'] for row in new)
+                next_enrollment=state.clock()+60
             for key in active:
                 for tasks,pool,worker in ((evidence_tasks,evidence_pool,engine),(market_tasks,market_pool,market)):
                     future=tasks.get(key)
