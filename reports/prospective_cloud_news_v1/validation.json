@@ -1,0 +1,64 @@
+{
+  "actual_live_activity": {
+    "cloud_hosts_provisioned": 0,
+    "legacy_pilot_modified_or_executed": false,
+    "new_anthropic_requests": 0,
+    "new_article_requests": 0,
+    "new_brave_requests": 0,
+    "new_kalshi_requests": 0,
+    "new_nba_espn_requests": 0,
+    "new_paid_provider_cost_usd": 0,
+    "new_real_games_enrolled": 0,
+    "new_real_provider_tokens": 0,
+    "services_installed_or_activated": 0
+  },
+  "deployment": {
+    "activated": false,
+    "chosen": "persistent Linux VM with encrypted local-filesystem state, SQLite WAL, separate systemd lanes",
+    "missing_or_unconfigured_for_this_task": [
+      "operator-selected VM/SSH target and cloud deployment permission",
+      "encrypted volume mount, backup/restore policy and external alerts",
+      "root-only secret environment files and store UUID",
+      "NTP/systemd validation on Linux",
+      "explicit first-game authorization"
+    ]
+  },
+  "observed_at_utc": "2026-10-25T22:41:46Z",
+  "preservation": {
+    "changed": [],
+    "historical_data_files": 7608,
+    "private_manifest_sha256": "14cf66dc87f314b5e2fd2fc3f343a29a2ebf11863e9d362c9acd5c85529de1bd",
+    "protected_original_files": 7914,
+    "reference_commit": "eaeee20",
+    "scope": "All original tracked files except README, plus original immutable legacy job/installation configuration and existing denial journals. Active legacy runtime results were not queried or executed."
+  },
+  "protocol_commit": "b33813356b11cbc8cfce120f5e7bfef0248dc6aa",
+  "public_export_fix_commit": "fd928f7a5356b5d9dfa78d04ab38f96795a1d350",
+  "registered_assets_sha256": "72a6224febba31adcf752f79a8b65d110d9d2a7101b36d0938ef064a3ab035e9",
+  "replay": {
+    "clean_checkout_original_public_mock": true,
+    "clean_checkout_public_synthetic": true,
+    "original_shared_public_mock": true,
+    "private_synthetic": true,
+    "public_synthetic": true,
+    "scope": "Mock raw hashes/article parsing/grounded validation/packet/native caches; public hashes and native aggregation only"
+  },
+  "simulation": {
+    "live_evaluation_eligible": false,
+    "llm_responses": "mock HTTP only",
+    "mode": "offline_mock",
+    "packet_sha256": "68ba497484267bf559c6b603cf1d5c65eae35c3f8be548bc48829e21133d829d",
+    "private_raw_responses_included": false,
+    "publisher_bytes_and_pdf_parsing": "synthetic/mock fixtures"
+  },
+  "status": "offline_validated_not_deployed",
+  "tests": {
+    "clean_checkout_passed": true,
+    "clean_checkout_private_captures_or_env_present": false,
+    "clean_checkout_seconds": 142.31,
+    "latest_seconds": 126.548,
+    "new_cloud_tests": 23,
+    "suite_passed": true,
+    "total": 241
+  }
+}

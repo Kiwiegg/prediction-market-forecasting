@@ -1,0 +1,8 @@
+{
+  "changed": [],
+  "historical_data_files": 7608,
+  "private_manifest_sha256": "14cf66dc87f314b5e2fd2fc3f343a29a2ebf11863e9d362c9acd5c85529de1bd",
+  "protected_original_files": 7914,
+  "reference_commit": "eaeee20",
+  "scope": "All original tracked files except README, plus original immutable legacy job/installation configuration and existing denial journals. Active legacy runtime results were not queried or executed."
+}
