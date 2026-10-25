@@ -35,6 +35,7 @@ class FixtureBackend:
         for path in folder.rglob('*.json'):
             meta=json.loads(path.read_text())
             if 'body_sha256' in meta and 'retrieved_at_utc' in meta:
+                meta['headers']={'set-cookie':'synthetic-private-publisher-cookie'}
                 meta['retrieved_at_utc']=cloud.iso(self.state.clock()-1);path.write_bytes(canonical(meta))
     def collect(self,key,folder,slot):
         s=self.state;game=s.job(key)['game'];self.seed(folder,game)
@@ -99,6 +100,7 @@ class CloudPipelineTests(unittest.TestCase):
             self.assertFalse(result['live_evaluation_eligible']);self.assertFalse(state.artifact(key,'freeze')['live_evaluation_eligible'])
             self.assertEqual({r['evidence_sha256'] for r in result['records'].values()},{packet['evidence_snapshot_sha256']})
             self.assertEqual(cloud.replay_public(root/'public')['packet_sha256'],packet['evidence_snapshot_sha256'])
+            self.assertNotIn('synthetic-private-publisher-cookie',(root/'public/audit.json').read_text())
             before={p:digest(p.read_bytes()) for p in (state.root/'jobs').rglob('*') if p.is_file() and p.suffix!='.lock'}
             cloud.Engine(State(state.root,state.config,lambda:clock[0]),backend,True).advance(key)
             self.assertEqual(before,{p:digest(p.read_bytes()) for p in before});self.assertEqual(backend.extract_calls,1)

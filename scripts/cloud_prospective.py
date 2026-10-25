@@ -392,6 +392,11 @@ def export_replay(state,key,output):
         'lineage':json.loads((folder/'freeze/lineage.json').read_text())}
     # Search/LLM raw payloads remain private; accepted model-facing citations stay.
     result['lineage']['news_extraction']={k:v for k,v in result['lineage']['news_extraction'].items() if k not in ('provider_requests','agent_candidates','acquisition')}
+    def sanitize(value):
+        if isinstance(value,dict):return {k:sanitize(v) for k,v in value.items() if k not in ('headers','payload')}
+        if isinstance(value,list):return [sanitize(v) for v in value]
+        return value
+    result['lineage']=sanitize(result['lineage'])
     output=Path(output);durable_json(output/'audit.json',result)
     durable_json(output/'manifest.json',{'audit.json':digest((output/'audit.json').read_bytes())})
     return result
