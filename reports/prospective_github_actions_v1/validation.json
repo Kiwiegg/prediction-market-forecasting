@@ -1,0 +1,58 @@
+{
+  "actions_assets_sha256": "a13599fc6a8801558a46b476d3a5c22e20adf33430e3e1e3937d21c1c9f4989b",
+  "activation": {
+    "admin_enabled_by_task": false,
+    "live_enabled_by_task": false,
+    "paid_campaign_enabled": false,
+    "secrets_configured_by_task": false
+  },
+  "actual_live_activity": {
+    "cloud_resources_provisioned": 0,
+    "github_hosted_validation_runs": 0,
+    "new_anthropic_requests": 0,
+    "new_article_requests": 0,
+    "new_brave_requests": 0,
+    "new_kalshi_requests": 0,
+    "new_nba_espn_requests": 0,
+    "paid_provider_cost_usd": 0,
+    "r2_s3_requests": 0,
+    "real_games_enrolled": 0,
+    "real_provider_tokens": 0
+  },
+  "full_suite": {
+    "final_clean_checkout_seconds": 119.59,
+    "new_actions_tests": 20,
+    "passed": true,
+    "private_captures_or_env_present": false,
+    "tests": 261
+  },
+  "implementation_commit": "9280eee6aa1537001de17b73cceda6bdbbbd60e9",
+  "limits": {
+    "automatic_enrollment": "Requires separately authorized expansion after a genuine live primary pair passes replay",
+    "cumulative_campaign_usd": 50,
+    "initial_game_cap": 1,
+    "per_game_usd": 1.35
+  },
+  "remaining_live_checks": [
+    "Private bucket credentials/CAS/retention and restore latency",
+    "GitHub-hosted startup/NTP and notifications",
+    "First eligible news-enabled capture, native inference, benchmark and deadlines",
+    "Scale, storage/operation cost and runner-boundary handoff misses"
+  ],
+  "replay": {
+    "new_public_synthetic": true,
+    "original_cloud_public": true,
+    "original_shared_public": true,
+    "private_checkpoint_restoration": true,
+    "scope": "In-memory CAS fixture; mocked publisher/model responses; native request identities and aggregation"
+  },
+  "status": "offline_validated_live_disabled",
+  "syntax": {
+    "passed": true,
+    "shellcheck_enabled": false,
+    "validator": "actionlint",
+    "version": "1.7.7"
+  },
+  "timing_assessment": "Valid captures are enforced; GitHub startup punctuality and coverage are not guaranteed or live-validated",
+  "validated_at_utc": "2026-10-25T23:34:58.975481+00:00"
+}

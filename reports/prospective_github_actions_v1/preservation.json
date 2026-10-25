@@ -1,0 +1,8 @@
+{
+  "changed": [],
+  "historical_data_files": 7608,
+  "legacy_job_executed_or_modified_by_task": false,
+  "reference_commit": "38b1190",
+  "scope": "All originally tracked files except README plus the original immutable pilot configuration and denial journals; active legacy runtime not queried.",
+  "unchanged_original_files": 7932
+}
