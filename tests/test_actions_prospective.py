@@ -246,7 +246,7 @@ class ActionsTests(unittest.TestCase):
 
     def test_workflow_disabled_secret_free_dry_run_and_public_capture_isolation(self):
         root=Path(__file__).resolve().parents[1];text=(root/'.github/workflows/prospective-nba.yml').read_text()
-        self.assertIn("vars.NBA_ACTIONS_LIVE_ENABLED == 'true'",text)
+        self.assertIn("needs.gates.outputs.private_authorized == 'true'",text)
         self.assertIn('cancel-in-progress: false',text);self.assertIn('github.sha == vars.NBA_ACTIONS_REVIEWED_SHA',text)
         offline=text.split('  offline:',1)[1].split('  private-worker:',1)[0]
         self.assertNotIn('secrets.',offline);self.assertNotIn('upload-artifact@',text)

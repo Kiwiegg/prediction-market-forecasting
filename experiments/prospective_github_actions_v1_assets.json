@@ -1,11 +1,13 @@
 {
-  ".github/workflows/prospective-nba.yml": "392dee3d6846ba25ff9bf38db82b06cdd60c96f5a6ce67a65ce095f4117fd7da",
-  "deploy/github-actions/README.md": "870c99181f6c96a2a4cb9373c4569914f06d86f3c9895a7a21ac1ee3797e6292",
+  ".github/workflows/prospective-nba.yml": "3542ece1ad5809eae03f5ff3cfba5294fc95dc35fc2d2154a167b915cd19db8b",
+  "deploy/github-actions/README.md": "16fb10c1320db6f78939c4081d114c442898ddbc213e513fe7cd10f91b1c60ea",
   "deploy/github-actions/requirements.txt": "232ca3abdd25473383c57f9190e50ab47f811dcf949d03a3d018ddcaae613e33",
   "examples/prospective_github_actions_v1.json": "f7fe07b611ec61afb9b93ab0d5f869c4e2120ad76689aa2e72677ac13e32ff65",
   "experiments/prospective_github_actions_v1.md": "96078d3175d4d400fa7ac7d0d5b13cf1363d076df0d784bda6a2768163bc8d75",
   "scripts/actions_campaign.py": "097f7c5ed62a946da2946877c416ba7c9776809e1d0b676f31aeded7469ee314",
+  "scripts/actions_gates.py": "be75320d29d7325bda144c6cccd2bc84ac70aeb1abc8687613db47a2ab2fd5c3",
   "scripts/actions_prospective.py": "940e7ba64d36546ebb41b632ab7600fd46cd136a3791aea5a9f79631b650d8f7",
   "scripts/actions_storage.py": "770d148f100e244823488f02a7a06457a02f2e2756b3c411b7c7006987825b11",
-  "tests/test_actions_prospective.py": "93b934ca21409f4c14eb694cea7c581e8add5bc1ac7710c2e15d780791f6298b"
+  "tests/test_actions_gates.py": "db295704658acec8e630c8cc1c2035e856c83fffc18a8a89faa11225fc92e275",
+  "tests/test_actions_prospective.py": "cce981da31ab59dad12db9b2b506f4b3a076dc8481cab0953335a364421677a7"
 }

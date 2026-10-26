@@ -111,6 +111,22 @@ bootstrap/command leaves a durable owner and needs the recovery procedure below.
 If a clock check does not return NTP-synchronized, stop and investigate the runner;
 do not bypass it to force a forecast.
 
+### Dispatch troubleshooting
+
+The secret-free `gates` job reports boolean branch, exact/full SHA, mode and
+enable-flag decisions even when `private-worker` is skipped. Enable flags accept
+surrounding whitespace (including pasted CRLF); only `true` enables a flag. The
+reviewed SHA is never trimmed or abbreviated. Keep these three gate variables at
+repository scope; environment secrets are unavailable to job-level conditions.
+Both execution jobs pin Python3.13.2, matching the historical byte-exact replay
+validation runtime rather than Ubuntu's changing default interpreter.
+
+After **every new commit**, set `NBA_ACTIONS_REVIEWED_SHA` to its full40-character
+SHA, keep admin enabled and live disabled, then dispatch a **new** run from main
+with `mode=bootstrap` (or `discover` after a successful bootstrap/UUID setup).
+Do not use “Re-run jobs” on an old run: GitHub reuses that run's original SHA.
+An `offline` job means `mode=dry-run`; it never bootstraps storage or uses secrets.
+
 ## First real game: separate explicit paid approval required
 
 Choose the earliest regular-season game from the verified catalog whose T−30
