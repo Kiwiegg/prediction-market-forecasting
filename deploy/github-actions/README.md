@@ -118,8 +118,11 @@ enable-flag decisions even when `private-worker` is skipped. Enable flags accept
 surrounding whitespace (including pasted CRLF); only `true` enables a flag. The
 reviewed SHA is never trimmed or abbreviated. Keep these three gate variables at
 repository scope; environment secrets are unavailable to job-level conditions.
-Both execution jobs pin Python3.13.2, matching the historical byte-exact replay
-validation runtime rather than Ubuntu's changing default interpreter.
+Both execution jobs pin Python3.13.2. The full offline suite runs on GitHub's
+hosted macOS14/arm64 runner to match the historical byte-exact replay platform;
+the original derived-float comparisons also fail on Linux with Python3.13.2.
+No historical records, numeric tolerances, formulas or frozen evaluators are
+changed. The private collector remains Ubuntu24.04; this needs no operator Mac.
 
 After **every new commit**, set `NBA_ACTIONS_REVIEWED_SHA` to its full40-character
 SHA, keep admin enabled and live disabled, then dispatch a **new** run from main

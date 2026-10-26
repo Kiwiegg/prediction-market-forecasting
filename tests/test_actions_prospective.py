@@ -249,6 +249,8 @@ class ActionsTests(unittest.TestCase):
         self.assertIn("needs.gates.outputs.private_authorized == 'true'",text)
         self.assertIn('cancel-in-progress: false',text);self.assertIn('github.sha == vars.NBA_ACTIONS_REVIEWED_SHA',text)
         offline=text.split('  offline:',1)[1].split('  private-worker:',1)[0]
+        self.assertIn('runs-on: macos-14',offline)
+        self.assertIn('runs-on: ubuntu-24.04',text.split('  private-worker:',1)[1])
         self.assertNotIn('secrets.',offline);self.assertNotIn('upload-artifact@',text)
         self.assertNotIn('pull_request',text);self.assertIn('persist-credentials: false',text)
         self.assertNotIn('kalshi', (root/'scripts/actions_campaign.py').read_text().lower())

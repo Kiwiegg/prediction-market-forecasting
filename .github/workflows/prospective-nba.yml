@@ -52,7 +52,9 @@ jobs:
         run: python3 scripts/actions_gates.py
   offline:
     if: github.event_name == 'workflow_dispatch' && inputs.mode == 'dry-run'
-    runs-on: ubuntu-24.04
+    # Historical replay checks are byte-exact against Darwin/arm64 outputs.
+    # Use GitHub's hosted Mac, not the operator's Mac; live worker stays Linux.
+    runs-on: macos-14
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
