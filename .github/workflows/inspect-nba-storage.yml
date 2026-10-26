@@ -1,0 +1,36 @@
+name: Inspect NBA checkpoint (read only)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: nba-prospective-news-v1-private-store
+  cancel-in-progress: false
+jobs:
+  inspect:
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      github.sha == vars.NBA_ACTIONS_REVIEWED_SHA &&
+      vars.NBA_ACTIONS_ADMIN_ENABLED == 'true'
+    environment: nba-prospective-live
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.13.2'
+      - run: |
+          python3 -m venv .venv
+          .venv/bin/pip install -r requirements.txt -r deploy/github-actions/requirements.txt
+      - name: Inspect saved errors without source requests or state writes
+        env:
+          NBA_ACTIONS_BUCKET: ${{ secrets.NBA_ACTIONS_BUCKET }}
+          NBA_ACTIONS_ENDPOINT: ${{ secrets.NBA_ACTIONS_ENDPOINT }}
+          NBA_ACTIONS_STORE_UUID: ${{ secrets.NBA_ACTIONS_STORE_UUID }}
+          AWS_REGION: ${{ vars.NBA_STORAGE_REGION || 'auto' }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.NBA_STORAGE_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.NBA_STORAGE_SECRET_ACCESS_KEY }}
+        run: .venv/bin/python scripts/inspect_actions_storage.py
