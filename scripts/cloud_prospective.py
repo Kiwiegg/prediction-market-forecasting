@@ -93,7 +93,9 @@ def eligibility(game, config, started, frozen, sealed=None):
 
 
 class SourceBudget:
-    def __init__(self, state, job, benchmark=False): self.state, self.job, self.reason, self.benchmark = state, job, None, benchmark
+    def __init__(self, state, job, benchmark=False):
+        self.state, self.job, self.reason, self.benchmark = state, job, None, benchmark
+        self.clock = state.clock
     def reserve(self, key, kind, usd): self.state.reserve(digest((self.job+key).encode()), self.job, "article", usd)
     def stop(self, reason, **details):
         self.reason = reason
@@ -409,7 +411,14 @@ def replay_public(folder):
     a=json.loads((folder/'audit.json').read_text());p=a['packet']
     if a['private_raw_responses_included'] is not False or a['job']['config']!=a['protocol']:raise ValueError('Unsafe audit/config mismatch')
     if a['job']['config_sha256']!=digest(canonical(a['protocol'])):raise ValueError('Config hash mismatch')
-    if a['job']['assets_sha256']!=digest(REGISTRY.read_bytes()):raise ValueError('Code/protocol registry differs')
+    if a['job']['assets_sha256']!=digest(REGISTRY.read_bytes()):
+        # Preserve existing immutable public captures after the source-session
+        # constructor repair. All other original assets must still match exactly.
+        original=ROOT/'experiments/prospective_cloud_news_v1_initial_assets.json'
+        if a['job']['assets_sha256']!=digest(original.read_bytes()):raise ValueError('Code/protocol registry differs')
+        for name,sha in json.loads(original.read_text()).items():
+            if name!='scripts/cloud_prospective.py' and digest((ROOT/name).read_bytes())!=sha:
+                raise ValueError('Original replay asset changed: '+name)
     if a['job']['config_sha256']!=digest(canonical(checked(a['protocol']))):raise ValueError('Invalid protocol settings')
     native.direct.validate_packet(p)
     if p['game_id']!=a['job']['game']['game_id'] or native.aware(p['cutoff_utc'])!=windows(a['job']['game'],a['protocol'])['target']:raise ValueError('Public cutoff/game differs from registered T')

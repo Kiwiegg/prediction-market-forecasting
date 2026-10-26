@@ -17,7 +17,11 @@ from evidence_documents import canonical, digest
 
 def timing_plan(games,now,config):
     return [{'game_id':g['game_id'],'target_utc':cloud.iso(cloud.windows(g,config)['target']),
+             'matchup':g['away_name']+' at '+g['home_name'],'tipoff_utc':g['recorded_start_utc'],
              'collection_start_utc':cloud.iso(cloud.windows(g,config)['collect']),
+             'freeze_deadline_utc':cloud.iso(cloud.windows(g,config)['freeze']),
+             'forecast_deadline_utc':cloud.iso(cloud.windows(g,config)['forecast']),
+             'schedule_provider':g.get('schedule_provider'),
              'status':'missed_no_backfill' if now>cloud.windows(g,config)['collect'] else 'wait_on_runner'}
             for g in sorted(games,key=lambda g:(cloud.windows(g,config)['target'],g['game_id']))]
 
@@ -31,8 +35,17 @@ def preflight(environment, require_providers=True, clock_check=True):
         if result.returncode or result.stdout.strip()!='yes':raise ValueError('UTC clock synchronization not confirmed')
 
 
-def catalog(state):
+def catalog(state,clock_repair=False):
     slot=time.strftime('%Y-%m-%d',time.gmtime(state.clock()))
+    alias=slot+'-clock-v1'
+    if clock_repair:
+        from inspect_actions_storage import CLOCK_FAILURE_DAY
+        if slot!=CLOCK_FAILURE_DAY:raise ValueError('Explicit constructor rerun is restricted to its original UTC day')
+        slot=alias
+    elif state.has('catalog',alias):
+        # Reuse an already completed, explicitly authorized repair capture.
+        # Claimed/failed aliases remain nonretryable, just like every other stage.
+        return state.artifact('catalog',alias)
     def collect(folder):
         session=cloud.CloudSession(folder/'raw',state,'catalog:'+slot,'discovery',state.clock()+120)
         games,decisions=cloud.discovery.discover_verified(session,state.clock(),state.config['scheduler']['discovery_days'])
@@ -99,6 +112,7 @@ def main():
     parser.add_argument('--confirm-authorized-campaign',action='store_true');parser.add_argument('--automatic',action='store_true')
     parser.add_argument('--game-id',action='append',default=[]);parser.add_argument('--expires');parser.add_argument('--max-games',type=int,default=1);parser.add_argument('--max-usd',type=float,default=50)
     parser.add_argument('--discover-only',action='store_true');parser.add_argument('--status',action='store_true');parser.add_argument('--replay',action='store_true')
+    parser.add_argument('--source-clock-rerun',action='store_true')
     parser.add_argument('--recover-owner');parser.add_argument('--confirm-old-runner-terminated')
     parser.add_argument('--state',type=Path);parser.add_argument('--run-id',default=os.environ.get('GITHUB_RUN_ID','operator')+'-'+os.environ.get('GITHUB_RUN_ATTEMPT','1'))
     parser.add_argument('--validate-assets',action='store_true')
@@ -111,6 +125,8 @@ def main():
             'strategy':'20-minute off-hour dispatch, runner ready before T-30, 90-minute lookahead, strict missed-window exclusion'},indent=2));return
     if not args.allow_network or not args.state:parser.error('Remote state commands require explicit network opt-in and fresh --state directory')
     if args.live and not (args.allow_search and args.allow_inference):parser.error('Live mode requires explicit search and inference opt-ins')
+    if args.source_clock_rerun and (not args.discover_only or args.confirm_old_runner_terminated!='CONFIRMED_OLD_RUNNER_TERMINATED'):
+        parser.error('Explicit discovery-only constructor recovery and terminated-run confirmation required')
     if args.live:preflight(os.environ)
     if args.authorize or args.expand:
         if not args.confirm_authorized_campaign or not args.expires:parser.error('Explicit campaign authorization and expiry required')
@@ -118,6 +134,11 @@ def main():
     objects=S3Objects(os.environ.get('NBA_ACTIONS_BUCKET'),deployment['storage_prefix'],os.environ.get('AWS_REGION'),os.environ.get('NBA_ACTIONS_ENDPOINT'))
     expected=os.environ.get('NBA_ACTIONS_STORE_UUID')
     if not args.bootstrap and not expected:parser.error('Original store UUID is mandatory; never reset missing state')
+    if args.source_clock_rerun:
+        from inspect_actions_storage import clock_repair_owner,CLOCK_FAILURE_DAY
+        if time.strftime('%Y-%m-%d',time.gmtime())!=CLOCK_FAILURE_DAY:raise ValueError('Constructor recovery date expired')
+        owner=clock_repair_owner(objects,expected)
+        recover_owner(objects,expected,json.dumps(owner),args.confirm_old_runner_terminated)
     if args.recover_owner:
         recover_owner(objects,expected,args.recover_owner,args.confirm_old_runner_terminated);print('Owner released; all request claims retained');return
     cp=Checkpoints(objects,expected)
@@ -130,7 +151,8 @@ def main():
         elif args.authorize:result=state.approve(args.game_id,args.expires,args.max_games,args.max_usd,args.automatic)
         elif args.expand:result=state.expand(args.expires,args.max_games,args.max_usd,args.automatic,args.game_id)
         elif args.discover_only:
-            found=catalog(state);result={'game_plan':timing_plan(found['games'],state.clock(),cfg),'paid_calls':0}
+            found=catalog(state,args.source_clock_rerun)
+            result={'game_plan':timing_plan(found['games'],state.clock(),cfg),'schedule_validation':found['decisions'],'paid_calls':0}
         elif args.replay:result={'replays':[cloud.replay_job(state,k) for k in state.jobs()]}
         elif args.status:result={'state':state.status(),'campaign':campaign_report(state)}
         else:result=run_worker(state)
@@ -138,13 +160,19 @@ def main():
         # Only aggregate monitoring goes to public Actions logs, never raw data,
         # source text, credentials, request headers or private forecast responses.
         if args.live:print(json.dumps({k:result[k] for k in ('campaign_id','enrolled','attempted','captured','primary_eligible','reserved_usd','ceiling_usd')}))
-        elif args.authorize or args.expand:print(json.dumps({'status':'authorized_not_started','max_games':result['max_games'],'max_usd':result['max_usd']}))
+        elif args.authorize or args.expand:print(json.dumps({'status':'authorized_not_started',**approval_summary(state.campaign())}))
         elif args.replay:print(json.dumps(result))
-        elif args.status:print(json.dumps({'jobs':result['state']['jobs'],'circuits':result['state']['circuits'],'reserved_usd':result['campaign']['reserved_usd']}))
+        elif args.status:print(json.dumps({'jobs':result['state']['jobs'],'circuits':result['state']['circuits'],'reserved_usd':result['campaign']['reserved_usd'],
+                                         'authorization':approval_summary(state.campaign())}))
         else:print(json.dumps(result,indent=2))
     finally:
         if success and not cp.poisoned:cp.close()
         # Any interruption retains owner and durable claims. Never auto-takeover.
+
+
+def approval_summary(approval):
+    return {k:approval[k] for k in ('game_ids','max_games','max_usd','per_game_usd',
+        'automatic_enrollment','expires_at_utc','mode','assets_sha256')}
 
 
 if __name__=='__main__':

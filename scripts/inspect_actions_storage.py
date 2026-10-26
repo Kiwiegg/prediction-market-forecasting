@@ -4,12 +4,17 @@ import os
 import re
 import sqlite3
 import tempfile
+from contextlib import closing
 from pathlib import Path
 
 from actions_campaign import settings
 from actions_storage import S3Objects, StorageStop
 from evidence_documents import digest
 from prospective_sources import allowed_source
+
+CLOCK_FAILURE_RUN = '40321487047-1'
+CLOCK_FAILURE_DAY = '2026-10-26'
+CLOCK_FAILURE_SNAPSHOT = '48ba34a01f6678f6b2233929f37255804ea9e50a590e1161b31c82821be6971f'
 
 
 def inspect(objects, expected_uuid):
@@ -42,7 +47,7 @@ def inspect(objects, expected_uuid):
         sha = files['state.sqlite']; body = read('blobs/'+sha, sha)
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp)/'snapshot.sqlite'; path.write_bytes(body)
-            with sqlite3.connect(path.as_uri()+'?mode=ro&immutable=1', uri=True) as db:
+            with closing(sqlite3.connect(path.as_uri()+'?mode=ro&immutable=1', uri=True)) as db:
                 db.row_factory = sqlite3.Row
                 result['stages'] = [dict(r) for r in db.execute('SELECT job,name,status FROM stages')]
                 result['circuits'] = [dict(r) for r in db.execute('SELECT id,body FROM circuits')]
@@ -63,6 +68,23 @@ def sanitized(value, environment):
             return re.sub(r'sk-ant-[A-Za-z0-9_-]+','[redacted]',v)
         return v
     return clean(value)
+
+
+def clock_repair_owner(objects, expected_uuid):
+    """Permit only the inspected, zero-request constructor failure; no writes."""
+    audit=inspect(objects,expected_uuid)
+    expected_stage={'job':'catalog','name':CLOCK_FAILURE_DAY,'status':'failed'}
+    if (audit['snapshot_sha256']!=CLOCK_FAILURE_SNAPSHOT or audit['owner_run']!=CLOCK_FAILURE_RUN
+            or audit['stages']!=[expected_stage] or audit['source_requests'] or audit['circuits']
+            or audit['paid_claim_count']!=0 or len(audit['stage_errors'])!=1):
+        raise ValueError('Not the explicitly approved zero-request clock failure')
+    error=audit['stage_errors'][0]
+    if error['error_type']!='AttributeError' or error['reason']!="'SourceBudget' object has no attribute 'clock'":
+        raise ValueError('Failure reason changed; recovery forbidden')
+    body,_=objects.read('root.json');root=json.loads(body)
+    if root['snapshot']!=audit['snapshot_sha256'] or (root.get('owner') or {}).get('run')!=CLOCK_FAILURE_RUN:
+        raise ValueError('Root changed during read-only repair validation')
+    return root['owner']
 
 
 def main():

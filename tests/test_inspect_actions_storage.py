@@ -22,6 +22,7 @@ class InspectionTests(unittest.TestCase):
             with sqlite3.connect(path) as db:
                 db.executescript('CREATE TABLE stages(job,name,status);CREATE TABLE circuits(id,body);CREATE TABLE requests(kind);')
                 db.execute("INSERT INTO stages VALUES('catalog','2026-10-26','failed')")
+            db.close()
             add('state.sqlite',path.read_bytes())
         manifest=canonical({'files':files,'previous':None});sha=digest(manifest)
         data['snapshots/'+sha]=manifest

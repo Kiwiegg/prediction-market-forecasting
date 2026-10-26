@@ -1,0 +1,12 @@
+{
+  "deploy/cloud-news/nba-cloud-evidence.service": "753a52142631d9600d779d6b40205b7f1088e5bf988b924decfa7da4f74d6bcc",
+  "deploy/cloud-news/nba-cloud-market.service": "380aa6ea1691168d387344ef35876932de39d60c5218660c2d79064046e6ed9f",
+  "examples/prospective_cloud_news_v1.json": "e3912abc8cd599079badca38f16798e609d97b4e93b4c421c3e45a408789772a",
+  "experiments/prospective_cloud_news_v1.md": "511d4b5cfe4e1be1f81234b19ca9fcb338f38a9675483928ac880a52e9b3bdf2",
+  "experiments/prospective_schedule_amendment_v1_assets.json": "476adf18125c21bf1a6e972c121b3144a814bd1e118e514273ba38cd3bb5beea",
+  "scripts/cloud_market.py": "4a5f2dbef1a13a0998b5b17f6e6c433e5b4433b7d2d7fd52e0676be2aec01130",
+  "scripts/cloud_news.py": "ed338b2a84c03331cf824844956323028cbceab111cf33de603bc23db2f9dd7f",
+  "scripts/cloud_prospective.py": "d03fdb6f0f658f5be7ab30f392666e87602f3641fa87c9001d696c360f84dd27",
+  "scripts/cloud_state.py": "539870e85dde227cc088a753f496beb5c252fc0488c9901166c3807a6637c2a0",
+  "tests/test_cloud_news_pipeline.py": "b69e0524e2ad433fae91a6ceb8a0b95172d70dbb9459d18b2f2364c479319c48"
+}

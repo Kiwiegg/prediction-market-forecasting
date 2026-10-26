@@ -7,7 +7,7 @@ on:
       mode:
         description: 'dry-run is offline; all other modes require separate activation'
         type: choice
-        options: [dry-run, bootstrap, discover, authorize, expand, status, replay, live]
+        options: [dry-run, bootstrap, discover, repair-discover, authorize, expand, status, replay, live]
         default: dry-run
       game_id:
         description: 'One verified game ID for initial authorization'
@@ -73,6 +73,9 @@ jobs:
           .venv/bin/python scripts/cloud_prospective.py --replay-public reports/prospective_cloud_news_v1/simulation
   private-worker:
     needs: gates
+    permissions:
+      contents: read
+      actions: read
     if: >-
       github.ref == 'refs/heads/main' &&
       github.sha == vars.NBA_ACTIONS_REVIEWED_SHA &&
@@ -94,6 +97,13 @@ jobs:
           .venv/bin/pip install -r requirements.txt -r deploy/github-actions/requirements.txt
           .venv/bin/python scripts/actions_prospective.py --validate-assets
           test "$(timedatectl show -p NTPSynchronized --value)" = yes
+      - name: Confirm the zero-request failed runner terminated
+        if: inputs.mode == 'repair-discover'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ended=$(gh api repos/Kiwiegg/prediction-market-forecasting/actions/runs/40321487047 --jq '[.status,.conclusion,(.run_attempt|tostring),.head_sha] | join(" ")')
+          test "$ended" = 'completed failure 1 a99b24a9021a833c1899041048fc12ec7636553b'
       - name: Private bounded worker
         env:
           NBA_ACTIONS_BUCKET: ${{ secrets.NBA_ACTIONS_BUCKET }}
@@ -116,6 +126,7 @@ jobs:
           case "$mode" in
             bootstrap) args+=(--bootstrap) ;;
             discover) args+=(--discover-only) ;;
+            repair-discover) args+=(--discover-only --source-clock-rerun --confirm-old-runner-terminated CONFIRMED_OLD_RUNNER_TERMINATED) ;;
             authorize) args+=(--authorize --confirm-authorized-campaign --game-id "$APPROVED_GAME_ID" --expires "$AUTHORIZATION_EXPIRES" --max-games 1 --max-usd 50) ;;
             expand)
               args+=(--expand --confirm-authorized-campaign --expires "$AUTHORIZATION_EXPIRES" --max-games "$APPROVED_GAME_LIMIT" --max-usd 50)

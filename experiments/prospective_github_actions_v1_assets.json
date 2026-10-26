@@ -1,13 +1,18 @@
 {
-  ".github/workflows/prospective-nba.yml": "2353c0996d8b423807e55aad74d2a5a4e23b5c182d6d4c7fa7f3b5e04545c2ee",
+  ".github/workflows/prospective-nba.yml": "5cab63aba48895d9ad4e93f2ac9b043a0f7cc0f816d1f71bf79d92057ccaebe3",
   "deploy/github-actions/README.md": "524ef6c8983208010e3d60d087152b546ed395ace28ed31b9d07b0d99b89194b",
   "deploy/github-actions/requirements.txt": "232ca3abdd25473383c57f9190e50ab47f811dcf949d03a3d018ddcaae613e33",
   "examples/prospective_github_actions_v1.json": "f7fe07b611ec61afb9b93ab0d5f869c4e2120ad76689aa2e72677ac13e32ff65",
+  "experiments/prospective_cloud_news_v1_assets.json": "a7065171b72dd77a94cc366d382d5cfdf7e1ed25902b3105c33a6063f364e221",
   "experiments/prospective_github_actions_v1.md": "96078d3175d4d400fa7ac7d0d5b13cf1363d076df0d784bda6a2768163bc8d75",
+  "experiments/prospective_source_clock_repair_v1.md": "213abcc66a9678d479de99f41f13f9ec1d61fbdfd5afca73e64bb02b35f93792",
   "scripts/actions_campaign.py": "097f7c5ed62a946da2946877c416ba7c9776809e1d0b676f31aeded7469ee314",
-  "scripts/actions_gates.py": "be75320d29d7325bda144c6cccd2bc84ac70aeb1abc8687613db47a2ab2fd5c3",
-  "scripts/actions_prospective.py": "940e7ba64d36546ebb41b632ab7600fd46cd136a3791aea5a9f79631b650d8f7",
+  "scripts/actions_gates.py": "5ca70e71ebad029b3d38adca20bb812f800dbcdaea56339537f8d3266cfddd97",
+  "scripts/actions_prospective.py": "ba37714b0b4e4563d2838ad479f570f4219fef4199785ead1307d4459bc365c0",
   "scripts/actions_storage.py": "770d148f100e244823488f02a7a06457a02f2e2756b3c411b7c7006987825b11",
+  "scripts/inspect_actions_storage.py": "16e43fd1b4230f6c432a41f3e21c177a468f8bf121204b6c82ecedd00de2feec",
   "tests/test_actions_gates.py": "db295704658acec8e630c8cc1c2035e856c83fffc18a8a89faa11225fc92e275",
-  "tests/test_actions_prospective.py": "0e05149398a62f4b16eafa40d5f1868c2da37d994e89f252ca8f11254e2e2b9d"
+  "tests/test_actions_prospective.py": "0e05149398a62f4b16eafa40d5f1868c2da37d994e89f252ca8f11254e2e2b9d",
+  "tests/test_inspect_actions_storage.py": "d437103015f8d80a9747283f71833ca6b686e4febb25668f038e45e2695bd596",
+  "tests/test_source_session_clock.py": "fc437712b3e1eac409ece9cf07a8adca52191501ec26674777180cd13cbee63f"
 }
