@@ -1,0 +1,50 @@
+{
+  "run_id": 40501209408,
+  "url": "https://github.com/Kiwiegg/prediction-market-forecasting/actions/runs/40501209408",
+  "commit": "19c3d0cbc680d5caa38ee06019916e40a9d0b7f6",
+  "result": {
+    "status": "renewal_plan_only_no_authorization",
+    "predecessor_sha256": "0789a7fe557a585cdfb6facfd4d42c8b38b280be17124bfe0628bed46c9c5333",
+    "expires_at_utc": "2026-10-27T00:30:00Z",
+    "expired": true,
+    "max_games": 1,
+    "max_usd": 50,
+    "per_game_usd": 1.35,
+    "game_ids": [
+      "401909877"
+    ],
+    "automatic_enrollment": false,
+    "migration_required": true,
+    "source_assets_sha256": "d0ddb612029c3435f0037f7eeeedf2bd6e06fb16246cb5abe98cf45b383b865b",
+    "target_assets_sha256": "0092b665df1319d076d66dff9f3ecbfc023f073382d4ff0224b5d5606d9c3913",
+    "request_count": 9,
+    "reserved_usd": 0.178331,
+    "request_ledger_sha256": "48cb36d7d912cfeb08e78aaee39e77cd78d58d0a55009be8412925d85a616203",
+    "denial_journal_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "denial_count": 0,
+    "paid_calls": 0,
+    "private_replays": [
+      {
+        "verified": true,
+        "mode": "live_explicit_opt_in",
+        "stages": [
+          "baseline",
+          "extraction",
+          "forecast",
+          "freeze",
+          "market",
+          "news",
+          "refresh"
+        ],
+        "forecasts": true,
+        "packet_sha256": "e7b0dc9502a0f374f6805bfa0ad16a947a4ce6d1aeff09d6d3f5cb09503c27de"
+      }
+    ],
+    "first_primary_pair_verified": true,
+    "checkpoint_sha256": "ad640327ecee31d1c07bfdc77888cc51a83af987845da23187743617889db191",
+    "private_files_verified_unchanged": 296,
+    "store_uuid_verified": true,
+    "new_authorizations": 0,
+    "remote_writes": 0
+  }
+}

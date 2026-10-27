@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "implementation_commit": "19c3d0cbc680d5caa38ee06019916e40a9d0b7f6",
+  "baseline_commit": "7b98f1838c6f46f1637ba6ce65306b27f35d1d0b",
+  "full_suite": {
+    "passed": true,
+    "tests": 292,
+    "seconds": 82.628
+  },
+  "renewal_tests": 13,
+  "clean_checkout": {
+    "clean_git_archive_commit": "19c3d0cbc680d5caa38ee06019916e40a9d0b7f6",
+    "network_or_paid_calls": false,
+    "checks": [
+      {
+        "command": "python scripts/actions_prospective.py --validate-assets",
+        "result": {
+          "verified": true,
+          "assets_sha256": "0092b665df1319d076d66dff9f3ecbfc023f073382d4ff0224b5d5606d9c3913"
+        }
+      },
+      {
+        "command": "python scripts/cloud_prospective.py --replay-public reports/prospective_cloud_news_v1/simulation",
+        "result": {
+          "verified": true,
+          "mode": "offline_mock",
+          "packet_sha256": "68ba497484267bf559c6b603cf1d5c65eae35c3f8be548bc48829e21133d829d",
+          "scope": "sanitized shared packet, native requests and aggregation; not source/provider authentication"
+        }
+      },
+      {
+        "command": "python scripts/replay_live_pilot_summary.py reports/prospective_live_pilot_1",
+        "result": {
+          "verified": true,
+          "game_id": "401909877",
+          "packet_sha256": "e7b0dc9502a0f374f6805bfa0ad16a947a4ce6d1aeff09d6d3f5cb09503c27de",
+          "scope": "Sanitized hash/arithmetic/clock/accounting consistency; private replay separately required"
+        }
+      },
+      {
+        "command": "python -m unittest discover -s tests -p test_campaign_renewal.py -q",
+        "passed": true,
+        "summary": [
+          "----------------------------------------------------------------------",
+          "Ran 13 tests in 3.593s",
+          "",
+          "OK"
+        ]
+      }
+    ]
+  },
+  "workflow_actionlint_passed": true,
+  "committed_asset_validation_passed": true,
+  "original_files_changed": [
+    ".github/workflows/prospective-nba.yml",
+    "deploy/github-actions/README.md",
+    "experiments/prospective_github_actions_v1_assets.json",
+    "scripts/actions_campaign.py",
+    "scripts/actions_gates.py",
+    "scripts/actions_prospective.py"
+  ],
+  "protected_files_verified_unchanged": 7844,
+  "historical_dataset_files_verified_unchanged": 7411,
+  "private_plan_sha256": "f2de676d70631d8c1a0026c3266fa6e60403533c797578f651cc18adc3a82413",
+  "paid_provider_calls": 0,
+  "new_authorizations": 0,
+  "live_flag_observed": "false",
+  "renewal_executed": false,
+  "expansion_executed": false
+}
