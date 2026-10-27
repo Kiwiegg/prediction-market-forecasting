@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "game_id": "401909877",
+  "audit_sha256": "2f29cc273e9ebbff9e5d919757ee8b95ae358c286ec3b4e4b0980372ff54639c",
+  "live_capture_commit": "d65a2e1ceba99f0a4bfd8f055eef4b985d480327",
+  "audit_tool_commit": "0173f046b0f1354290c56b2baf5aea5c5f030e76",
+  "live_run_id": 40414074069,
+  "private_replay_run_id": 40422636551,
+  "get_only_audit_run_id": 40432361469,
+  "outcomes_accessed": false,
+  "new_paid_calls": 0,
+  "automatic_enrollment_activated": false,
+  "original_tracked_files_verified_unchanged": 7953,
+  "historical_dataset_files_verified_unchanged": 7411
+}

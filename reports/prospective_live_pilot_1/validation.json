@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "complete_unit_suite": {
+    "passed": true,
+    "tests": 279,
+    "seconds": 87.136
+  },
+  "initial_unit_suite": {
+    "passed": true,
+    "tests": 276
+  },
+  "private_r2_replay": {
+    "run_id": 40422636551,
+    "passed": true
+  },
+  "get_only_private_audit": {
+    "run_id": 40432361469,
+    "passed": true,
+    "audit_tool_commit": "0173f046b0f1354290c56b2baf5aea5c5f030e76"
+  },
+  "clean_checkout_checks": {
+    "clean_git_archive_plus_reviewed_additions": true,
+    "network_or_paid_calls": false,
+    "checks": [
+      {
+        "command": "python scripts/actions_prospective.py --validate-assets",
+        "result": {
+          "verified": true,
+          "assets_sha256": "d0ddb612029c3435f0037f7eeeedf2bd6e06fb16246cb5abe98cf45b383b865b"
+        }
+      },
+      {
+        "command": "python scripts/cloud_prospective.py --replay-public reports/prospective_cloud_news_v1/simulation",
+        "result": {
+          "verified": true,
+          "mode": "offline_mock",
+          "packet_sha256": "68ba497484267bf559c6b603cf1d5c65eae35c3f8be548bc48829e21133d829d",
+          "scope": "sanitized shared packet, native requests and aggregation; not source/provider authentication"
+        }
+      },
+      {
+        "command": "python scripts/replay_live_pilot_summary.py reports/prospective_live_pilot_1",
+        "result": {
+          "verified": true,
+          "game_id": "401909877",
+          "packet_sha256": "e7b0dc9502a0f374f6805bfa0ad16a947a4ce6d1aeff09d6d3f5cb09503c27de",
+          "scope": "Sanitized hash/arithmetic/clock/accounting consistency; private replay separately required"
+        }
+      }
+    ]
+  },
+  "preservation": {
+    "baseline_commit": "d65a2e1ceba99f0a4bfd8f055eef4b985d480327",
+    "original_tracked_files_checked": 7953,
+    "historical_dataset_files_checked": 7411,
+    "changed_original_files": []
+  },
+  "live_flag_observed": "false",
+  "new_paid_calls": 0,
+  "new_game_authorizations": 0,
+  "new_source_collection_calls": 0,
+  "automatic_enrollment_activated": false
+}
