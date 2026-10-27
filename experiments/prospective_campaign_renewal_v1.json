@@ -1,0 +1,18 @@
+{
+  "protocol": "prospective_campaign_renewal_v1",
+  "source_registry_path": "experiments/prospective_github_actions_before_renewal_v1_assets.json",
+  "source_registry_sha256": "d0ddb612029c3435f0037f7eeeedf2bd6e06fb16246cb5abe98cf45b383b865b",
+  "allowed_changed_assets": [
+    ".github/workflows/prospective-nba.yml",
+    "deploy/github-actions/README.md",
+    "scripts/actions_campaign.py",
+    "scripts/actions_gates.py",
+    "scripts/actions_prospective.py"
+  ],
+  "allowed_added_assets": [
+    "experiments/prospective_github_actions_before_renewal_v1_assets.json",
+    "experiments/prospective_campaign_renewal_v1.json",
+    "experiments/prospective_campaign_renewal_v1.md",
+    "tests/test_campaign_renewal.py"
+  ]
+}

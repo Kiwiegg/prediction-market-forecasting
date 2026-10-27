@@ -10,6 +10,25 @@ from evidence_documents import canonical, digest
 
 CONFIG=cloud.ROOT/'examples/prospective_github_actions_v1.json'
 REGISTRY=cloud.ROOT/'experiments/prospective_github_actions_v1_assets.json'
+RENEWAL=cloud.ROOT/'experiments/prospective_campaign_renewal_v1.json'
+
+
+def renewal_migration():
+    """One reviewed operational transition; frozen evidence/config stays identical."""
+    policy=json.loads(RENEWAL.read_text())
+    source=(cloud.ROOT/policy['source_registry_path']).read_bytes()
+    if digest(source)!=policy['source_registry_sha256']:raise ValueError('Archived operational registry corrupt')
+    before=json.loads(source);after=json.loads(REGISTRY.read_text())
+    changed={name for name in before.keys() & after.keys() if before[name]!=after[name]}
+    added=after.keys()-before.keys()
+    if before.keys()-after.keys() or not changed<=set(policy['allowed_changed_assets']) or set(added)!=set(policy['allowed_added_assets']):
+        raise ValueError('Operational migration exceeds reviewed file allowlist')
+    # These two unchanged manifests bind budgets, all evidence and frozen methods.
+    for name in ('examples/prospective_github_actions_v1.json','experiments/prospective_cloud_news_v1_assets.json'):
+        if before[name]!=after[name] or digest((cloud.ROOT/name).read_bytes())!=before[name]:
+            raise ValueError('Renewal cannot change evidence, methods or budget configuration')
+    return {'protocol':policy['protocol'],'policy_sha256':digest(RENEWAL.read_bytes()),
+            'from_assets_sha256':digest(source),'to_assets_sha256':digest(REGISTRY.read_bytes())}
 
 
 def settings():
@@ -31,6 +50,7 @@ def verify_assets(committed=False):
     if committed:
         import subprocess
         if subprocess.check_output(['git','show','HEAD:'+str(REGISTRY.relative_to(cloud.ROOT))],cwd=cloud.ROOT)!=REGISTRY.read_bytes():raise ValueError('Commit Actions asset registry')
+    renewal_migration()
     return digest(REGISTRY.read_bytes())
 
 
@@ -44,22 +64,95 @@ class CampaignState(RemoteState):
             if self.authorization(auth)['mode']!=approval['mode']:raise ValueError('Campaign/job mode mismatch')
             return super().enroll(game,auth)
 
-    def campaign(self):
+    def campaign_history(self):
+        """Validate history without granting permission to spend under an old expiry."""
         path=self.root/'campaign.json'
         if not path.is_file():raise ValueError('Campaign authorization missing; worker remains disabled')
-        approval=json.loads(path.read_text());cfg=settings()
-        for amendment in sorted((self.root/'campaign_amendments').glob('*.json')):
+        approval=json.loads(path.read_text());self._validate_approval(approval)
+        migration=renewal_migration();known={migration['from_assets_sha256'],migration['to_assets_sha256']}
+        if approval['assets_sha256'] not in known:raise ValueError('Unapproved historical operational registry')
+        for number,amendment in enumerate(sorted((self.root/'campaign_amendments').glob('*.json')),1):
+            if amendment.name!='%04d.json'%number:raise ValueError('Noncontiguous campaign amendment chain')
             newer=json.loads(amendment.read_text())
             if newer.get('previous_sha256')!=digest(canonical(approval)):raise ValueError('Campaign amendment chain broken')
+            self._validate_approval(newer)
+            if newer['assets_sha256'] not in known:raise ValueError('Unapproved amended operational registry')
+            if cloud.native.aware(newer['authorized_at_utc'])<cloud.native.aware(approval['authorized_at_utc']) or newer['mode']!=approval['mode']:
+                raise ValueError('Invalid campaign amendment chronology/mode')
+            if newer.get('transition_kind')=='renewal':
+                scope=('game_ids','max_games','max_usd','per_game_usd','automatic_enrollment')
+                if any(newer[k]!=approval[k] for k in scope):raise ValueError('Renewal cannot expand campaign scope or budget')
+                if newer.get('renewal_protocol')!=migration['protocol'] or cloud.native.aware(newer['expires_at_utc'])<=cloud.native.aware(approval['expires_at_utc']):
+                    raise ValueError('Invalid renewal protocol/expiry')
+                expected=migration if newer['assets_sha256']!=approval['assets_sha256'] else None
+                if newer.get('operational_migration')!=expected:raise ValueError('Operational migration proof mismatch')
+                if expected and (approval['assets_sha256']!=expected['from_assets_sha256'] or newer['assets_sha256']!=expected['to_assets_sha256']):
+                    raise ValueError('Unauthorized registry migration direction')
+            else:
+                if newer.get('transition_kind') not in (None,'expansion') or newer['assets_sha256']!=approval['assets_sha256']:
+                    raise ValueError('Registry transition requires explicit renewal')
+                if newer['max_games']<=approval['max_games'] or newer['max_usd']<approval['max_usd']:
+                    raise ValueError('Expansion cannot reset campaign scope/budget')
             approval=newer
-        expected={'version':1,'campaign_id':cfg['campaign_id'],'store_uuid':self.uuid,
-                  'config_sha256':digest(CONFIG.read_bytes()),'assets_sha256':digest(REGISTRY.read_bytes())}
-        if any(approval.get(k)!=v for k,v in expected.items()):raise ValueError('Campaign/store/protocol authorization mismatch')
-        if not approval['authorized_at_utc']<=cloud.iso(self.clock())<=approval['expires_at_utc']:raise ValueError('Campaign authorization expired/not yet valid')
-        if (not 0<approval['max_usd']<=cfg['campaign_ceiling_usd'] or not 1<=approval['max_games']<=cfg['maximum_game_cap']
-                or approval['per_game_usd']!=cfg['per_game_ceiling_usd']):raise ValueError('Invalid campaign limits')
-        if approval['mode'] not in ('live_explicit_opt_in','offline_mock'):raise ValueError('Invalid campaign mode')
         return approval
+
+    def _validate_approval(self,approval):
+        cfg=settings()
+        expected={'version':1,'campaign_id':cfg['campaign_id'],'store_uuid':self.uuid,
+                  'config_sha256':digest(CONFIG.read_bytes())}
+        if any(approval.get(k)!=v for k,v in expected.items()):raise ValueError('Campaign/store/protocol authorization mismatch')
+        start,end=(cloud.native.aware(approval[k]) for k in ('authorized_at_utc','expires_at_utc'))
+        if not 0<end-start<=cfg['authorization_max_days']*86400:raise ValueError('Invalid campaign authorization interval')
+        if (not math.isfinite(approval['max_usd']) or not 0<approval['max_usd']<=cfg['campaign_ceiling_usd']
+                or type(approval['max_games']) is not int or not 1<=approval['max_games']<=cfg['maximum_game_cap']
+                or approval['per_game_usd']!=cfg['per_game_ceiling_usd']
+                or type(approval['automatic_enrollment']) is not bool):raise ValueError('Invalid campaign limits')
+        ids=approval['game_ids']
+        if not isinstance(ids,list) or any(not isinstance(g,str) for g in ids) or sorted(set(ids))!=ids or set(ids)&set(self.config['excluded_game_ids']):
+            raise ValueError('Invalid campaign allowlist')
+        if not approval['automatic_enrollment'] and len(ids)<approval['max_games']:raise ValueError('Campaign allowlist incomplete')
+        if approval['mode'] not in ('live_explicit_opt_in','offline_mock'):raise ValueError('Invalid campaign mode')
+
+    def campaign(self):
+        approval=self.campaign_history()
+        if approval['assets_sha256']!=digest(REGISTRY.read_bytes()):raise ValueError('Explicit operational authorization migration required')
+        if not cloud.native.aware(approval['authorized_at_utc'])<=self.clock()<=cloud.native.aware(approval['expires_at_utc']):
+            raise ValueError('Campaign authorization expired/not yet valid')
+        return approval
+
+    def renewal_plan(self):
+        old=self.campaign_history();migration=renewal_migration()
+        with self.db() as c:
+            rows=[dict(r) for r in c.execute('SELECT * FROM requests ORDER BY id')]
+            circuits=[dict(r) for r in c.execute('SELECT * FROM circuits ORDER BY id')]
+        return {'status':'renewal_plan_only_no_authorization','predecessor_sha256':digest(canonical(old)),
+                'expires_at_utc':old['expires_at_utc'],'expired':self.clock()>cloud.native.aware(old['expires_at_utc']),
+                'max_games':old['max_games'],'max_usd':old['max_usd'],'per_game_usd':old['per_game_usd'],
+                'game_ids':old['game_ids'],'automatic_enrollment':old['automatic_enrollment'],
+                'migration_required':old['assets_sha256']!=migration['to_assets_sha256'],
+                'source_assets_sha256':old['assets_sha256'],'target_assets_sha256':migration['to_assets_sha256'],
+                'request_count':len(rows),'reserved_usd':sum(r['usd'] for r in rows),
+                'request_ledger_sha256':digest(canonical(rows)),'denial_journal_sha256':digest(canonical(circuits)),
+                'denial_count':len(circuits),'paid_calls':0}
+
+    def renew(self,expires,expected_predecessor,confirm=False,accept_migration=False):
+        if not confirm:raise ValueError('Explicit campaign renewal approval required')
+        with self.checkpoints.lock:
+            old=self.campaign_history()
+            if expected_predecessor!=digest(canonical(old)):raise ValueError('Renewal predecessor differs; inspect fresh state')
+            if cloud.native.aware(old['authorized_at_utc'])>self.clock():raise ValueError('Cannot renew a future authorization')
+            end=cloud.native.aware(expires)
+            if not max(self.clock(),cloud.native.aware(old['expires_at_utc']))<end<=self.clock()+settings()['authorization_max_days']*86400:
+                raise ValueError('Renewal requires a new bounded future expiry')
+            migration=renewal_migration();changing=old['assets_sha256']!=migration['to_assets_sha256']
+            if changing and not accept_migration:raise ValueError('Explicit operational migration approval required')
+            value={**old,'previous_sha256':digest(canonical(old)),'transition_kind':'renewal',
+                   'renewal_protocol':migration['protocol'],'operational_migration':migration if changing else None,
+                   'authorized_at_utc':cloud.iso(self.clock()),'expires_at_utc':cloud.iso(end),
+                   'assets_sha256':migration['to_assets_sha256']}
+            number=len(list((self.root/'campaign_amendments').glob('*.json')))+1
+            durable_json(self.root/'campaign_amendments'/('%04d.json'%number),value);self.sync()
+            return self.campaign()
 
     def expand(self,expires,max_games,max_usd,automatic=False,game_ids=()):
         old=self.campaign()
@@ -70,7 +163,8 @@ class CampaignState(RemoteState):
         if not automatic and len(set(game_ids))<max_games:raise ValueError('Explicit complete allowlist or automatic authorization required')
         value={**old,'previous_sha256':digest(canonical(old)),'authorized_at_utc':cloud.iso(self.clock()),
                'expires_at_utc':cloud.iso(end),'max_games':max_games,'max_usd':max_usd,
-               'game_ids':sorted(set(game_ids)),'automatic_enrollment':automatic}
+               'game_ids':sorted(set(game_ids)),'automatic_enrollment':automatic,
+               'transition_kind':'expansion','renewal_protocol':None,'operational_migration':None}
         number=len(list((self.root/'campaign_amendments').glob('*.json')))+1
         durable_json(self.root/'campaign_amendments'/('%04d.json'%number),value);self.sync();return self.campaign()
 

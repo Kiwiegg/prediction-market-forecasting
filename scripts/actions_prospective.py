@@ -104,11 +104,35 @@ def recover_owner(objects, expected_uuid, expected_owner, confirmation):
     objects.write(Checkpoints.ROOT,canonical({**root,'owner':None}),etag)
 
 
+def renewal_plan(objects,expected_uuid,destination,config,clock=time.time):
+    """GET-only checkpoint restore and replay; never grant or migrate approval."""
+    from audit_live_pilot import ReadOnlyState
+    from unittest.mock import patch
+    class Reader(ReadOnlyState,CampaignState):pass
+    raw,_=objects.read(Checkpoints.ROOT);root=json.loads(raw or b'{}')
+    if root.get('store_uuid')!=expected_uuid or root.get('owner') is not None or not root.get('snapshot'):
+        raise StorageStop('Renewal inspection requires the original idle checkpoint')
+    cp=Checkpoints(objects,expected_uuid);cp.root=root;cp.restore(destination)
+    reader=Reader(destination,config);reader.clock=clock
+    with patch('urllib.request.OpenerDirector.open',side_effect=AssertionError('Renewal planning cannot retrieve sources or call providers')):
+        result=reader.renewal_plan()
+        result['private_replays']=[cloud.replay_job(reader,k) for k in reader.jobs()]
+        result['first_primary_pair_verified']=reader.first_success()
+    if any(digest((Path(destination)/n).read_bytes())!=sha for n,sha in cp.files.items()):
+        raise StorageStop('Read-only renewal inspection changed captured bytes')
+    current,_=objects.read(Checkpoints.ROOT)
+    if current!=raw:raise StorageStop('Checkpoint changed during inspection; inspect fresh state')
+    return {**result,'checkpoint_sha256':root['snapshot'],'private_files_verified_unchanged':len(cp.files),
+            'store_uuid_verified':True,'new_authorizations':0,'remote_writes':0}
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--live',action='store_true');parser.add_argument('--allow-network',action='store_true')
     parser.add_argument('--allow-search',action='store_true');parser.add_argument('--allow-inference',action='store_true')
     parser.add_argument('--bootstrap',action='store_true');parser.add_argument('--authorize',action='store_true');parser.add_argument('--expand',action='store_true')
+    parser.add_argument('--renew',action='store_true');parser.add_argument('--renewal-plan',action='store_true')
+    parser.add_argument('--predecessor-sha256');parser.add_argument('--accept-operational-migration',action='store_true')
     parser.add_argument('--confirm-authorized-campaign',action='store_true');parser.add_argument('--automatic',action='store_true')
     parser.add_argument('--game-id',action='append',default=[]);parser.add_argument('--expires');parser.add_argument('--max-games',type=int,default=1);parser.add_argument('--max-usd',type=float,default=50)
     parser.add_argument('--discover-only',action='store_true');parser.add_argument('--status',action='store_true');parser.add_argument('--replay',action='store_true')
@@ -118,7 +142,9 @@ def main():
     parser.add_argument('--validate-assets',action='store_true')
     args=parser.parse_args();cfg=cloud.checked(json.loads(cloud.CONFIG.read_text()));deployment=settings()
     if args.validate_assets:print(json.dumps({'verified':True,'assets_sha256':verify_assets()}));return
-    selected=args.live or args.bootstrap or args.authorize or args.expand or args.discover_only or args.status or args.replay or args.recover_owner
+    modes=(args.live,args.bootstrap,args.authorize,args.expand,args.renew,args.renewal_plan,args.discover_only,args.status,args.replay,bool(args.recover_owner))
+    if sum(modes)>1:parser.error('Select exactly one remote operation')
+    selected=any(modes)
     if not selected:
         print(json.dumps({'mode':'offline_plan','paid_enabled':False,'settings':deployment,'evidence_windows':cfg['evidence'],
             'forecast_windows':cfg['forecast'],'network_calls':0,'paid_calls':0,'next_game':'unknown: explicit schedule discovery needed',
@@ -128,8 +154,10 @@ def main():
     if args.source_clock_rerun and (not args.discover_only or args.confirm_old_runner_terminated!='CONFIRMED_OLD_RUNNER_TERMINATED'):
         parser.error('Explicit discovery-only constructor recovery and terminated-run confirmation required')
     if args.live:preflight(os.environ)
-    if args.authorize or args.expand:
+    if args.authorize or args.expand or args.renew:
         if not args.confirm_authorized_campaign or not args.expires:parser.error('Explicit campaign authorization and expiry required')
+    if args.renew and (not args.predecessor_sha256 or args.automatic or args.game_id or args.max_games!=1 or args.max_usd!=50):
+        parser.error('Renewal requires exact predecessor hash; scope/budget changes require separate expansion')
     verify_assets(True)
     objects=S3Objects(os.environ.get('NBA_ACTIONS_BUCKET'),deployment['storage_prefix'],os.environ.get('AWS_REGION'),os.environ.get('NBA_ACTIONS_ENDPOINT'))
     expected=os.environ.get('NBA_ACTIONS_STORE_UUID')
@@ -141,6 +169,8 @@ def main():
         recover_owner(objects,expected,json.dumps(owner),args.confirm_old_runner_terminated)
     if args.recover_owner:
         recover_owner(objects,expected,args.recover_owner,args.confirm_old_runner_terminated);print('Owner released; all request claims retained');return
+    if args.renewal_plan:
+        print(json.dumps(renewal_plan(objects,expected,args.state,cfg),indent=2));return
     cp=Checkpoints(objects,expected)
     cp.open(args.run_id,args.bootstrap);state=None;success=False
     try:
@@ -149,6 +179,7 @@ def main():
         state=CampaignState(args.state,cfg,cp,time.time,initialize=args.bootstrap)
         if args.bootstrap:result={'store_uuid':state.uuid,'status':'private_store_initialized_no_collection'}
         elif args.authorize:result=state.approve(args.game_id,args.expires,args.max_games,args.max_usd,args.automatic)
+        elif args.renew:result=state.renew(args.expires,args.predecessor_sha256,args.confirm_authorized_campaign,args.accept_operational_migration)
         elif args.expand:result=state.expand(args.expires,args.max_games,args.max_usd,args.automatic,args.game_id)
         elif args.discover_only:
             found=catalog(state,args.source_clock_rerun)
@@ -160,7 +191,7 @@ def main():
         # Only aggregate monitoring goes to public Actions logs, never raw data,
         # source text, credentials, request headers or private forecast responses.
         if args.live:print(json.dumps({k:result[k] for k in ('campaign_id','enrolled','attempted','captured','primary_eligible','reserved_usd','ceiling_usd')}))
-        elif args.authorize or args.expand:print(json.dumps({'status':'authorized_not_started',**approval_summary(state.campaign())}))
+        elif args.authorize or args.expand or args.renew:print(json.dumps({'status':'authorized_not_started',**approval_summary(state.campaign())}))
         elif args.replay:print(json.dumps(result))
         elif args.status:print(json.dumps({'jobs':result['state']['jobs'],'circuits':result['state']['circuits'],'reserved_usd':result['campaign']['reserved_usd'],
                                          'authorization':approval_summary(state.campaign())}))
@@ -171,8 +202,9 @@ def main():
 
 
 def approval_summary(approval):
-    return {k:approval[k] for k in ('game_ids','max_games','max_usd','per_game_usd',
-        'automatic_enrollment','expires_at_utc','mode','assets_sha256')}
+    return {**{k:approval[k] for k in ('game_ids','max_games','max_usd','per_game_usd',
+        'automatic_enrollment','expires_at_utc','mode','assets_sha256')},'approval_sha256':digest(canonical(approval)),
+        'previous_sha256':approval.get('previous_sha256'),'transition_kind':approval.get('transition_kind','initial')}
 
 
 if __name__=='__main__':

@@ -124,9 +124,11 @@ the original derived-float comparisons also fail on Linux with Python3.13.2.
 No historical records, numeric tolerances, formulas or frozen evaluators are
 changed. The private collector remains Ubuntu24.04; this needs no operator Mac.
 
-After **every new commit**, set `NBA_ACTIONS_REVIEWED_SHA` to its full40-character
-SHA, keep admin enabled and live disabled, then dispatch a **new** run from main
-with `mode=bootstrap` (or `discover` after a successful bootstrap/UUID setup).
+After **every reviewed new commit**, set `NBA_ACTIONS_REVIEWED_SHA` to its full40-character
+SHA, keep admin enabled and live disabled, then dispatch a **new** appropriate run from main.
+Use `bootstrap` only for the initial empty store; never bootstrap an existing store.
+Use `renewal-plan` to inspect an existing authorization before renewal/migration,
+or `discover` for separately authorized schedule discovery.
 Do not use “Re-run jobs” on an old run: GitHub reuses that run's original SHA.
 An `offline` job means `mode=dry-run`; it never bootstraps storage or uses secrets.
 
@@ -159,6 +161,88 @@ attempts/reservations, and chronologically enrolls due games within the horizon.
 It cannot enable multi-game collection from a mock result. Future100-game approval
 must respect the unchanged cumulative$50 cap or require a new committed budget
 protocol. This does not restart or pool the original no-news100-game study.
+
+## Expired authorization: explicit renewal, then separate expansion
+
+The [renewal v1 operational amendment](../../experiments/prospective_campaign_renewal_v1.md)
+preserves the original approval and hash chain. The first pilot's operational
+registry is archived byte-for-byte; a migration changes only reviewed operational
+files, never frozen methods, evidence or budget configuration. An expired or
+old-registry approval cannot make paid requests. Renewal is not automatic and
+does not increase the one-game scope or enable enrollment.
+
+First review/pin the full new commit and inspect the original **idle** checkpoint:
+
+```sh
+export NBA_REVIEWED_COMMIT='FULL_REVIEWED_40_CHARACTER_MAIN_COMMIT'
+gh variable set NBA_ACTIONS_REVIEWED_SHA --repo Kiwiegg/prediction-market-forecasting --body "$NBA_REVIEWED_COMMIT"
+gh workflow run prospective-nba.yml --repo Kiwiegg/prediction-market-forecasting --ref main -f mode=renewal-plan
+gh run list --repo Kiwiegg/prediction-market-forecasting --workflow prospective-nba.yml --limit 5
+```
+
+Wait for completion and inspect the private-worker log. `renewal-plan` uses only
+GETs and read-only local SQLite, no owner acquisition, no checkpoint writes and
+no provider keys. It checks the complete chain, native private replay and every
+captured file hash. Verify game `401909877`, max_games=1, automatic=false,
+$0.178331 reserved, 9 request claims, no paid denial, preserved store identity,
+successful primary-pair replay, source/target asset hashes and exact predecessor
+digest. An idle checkpoint is required; never cancel a healthy capture for this.
+
+**Only after explicit renewal approval**, copy that exact digest and select a
+future UTC expiry later than the old expiry and at most 31 days from execution:
+
+```sh
+export NBA_PREDECESSOR_SHA='EXACT_64_CHARACTER_SHA256_FROM_FRESH_RENEWAL_PLAN'
+export NBA_AUTH_EXPIRY='APPROVED_FUTURE_UTC_TIMESTAMP'
+gh workflow run prospective-nba.yml --repo Kiwiegg/prediction-market-forecasting --ref main \
+  -f mode=renew -f predecessor_sha256="$NBA_PREDECESSOR_SHA" \
+  -f expires="$NBA_AUTH_EXPIRY" -f accept_operational_migration=true
+```
+
+The migration flag is required for the original registry transition. Later
+same-registry renewals can omit it but still require fresh predecessor and expiry.
+Renewal preserves scope/automatic flag/allowlist/caps/mode. Original approvals,
+request IDs, unknown reserves, denial circuits, forecasts and the store UUID
+remain intact. No new paid game is authorized by renewal. Mixed CLI operations
+or renewal scope inputs fail closed. A stale predecessor fails rather than
+repeating an amendment. Do not use `authorize`, a new bucket/prefix, or bootstrap
+to replace an existing campaign. If persistence is uncertain, inspect/recover the
+exact original owner; never automatically retry the command.
+
+Wait for renewal success, then verify persisted status and replay:
+
+```sh
+gh workflow run prospective-nba.yml --repo Kiwiegg/prediction-market-forecasting --ref main -f mode=status
+# Wait for the status run to finish before dispatching the next operation.
+gh workflow run prospective-nba.yml --repo Kiwiegg/prediction-market-forecasting --ref main -f mode=replay
+```
+
+**Only after separate 30-game expansion approval**, with live forecasting still
+disabled, issue the independent bounded expansion:
+
+```sh
+gh workflow run prospective-nba.yml --repo Kiwiegg/prediction-market-forecasting --ref main \
+  -f mode=expand -f expires="$NBA_AUTH_EXPIRY" \
+  -f game_limit=30 -f automatic_enrollment=true
+# Wait for expansion success, then inspect status again.
+gh workflow run prospective-nba.yml --repo Kiwiegg/prediction-market-forecasting --ref main -f mode=status
+```
+
+The 30 is a **cumulative enrollment cap including the pilot**, not 30 additional
+games or guaranteed eligible pairs. Selection remains chronological from the
+verified catalog. Status must retain $0.178331 consumed and the same $50/$1.35
+ceilings; only scope/expiry and explicitly approved operational binding change.
+
+**Only after explicit paid activation approval** and successful persisted checks:
+
+```sh
+gh variable set NBA_ACTIONS_LIVE_ENABLED --repo Kiwiegg/prediction-market-forecasting --body true
+gh workflow run prospective-nba.yml --repo Kiwiegg/prediction-market-forecasting --ref main -f mode=live
+```
+
+None of these commands is implicit deployment permission. Keep live=false while
+reviewing. Cron uses the same approved cumulative budget and game cap. No retries
+after access denial/uncertain paid sends; renewal never clears those records.
 
 ## Monitoring, recovery and replay
 

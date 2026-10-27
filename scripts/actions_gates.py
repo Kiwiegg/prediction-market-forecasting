@@ -3,7 +3,7 @@ import json
 import os
 import re
 
-ADMIN_MODES = {'bootstrap', 'discover', 'repair-discover', 'authorize', 'expand', 'status', 'replay'}
+ADMIN_MODES = {'bootstrap', 'discover', 'repair-discover', 'authorize', 'renewal-plan', 'renew', 'expand', 'status', 'replay'}
 
 
 def evaluate(env):
