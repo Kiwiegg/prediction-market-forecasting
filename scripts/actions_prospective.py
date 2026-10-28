@@ -59,12 +59,17 @@ def run_worker(state,sleep=time.sleep):
     started=state.clock();stop=started+settings()['worker_max_minutes']*60
     found=catalog(state);decisions=enroll_catalog(state,found,stop)
     state.event(None,'enrollment_decisions',decisions=decisions);state.sync()
-    backend=cloud.LiveBackend(state,True);engine=cloud.Engine(state,backend)
+    from news_denial_policy import AUTHORIZATION,NewsBackend
+    backend=NewsBackend(state,True) if (state.root/AUTHORIZATION).exists() else cloud.LiveBackend(state,True)
+    engine=cloud.Engine(state,backend)
     from cloud_market import MarketEngine
     market=MarketEngine(state,True)
     active=[]
     for key in state.jobs():
         w=cloud.windows(state.job(key)['game'],state.config)
+        if (state.root/AUTHORIZATION).exists():
+            from news_denial_policy import authorization
+            if w['target']<=cloud.native.aware(authorization(state)['effective_after_utc']):continue
         if state.clock()>w['collect'] and not state.has(key,'baseline'):
             state.event(key,'missed_window',reason='runner_not_ready_by_collection_start')
             # Durable terminal marker; neither collection nor inference may run.
@@ -92,12 +97,13 @@ def run_worker(state,sleep=time.sleep):
     state.sync();return campaign_report(state)
 
 
-def recover_owner(objects, expected_uuid, expected_owner, confirmation):
+def recover_owner(objects, expected_uuid, expected_owner, confirmation,expected_snapshot=None):
     if confirmation!='CONFIRMED_OLD_RUNNER_TERMINATED':raise ValueError('Confirm old runner termination before recovery')
     raw,etag=objects.read(Checkpoints.ROOT)
     if raw is None:raise StorageStop('Missing root is not recoverable by reset')
     root=json.loads(raw)
     if root['store_uuid']!=expected_uuid or root['owner']!=json.loads(expected_owner):raise StorageStop('Recovery owner/UUID mismatch')
+    if expected_snapshot is not None and root['snapshot']!=expected_snapshot:raise StorageStop('Recovery checkpoint changed')
     # This preserves every snapshot, claim and denial; only ownership changes.
     audit=canonical({'old_owner':root['owner'],'snapshot':root['snapshot'],'recovered_at_utc':cloud.iso(time.time()),'confirmation':confirmation})
     objects.write('recoveries/'+digest(audit),audit,create=True)
@@ -132,6 +138,7 @@ def main():
     parser.add_argument('--allow-search',action='store_true');parser.add_argument('--allow-inference',action='store_true')
     parser.add_argument('--bootstrap',action='store_true');parser.add_argument('--authorize',action='store_true');parser.add_argument('--expand',action='store_true')
     parser.add_argument('--renew',action='store_true');parser.add_argument('--renewal-plan',action='store_true')
+    parser.add_argument('--adopt-news-policy',action='store_true');parser.add_argument('--confirm-news-policy',action='store_true');parser.add_argument('--recovery-audit-sha256')
     parser.add_argument('--predecessor-sha256');parser.add_argument('--accept-operational-migration',action='store_true')
     parser.add_argument('--confirm-authorized-campaign',action='store_true');parser.add_argument('--automatic',action='store_true')
     parser.add_argument('--game-id',action='append',default=[]);parser.add_argument('--expires');parser.add_argument('--max-games',type=int,default=1);parser.add_argument('--max-usd',type=float,default=50)
@@ -142,7 +149,7 @@ def main():
     parser.add_argument('--validate-assets',action='store_true')
     args=parser.parse_args();cfg=cloud.checked(json.loads(cloud.CONFIG.read_text()));deployment=settings()
     if args.validate_assets:print(json.dumps({'verified':True,'assets_sha256':verify_assets()}));return
-    modes=(args.live,args.bootstrap,args.authorize,args.expand,args.renew,args.renewal_plan,args.discover_only,args.status,args.replay,bool(args.recover_owner))
+    modes=(args.live,args.bootstrap,args.authorize,args.expand,args.renew,args.renewal_plan,args.discover_only,args.status,args.replay,bool(args.recover_owner),args.adopt_news_policy)
     if sum(modes)>1:parser.error('Select exactly one remote operation')
     selected=any(modes)
     if not selected:
@@ -158,6 +165,8 @@ def main():
         if not args.confirm_authorized_campaign or not args.expires:parser.error('Explicit campaign authorization and expiry required')
     if args.renew and (not args.predecessor_sha256 or args.automatic or args.game_id or args.max_games!=1 or args.max_usd!=50):
         parser.error('Renewal requires exact predecessor hash; scope/budget changes require separate expansion')
+    if args.adopt_news_policy and (not args.confirm_news_policy or not args.recovery_audit_sha256 or not args.predecessor_sha256 or os.environ.get('NBA_ACTIONS_LIVE_ENABLED')!='false'):
+        parser.error('Policy adoption requires reviewed audit, predecessor, explicit approval and live disabled')
     verify_assets(True)
     objects=S3Objects(os.environ.get('NBA_ACTIONS_BUCKET'),deployment['storage_prefix'],os.environ.get('AWS_REGION'),os.environ.get('NBA_ACTIONS_ENDPOINT'))
     expected=os.environ.get('NBA_ACTIONS_STORE_UUID')
@@ -180,6 +189,9 @@ def main():
         if args.bootstrap:result={'store_uuid':state.uuid,'status':'private_store_initialized_no_collection'}
         elif args.authorize:result=state.approve(args.game_id,args.expires,args.max_games,args.max_usd,args.automatic)
         elif args.renew:result=state.renew(args.expires,args.predecessor_sha256,args.confirm_authorized_campaign,args.accept_operational_migration)
+        elif args.adopt_news_policy:
+            from campaign_recovery import adopt
+            result=adopt(state,objects,args.recovery_audit_sha256,args.predecessor_sha256,args.confirm_news_policy)
         elif args.expand:result=state.expand(args.expires,args.max_games,args.max_usd,args.automatic,args.game_id)
         elif args.discover_only:
             found=catalog(state,args.source_clock_rerun)
@@ -191,7 +203,7 @@ def main():
         # Only aggregate monitoring goes to public Actions logs, never raw data,
         # source text, credentials, request headers or private forecast responses.
         if args.live:print(json.dumps({k:result[k] for k in ('campaign_id','enrolled','attempted','captured','primary_eligible','reserved_usd','ceiling_usd')}))
-        elif args.authorize or args.expand or args.renew:print(json.dumps({'status':'authorized_not_started',**approval_summary(state.campaign())}))
+        elif args.authorize or args.expand or args.renew or args.adopt_news_policy:print(json.dumps({'status':'authorized_not_started',**approval_summary(state.campaign())}))
         elif args.replay:print(json.dumps(result))
         elif args.status:print(json.dumps({'jobs':result['state']['jobs'],'circuits':result['state']['circuits'],'reserved_usd':result['campaign']['reserved_usd'],
                                          'authorization':approval_summary(state.campaign())}))

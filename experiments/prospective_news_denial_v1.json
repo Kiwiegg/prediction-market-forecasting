@@ -1,0 +1,36 @@
+{
+  "protocol": "prospective_news_denial_v1",
+  "default_enabled": false,
+  "source_registry_path": "experiments/prospective_actions_before_news_recovery_v1_assets.json",
+  "source_registry_sha256": "0092b665df1319d076d66dff9f3ecbfc023f073382d4ff0224b5d5606d9c3913",
+  "third_party_hosts": [
+    "apnews.com",
+    "www.apnews.com",
+    "www.espn.com",
+    "espn.com",
+    "www.reuters.com",
+    "reuters.com",
+    "www.si.com",
+    "si.com",
+    "www.orlandosentinel.com",
+    "orlandosentinel.com"
+  ],
+  "allowed_changed_assets": [
+    "scripts/actions_campaign.py",
+    "scripts/actions_prospective.py",
+    "scripts/actions_gates.py",
+    ".github/workflows/prospective-nba.yml",
+    "deploy/github-actions/README.md"
+  ],
+  "allowed_added_assets": [
+    "scripts/news_denial_policy.py",
+    "scripts/campaign_recovery.py",
+    "tests/test_news_denial_recovery.py",
+    "experiments/prospective_news_denial_v1.json",
+    "experiments/prospective_news_denial_v1.md",
+    "experiments/prospective_actions_before_news_recovery_v1_assets.json",
+    ".github/workflows/audit-nba-recovery.yml",
+    "scripts/audit_blocked_campaign.py",
+    "tests/test_blocked_campaign_audit.py"
+  ]
+}

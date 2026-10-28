@@ -79,6 +79,12 @@ def audit(state):
             'stages':[s for s in stages if s['job']==key],'private_replay':proof,
             'disposition':'preserved_completed' if proof['forecasts'] else 'unrecoverable_expired_no_backfill' if state.clock()>w['freeze'] else 'incomplete_not_authorized_to_retry',
             'reserved_usd':sum(r['usd'] for r in claims if r['job']==key)})
+    public=[]
+    for p in (state.root/'public_claims').glob('*.json'):
+        rec=json.loads(p.read_text());job=rec['job']
+        folder=(state.root/'jobs/catalog'/job[len('catalog:'):] if job.startswith('catalog:') else state.job_dir(job)/rec['slot'])
+        meta=folder/'raw'/(digest(rec['url'].encode())+'.json')
+        public.append({'claim_id':p.stem,**rec,'saved_response_present':meta.exists()})
     return {'claims':rows,'paid_claim_count':len(rows),'reserved_usd':sum(r['usd'] for r in claims),
             'unknown_usage_reserved_usd':sum(r['reserved_usd'] for r in rows if r['attempt_state']=='uncertain_no_saved_response'),
             'claims_by_kind':dict(Counter(r['kind'] for r in rows)),
@@ -87,34 +93,49 @@ def audit(state):
             'zero_cost_article_claims':[{'claim_id':r['id'],'job_id':r['job'],'reserved_usd':r['usd'],'status':r['status']} for r in ledger if r['kind']=='article'],
             'circuits':circuits,
             'circuits_sha256':digest(canonical(circuits)),'jobs':jobs,'source_denials':source_denials,
+            'public_claims':sorted(public,key=lambda r:r['claim_id']),
             'all_stages':stages,'new_paid_calls':0,'new_source_calls':0,'remote_writes':0,'provider_invoice_verified':False}
 
 
-def inspect(objects,expected_uuid,destination,proof):
+def inspect(objects,expected_uuid,destination,proof,allow_released=False):
     proof=termination_proof(proof)
     raw,_=objects.read('root.json');root=json.loads(raw or b'{}')
     if not expected_uuid or root.get('store_uuid')!=expected_uuid:raise StorageStop('Original UUID required')
     owner=root.get('owner')
-    if not owner or owner.get('run')!=FAILED_RUN:raise StorageStop('Unexpected owner; recovery forbidden')
+    if (not owner and not allow_released) or owner and owner.get('run')!=FAILED_RUN:raise StorageStop('Unexpected owner; recovery forbidden')
     cp=Checkpoints(objects,expected_uuid);cp.root=root;cp.restore(destination)
     state=ReadOnlyState(destination,json.loads(cloud.CONFIG.read_text()))
     with patch('urllib.request.OpenerDirector.open',side_effect=AssertionError('Offline audit only')):result=audit(state)
     if any(digest((Path(destination)/n).read_bytes())!=sha for n,sha in cp.files.items()):raise StorageStop('Saved captures modified during audit')
     if objects.read('root.json')[0]!=raw:raise StorageStop('Checkpoint changed during audit')
-    return {**result,'owner_run':owner['run'],'owner_sha256':digest(canonical(owner)),
+    result={**result,'owner_run':owner['run'] if owner else None,'owner_sha256':digest(canonical(owner)),
             'snapshot_sha256':root['snapshot'],'private_files_verified_unchanged':len(cp.files),
             'store_uuid_verified':True,'termination_proof':proof}
+    from campaign_recovery import preconditions
+    try:
+        detail=preconditions(state,result)
+        result['recovery_preconditions']={'verified':True,**detail}
+    except ValueError as e:result['recovery_preconditions']={'verified':False,'reason':str(e)}
+    return result
 
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True)
-    p.add_argument('--termination-proof',type=Path,required=True);args=p.parse_args()
+    p.add_argument('--termination-proof',type=Path,required=True)
+    p.add_argument('--release-owner',action='store_true');p.add_argument('--confirm-reviewed-release',action='store_true');p.add_argument('--audit-sha256')
+    args=p.parse_args()
     objects=S3Objects(os.environ.get('NBA_ACTIONS_BUCKET'),settings()['storage_prefix'],os.environ.get('AWS_REGION'),os.environ.get('NBA_ACTIONS_ENDPOINT'))
     with tempfile.TemporaryDirectory(prefix='nba-blocked-audit-') as tmp:
-        result=inspect(objects,os.environ.get('NBA_ACTIONS_STORE_UUID'),Path(tmp)/'state',json.loads(args.termination_proof.read_text()))
+        if args.release_owner:
+            if os.environ.get('NBA_ACTIONS_LIVE_ENABLED')!='false':raise ValueError('Live flag must remain disabled')
+            from actions_campaign import verify_assets
+            from campaign_recovery import release
+            verify_assets(True)
+            result=release(objects,os.environ.get('NBA_ACTIONS_STORE_UUID'),Path(tmp)/'state',json.loads(args.termination_proof.read_text()),args.audit_sha256,args.confirm_reviewed_release)
+        else:result=inspect(objects,os.environ.get('NBA_ACTIONS_STORE_UUID'),Path(tmp)/'state',json.loads(args.termination_proof.read_text()),allow_released=True)
     result=sanitized(result,os.environ)
     args.output.parent.mkdir(parents=True,exist_ok=True);args.output.write_bytes(canonical(result)+b'\n')
-    print(json.dumps({k:result[k] for k in ('paid_claim_count','reserved_usd','claims_by_kind','unknown_usage_reserved_usd','owner_run','snapshot_sha256','new_paid_calls','remote_writes')},indent=2))
+    print(json.dumps(result if args.release_owner else {k:result[k] for k in ('paid_claim_count','reserved_usd','claims_by_kind','unknown_usage_reserved_usd','owner_run','snapshot_sha256','new_paid_calls','remote_writes')},indent=2))
 
 
 if __name__=='__main__':main()

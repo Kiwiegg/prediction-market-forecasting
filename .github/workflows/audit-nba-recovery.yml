@@ -1,6 +1,18 @@
-name: Audit blocked NBA campaign (GET only)
+name: Audit or reviewed owner release (no paid calls)
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        options: [audit, release-owner]
+        default: audit
+      audit_sha256:
+        type: string
+        description: Exact sanitized audit digest after operator review
+      confirm_release:
+        type: boolean
+        default: false
+        description: Confirm reviewed exact-owner release; circuits and paid work stay disabled
 permissions:
   contents: read
   actions: read
@@ -40,7 +52,17 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.NBA_STORAGE_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.NBA_STORAGE_SECRET_ACCESS_KEY }}
           AWS_EC2_METADATA_DISABLED: 'true'
-        run: .venv/bin/python scripts/audit_blocked_campaign.py --termination-proof "$RUNNER_TEMP/termination.json" --output "$RUNNER_TEMP/recovery-audit/audit.json"
+          NBA_ACTIONS_LIVE_ENABLED: ${{ vars.NBA_ACTIONS_LIVE_ENABLED }}
+          RECOVERY_MODE: ${{ inputs.mode }}
+          EXPECTED_AUDIT_SHA: ${{ inputs.audit_sha256 }}
+          CONFIRM_RELEASE: ${{ inputs.confirm_release }}
+        run: |
+          args=(--termination-proof "$RUNNER_TEMP/termination.json" --output "$RUNNER_TEMP/recovery-audit/audit.json")
+          if test "$RECOVERY_MODE" = release-owner; then
+            test "$CONFIRM_RELEASE" = true
+            args+=(--release-owner --confirm-reviewed-release --audit-sha256 "$EXPECTED_AUDIT_SHA")
+          fi
+          .venv/bin/python scripts/audit_blocked_campaign.py "${args[@]}"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: sanitized-blocked-campaign-audit

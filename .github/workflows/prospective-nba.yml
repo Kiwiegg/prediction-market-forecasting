@@ -7,7 +7,7 @@ on:
       mode:
         description: 'dry-run is offline; all other modes require separate activation'
         type: choice
-        options: [dry-run, bootstrap, discover, repair-discover, authorize, renewal-plan, renew, expand, status, replay, live]
+        options: [dry-run, bootstrap, discover, repair-discover, authorize, renewal-plan, renew, expand, status, replay, live, adopt-news-policy]
         default: dry-run
       game_id:
         description: 'One verified game ID for initial authorization'
@@ -22,6 +22,13 @@ on:
         description: 'Renewal only: explicitly approve the reviewed operational-only registry transition'
         type: boolean
         default: false
+      recovery_audit_sha256:
+        type: string
+        description: Reviewed recovery audit SHA-256 for prospective policy adoption only
+      confirm_news_policy:
+        type: boolean
+        default: false
+        description: Explicitly approve the prospective-only publisher-403 amendment
       game_limit:
         description: 'Expansion only: explicit cumulative game cap after first live success'
         type: number
@@ -126,6 +133,9 @@ jobs:
           AUTHORIZATION_EXPIRES: ${{ inputs.expires }}
           EXPECTED_PREDECESSOR: ${{ inputs.predecessor_sha256 }}
           ACCEPT_OPERATIONAL_MIGRATION: ${{ inputs.accept_operational_migration }}
+          RECOVERY_AUDIT_SHA: ${{ inputs.recovery_audit_sha256 }}
+          CONFIRM_NEWS_POLICY: ${{ inputs.confirm_news_policy }}
+          NBA_ACTIONS_LIVE_ENABLED: ${{ vars.NBA_ACTIONS_LIVE_ENABLED }}
           APPROVED_GAME_LIMIT: ${{ inputs.game_limit }}
           APPROVED_AUTOMATIC: ${{ inputs.automatic_enrollment }}
         run: |
@@ -138,6 +148,11 @@ jobs:
             repair-discover) args+=(--discover-only --source-clock-rerun --confirm-old-runner-terminated CONFIRMED_OLD_RUNNER_TERMINATED) ;;
             authorize) args+=(--authorize --confirm-authorized-campaign --game-id "$APPROVED_GAME_ID" --expires "$AUTHORIZATION_EXPIRES" --max-games 1 --max-usd 50) ;;
             renewal-plan) args+=(--renewal-plan) ;;
+            adopt-news-policy)
+              test "$CONFIRM_NEWS_POLICY" = true
+              test "$NBA_ACTIONS_LIVE_ENABLED" = false
+              args+=(--adopt-news-policy --confirm-news-policy --recovery-audit-sha256 "$RECOVERY_AUDIT_SHA" --predecessor-sha256 "$EXPECTED_PREDECESSOR")
+              ;;
             renew)
               test "$APPROVED_GAME_LIMIT" = 1
               test "$APPROVED_AUTOMATIC" = false

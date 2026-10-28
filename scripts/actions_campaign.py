@@ -13,22 +13,37 @@ REGISTRY=cloud.ROOT/'experiments/prospective_github_actions_v1_assets.json'
 RENEWAL=cloud.ROOT/'experiments/prospective_campaign_renewal_v1.json'
 
 
-def renewal_migration():
-    """One reviewed operational transition; frozen evidence/config stays identical."""
-    policy=json.loads(RENEWAL.read_text())
-    source=(cloud.ROOT/policy['source_registry_path']).read_bytes()
-    if digest(source)!=policy['source_registry_sha256']:raise ValueError('Archived operational registry corrupt')
-    before=json.loads(source);after=json.loads(REGISTRY.read_text())
-    changed={name for name in before.keys() & after.keys() if before[name]!=after[name]}
-    added=after.keys()-before.keys()
-    if before.keys()-after.keys() or not changed<=set(policy['allowed_changed_assets']) or set(added)!=set(policy['allowed_added_assets']):
-        raise ValueError('Operational migration exceeds reviewed file allowlist')
-    # These two unchanged manifests bind budgets, all evidence and frozen methods.
-    for name in ('examples/prospective_github_actions_v1.json','experiments/prospective_cloud_news_v1_assets.json'):
-        if before[name]!=after[name] or digest((cloud.ROOT/name).read_bytes())!=before[name]:
-            raise ValueError('Renewal cannot change evidence, methods or budget configuration')
-    return {'protocol':policy['protocol'],'policy_sha256':digest(RENEWAL.read_bytes()),
-            'from_assets_sha256':digest(source),'to_assets_sha256':digest(REGISTRY.read_bytes())}
+def migration_edges():
+    """Validate each immutable operational transition, including prior proofs."""
+    policies=[RENEWAL,cloud.ROOT/'experiments/prospective_news_denial_v1.json']
+    current=json.loads(REGISTRY.read_text());edges=[]
+    for i,path in enumerate(policies):
+        policy=json.loads(path.read_text());source=(cloud.ROOT/policy['source_registry_path']).read_bytes()
+        if digest(source)!=policy['source_registry_sha256']:raise ValueError('Archived operational registry corrupt')
+        target=((cloud.ROOT/json.loads(policies[i+1].read_text())['source_registry_path']).read_bytes()
+                if i+1<len(policies) else REGISTRY.read_bytes())
+        before=json.loads(source);after=json.loads(target)
+        changed={n for n in before.keys() & after.keys() if before[n]!=after[n]}
+        if before.keys()-after.keys() or not changed<=set(policy['allowed_changed_assets']) or set(after.keys()-before.keys())!=set(policy['allowed_added_assets']):
+            raise ValueError('Operational migration exceeds reviewed file allowlist')
+        for name in ('examples/prospective_github_actions_v1.json','experiments/prospective_cloud_news_v1_assets.json'):
+            if before[name]!=after[name] or digest((cloud.ROOT/name).read_bytes())!=before[name]:raise ValueError('Frozen evidence/method/budget configuration changed')
+        edges.append({'protocol':policy['protocol'],'policy_sha256':digest(path.read_bytes()),
+                      'from_assets_sha256':digest(source),'to_assets_sha256':digest(target)})
+    return edges
+
+
+def renewal_migration(source=None,target=None):
+    edges=migration_edges();source=source or edges[0]['from_assets_sha256'];target=target or edges[-1]['to_assets_sha256']
+    steps=[];cursor=source
+    for edge in edges:
+        if cursor==edge['from_assets_sha256']:
+            steps.append(edge);cursor=edge['to_assets_sha256']
+            if cursor==target:break
+    if cursor!=target or not steps:raise ValueError('Unapproved operational registry transition')
+    if len(steps)==1:return steps[0]
+    return {'protocol':edges[0]['protocol'],'policy_sha256':edges[0]['policy_sha256'],
+            'from_assets_sha256':source,'to_assets_sha256':target,'steps':steps}
 
 
 def settings():
@@ -55,6 +70,23 @@ def verify_assets(committed=False):
 
 
 class CampaignState(RemoteState):
+    def circuit(self,key,**data):
+        # Never overwrite or reuse a grandfathered global row for a NEW denial.
+        if key in ('network','paid') and (self.root/'news_denial_authorization.json').exists():
+            token=digest(canonical({'original_circuit':key,'at_utc':cloud.iso(self.clock()),**data}))
+            return super().circuit('recovery-denial:'+key+':'+token,original_circuit=key,**data)
+        return super().circuit(key,**data)
+
+    def check_circuit(self,key):
+        if key in ('network','paid'):
+            with self.db() as c:new=c.execute("SELECT id FROM circuits WHERE id LIKE 'recovery-denial:%' LIMIT 1").fetchone()
+            if new:raise ValueError('New access denial after recovery; explicit review required')
+        with self.db() as c:row=c.execute('SELECT body FROM circuits WHERE id=?',(key,)).fetchone()
+        if row:
+            from news_denial_policy import bypass_historical_circuit
+            if bypass_historical_circuit(self,key,row['body']):return
+        return super().check_circuit(key)
+
     def enroll(self,game,auth):
         with self.checkpoints.lock:
             approval=self.campaign()
@@ -69,7 +101,7 @@ class CampaignState(RemoteState):
         path=self.root/'campaign.json'
         if not path.is_file():raise ValueError('Campaign authorization missing; worker remains disabled')
         approval=json.loads(path.read_text());self._validate_approval(approval)
-        migration=renewal_migration();known={migration['from_assets_sha256'],migration['to_assets_sha256']}
+        migration=renewal_migration();known={e[k] for e in migration_edges() for k in ('from_assets_sha256','to_assets_sha256')}
         if approval['assets_sha256'] not in known:raise ValueError('Unapproved historical operational registry')
         for number,amendment in enumerate(sorted((self.root/'campaign_amendments').glob('*.json')),1):
             if amendment.name!='%04d.json'%number:raise ValueError('Noncontiguous campaign amendment chain')
@@ -79,12 +111,13 @@ class CampaignState(RemoteState):
             if newer['assets_sha256'] not in known:raise ValueError('Unapproved amended operational registry')
             if cloud.native.aware(newer['authorized_at_utc'])<cloud.native.aware(approval['authorized_at_utc']) or newer['mode']!=approval['mode']:
                 raise ValueError('Invalid campaign amendment chronology/mode')
-            if newer.get('transition_kind')=='renewal':
+            if newer.get('transition_kind') in ('renewal','recovery_policy'):
                 scope=('game_ids','max_games','max_usd','per_game_usd','automatic_enrollment')
+                if newer.get('transition_kind')=='recovery_policy':scope+=('expires_at_utc',)
                 if any(newer[k]!=approval[k] for k in scope):raise ValueError('Renewal cannot expand campaign scope or budget')
-                if newer.get('renewal_protocol')!=migration['protocol'] or cloud.native.aware(newer['expires_at_utc'])<=cloud.native.aware(approval['expires_at_utc']):
+                if newer.get('transition_kind')=='renewal' and (newer.get('renewal_protocol') not in {e['protocol'] for e in migration_edges()} or cloud.native.aware(newer['expires_at_utc'])<=cloud.native.aware(approval['expires_at_utc'])):
                     raise ValueError('Invalid renewal protocol/expiry')
-                expected=migration if newer['assets_sha256']!=approval['assets_sha256'] else None
+                expected=renewal_migration(approval['assets_sha256'],newer['assets_sha256']) if newer['assets_sha256']!=approval['assets_sha256'] else None
                 if newer.get('operational_migration')!=expected:raise ValueError('Operational migration proof mismatch')
                 if expected and (approval['assets_sha256']!=expected['from_assets_sha256'] or newer['assets_sha256']!=expected['to_assets_sha256']):
                     raise ValueError('Unauthorized registry migration direction')
@@ -144,7 +177,7 @@ class CampaignState(RemoteState):
             end=cloud.native.aware(expires)
             if not max(self.clock(),cloud.native.aware(old['expires_at_utc']))<end<=self.clock()+settings()['authorization_max_days']*86400:
                 raise ValueError('Renewal requires a new bounded future expiry')
-            migration=renewal_migration();changing=old['assets_sha256']!=migration['to_assets_sha256']
+            migration=renewal_migration(old['assets_sha256']) if old['assets_sha256']!=digest(REGISTRY.read_bytes()) else renewal_migration();changing=old['assets_sha256']!=digest(REGISTRY.read_bytes())
             if changing and not accept_migration:raise ValueError('Explicit operational migration approval required')
             value={**old,'previous_sha256':digest(canonical(old)),'transition_kind':'renewal',
                    'renewal_protocol':migration['protocol'],'operational_migration':migration if changing else None,
@@ -199,6 +232,9 @@ class CampaignState(RemoteState):
     def reserve(self,key,job,kind,usd):
         with self.checkpoints.lock:
             approval=self.campaign()
+            from news_denial_policy import AUTHORIZATION,authorization
+            if (self.root/AUTHORIZATION).exists() and cloud.windows(self.job(job)['game'],self.config)['target']<=cloud.native.aware(authorization(self)['effective_after_utc']):
+                raise ValueError('Old interrupted games cannot acquire new paid claims')
             if self.job(job)['mode']!=approval['mode']:raise ValueError('Campaign/job mode mismatch')
             with self.db() as c:
                 total=c.execute('SELECT coalesce(sum(usd),0) FROM requests').fetchone()[0]
@@ -208,6 +244,7 @@ class CampaignState(RemoteState):
             # single remote owner + local lock covers the global check and commit.
             result=super().reserve(key,job,kind,usd)
             self.campaign()  # Approval may expire during a slow remote checkpoint.
+            self.check_circuit('paid');self.check_circuit('network')
             w=cloud.windows(self.job(job)['game'],self.config)
             deadline=w['forecast'] if kind=='forecast' else w['freeze'] if kind=='extraction' else w['retrieve']
             if self.clock()>deadline:raise ValueError('Durable reservation finished after request deadline; claim retained without send')

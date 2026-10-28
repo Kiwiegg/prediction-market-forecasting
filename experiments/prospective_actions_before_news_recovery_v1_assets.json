@@ -1,0 +1,22 @@
+{
+  ".github/workflows/prospective-nba.yml": "760a1353b161dbf5a95bf32fcad80f71a90f1a1ee5fddefecae46d6cc46b2f3a",
+  "deploy/github-actions/README.md": "2bbe37b4aecf0d9fe486f036a8f7c6574bb203f71de1c087727f78b8b917fb63",
+  "deploy/github-actions/requirements.txt": "232ca3abdd25473383c57f9190e50ab47f811dcf949d03a3d018ddcaae613e33",
+  "examples/prospective_github_actions_v1.json": "f7fe07b611ec61afb9b93ab0d5f869c4e2120ad76689aa2e72677ac13e32ff65",
+  "experiments/prospective_campaign_renewal_v1.json": "81b53f7925f34f86fabb456b1d0e2f5e579227e75fcbffe2cc11c85b21d5262e",
+  "experiments/prospective_campaign_renewal_v1.md": "ef98754a6be8f7a740c2877af5ebbb6b49c38cc53cbb90d7c2beb0ce25389fa1",
+  "experiments/prospective_cloud_news_v1_assets.json": "a7065171b72dd77a94cc366d382d5cfdf7e1ed25902b3105c33a6063f364e221",
+  "experiments/prospective_github_actions_before_renewal_v1_assets.json": "d0ddb612029c3435f0037f7eeeedf2bd6e06fb16246cb5abe98cf45b383b865b",
+  "experiments/prospective_github_actions_v1.md": "96078d3175d4d400fa7ac7d0d5b13cf1363d076df0d784bda6a2768163bc8d75",
+  "experiments/prospective_source_clock_repair_v1.md": "213abcc66a9678d479de99f41f13f9ec1d61fbdfd5afca73e64bb02b35f93792",
+  "scripts/actions_campaign.py": "dcd7f30f01eea802f58a11791cfc31c3cf3d5f7dc8657921120b67f8f8725c6b",
+  "scripts/actions_gates.py": "f32e22fccc0da9353a2931e39c248aa7d2e15efb59a371c9159802955a1f6808",
+  "scripts/actions_prospective.py": "c85bd477351241528f224601257aa38c07a89bfd9f07a2981e2aa4aa1f831eb3",
+  "scripts/actions_storage.py": "770d148f100e244823488f02a7a06457a02f2e2756b3c411b7c7006987825b11",
+  "scripts/inspect_actions_storage.py": "16e43fd1b4230f6c432a41f3e21c177a468f8bf121204b6c82ecedd00de2feec",
+  "tests/test_actions_gates.py": "db295704658acec8e630c8cc1c2035e856c83fffc18a8a89faa11225fc92e275",
+  "tests/test_actions_prospective.py": "0e05149398a62f4b16eafa40d5f1868c2da37d994e89f252ca8f11254e2e2b9d",
+  "tests/test_campaign_renewal.py": "3a5b5e9c19328bc0320d3a2eb83ac936a407591ef509a41d939a11d8aaf138a3",
+  "tests/test_inspect_actions_storage.py": "d437103015f8d80a9747283f71833ca6b686e4febb25668f038e45e2695bd596",
+  "tests/test_source_session_clock.py": "fc437712b3e1eac409ece9cf07a8adca52191501ec26674777180cd13cbee63f"
+}

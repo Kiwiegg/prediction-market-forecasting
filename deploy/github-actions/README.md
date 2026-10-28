@@ -246,6 +246,56 @@ after access denial/uncertain paid sends; renewal never clears those records.
 
 ## Monitoring, recovery and replay
 
+For the AP403 incident, use the reviewed
+[news-denial amendment](../../experiments/prospective_news_denial_v1.md), not a
+generic lock/circuit reset. Keep LIVE_ENABLED=false. `audit-nba-recovery.yml`
+defaults to GET-only audit, validates that run40600612996 definitively terminated,
+reconciles all provider claims and privately replays every enrolled game. Its
+sanitized artifact exposes the exact audit, owner and ledger digests without
+provider payloads or credentials. The separate `release-owner` operation requires
+that exact audit digest and `confirm_release=true`, repeats all preconditions,
+and calls the existing exact-owner conditional recovery. It preserves the entire
+checkpoint, paid claims and every denial journal. It never enables the policy.
+
+```sh
+gh workflow run audit-nba-recovery.yml --repo Kiwiegg/prediction-market-forecasting \
+  --ref main -f mode=audit
+# Review the completed audit; do not substitute a stale/different digest.
+gh workflow run audit-nba-recovery.yml --repo Kiwiegg/prediction-market-forecasting \
+  --ref main -f mode=release-owner -f audit_sha256=EXACT_REVIEWED_AUDIT_SHA256 \
+  -f confirm_release=true
+```
+
+After the audited release, explicit **prospective policy approval** is still
+required before adopting the exception. This appends a scope-preserving
+operational campaign amendment; it does not extend the expiry, replace claims,
+refund reservations or authorize more than the original30 enrollment slots.
+Old incomplete cutoffs are permanently excluded. A new denial after adoption
+creates a distinct persistent fatal circuit, never reuses the exempted old row.
+
+```sh
+# Only after operator review/approval; live remains false.
+gh workflow run prospective-nba.yml --repo Kiwiegg/prediction-market-forecasting \
+  --ref main -f mode=adopt-news-policy \
+  -f recovery_audit_sha256=EXACT_RELEASED_AUDIT_SHA256 \
+  -f predecessor_sha256=EXACT_CURRENT_CAMPAIGN_APPROVAL_SHA256 \
+  -f confirm_news_policy=true
+# Wait for success, then verify persisted state and every private replay.
+gh workflow run prospective-nba.yml --repo Kiwiegg/prediction-market-forecasting --ref main -f mode=status
+gh workflow run prospective-nba.yml --repo Kiwiegg/prediction-market-forecasting --ref main -f mode=replay
+# Only after a separate explicit approval to resume paid collection:
+gh variable set NBA_ACTIONS_LIVE_ENABLED --repo Kiwiegg/prediction-market-forecasting --body true
+gh workflow run prospective-nba.yml --repo Kiwiegg/prediction-market-forecasting --ref main -f mode=live
+```
+
+Pin the full reviewed main commit before each new dispatch. An existing approval
+on the preceding operational registry cannot spend against the changed registry
+until the explicit policy amendment is adopted. The same frozen cloud evidence
+registry remains in force, so previous native jobs/caches/replays remain valid.
+The exact audit values, partial-game dispositions and actual validation status
+are recorded in `reports/prospective_news_recovery_v1/report.md`. Never retry a
+failed/uncertain paid operation or reclassify a missed historical capture as live.
+
 Live logs contain aggregate enrolled/attempted/captured/primary-eligible counts
 and reserved cost only. Raw requests, publications, extracts, model responses,
 credentials and quotes stay in the private bucket; no upload-artifact/cache step.
