@@ -256,6 +256,8 @@ provider payloads or credentials. The separate `release-owner` operation require
 that exact audit digest and `confirm_release=true`, repeats all preconditions,
 and calls the existing exact-owner conditional recovery. It preserves the entire
 checkpoint, paid claims and every denial journal. It never enables the policy.
+The separate article-classification check must pass before policy adoption; an
+ambiguous publisher response keeps global circuits fatal even after owner release.
 
 ```sh
 gh workflow run audit-nba-recovery.yml --repo Kiwiegg/prediction-market-forecasting \

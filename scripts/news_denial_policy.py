@@ -22,6 +22,17 @@ def host_key(url):
     return (urllib.parse.urlsplit(url).hostname or '').lower().removeprefix('www.')
 
 
+def classification_diagnostics(meta,body):
+    """Safe flags only; no response text, headers or account information exported."""
+    headers={k.lower():v for k,v in meta.get('headers',{}).items()};text=body.decode(errors='replace').casefold()
+    return {'allowed_article':third_party_article(meta['url']),'status_403':meta.get('http_status')==403,
+        'truncated':bool(meta.get('truncated')),'empty_body':not bool(body),
+        'credential_challenge_header':'www-authenticate' in headers or 'proxy-authenticate' in headers,
+        'json_or_api_shape':'json' in headers.get('content-type','') or text.lstrip().startswith(('{','[')),
+        'recognized_denial_text':any(w in text for w in ('access denied','accessdenied','forbidden','request blocked','403','could not be satisfied','permission to access')),
+        'restriction_marker_names':[w for w in ('invalid_api_key','api key','authentication_error','permission_error','account suspended','account disabled','account-wide','billing restriction','credential','quota exceeded','unauthorized','authentication required') if w in text]}
+
+
 def third_party_article(url):
     return allowed_page(url,dated_articles=True) and urllib.parse.urlsplit(url).hostname in json.loads(POLICY.read_text())['third_party_hosts']
 

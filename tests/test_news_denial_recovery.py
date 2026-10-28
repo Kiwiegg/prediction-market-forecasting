@@ -154,6 +154,18 @@ class NewsPolicyTests(unittest.TestCase):
                 with self.assertRaises(ValueError):recovery.adopt(state,objects,sha,digest(canonical(state.campaign_history())),True)
                 self.assertFalse((state.root/policy.AUTHORIZATION).exists())
 
+    def test_same_registry_adoption_after_separately_approved_renewal_and_no_duplicate(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            state,key,clock,objects,cp,report=fixture(Path(tmp));sha=digest(canonical(report))
+            objects.write('recovery_audits/'+sha,canonical(report),create=True)
+            old=state.campaign_history()
+            renewed=state.renew(cloud.iso(clock[0]+90000),digest(canonical(old)),True,True)
+            current=recovery.adopt(state,objects,sha,digest(canonical(renewed)),True)
+            self.assertIsNone(current['operational_migration'])
+            before=len(list((state.root/'campaign_amendments').glob('*.json')))
+            with self.assertRaises(ValueError):recovery.adopt(state,objects,sha,digest(canonical(current)),True)
+            self.assertEqual(len(list((state.root/'campaign_amendments').glob('*.json'))),before)
+
     def test_provider403_after_adoption_still_stops_and_is_never_retried(self):
         with tempfile.TemporaryDirectory() as tmp:
             state,key,clock,objects,cp,report=fixture(Path(tmp),live=True)
@@ -200,6 +212,17 @@ class NewsPolicyTests(unittest.TestCase):
                     row=bad['circuits'][-1];value=json.loads(row['body']);value['provider']='anthropic';row['body']=json.dumps(value)
                 if mutation=='unknown_usage':bad['claims'][0]['attempt_state']='uncertain_no_saved_response'
                 with self.assertRaises(ValueError):recovery.preconditions(state,bad)
+
+    def test_opaque_article_allows_only_owner_release_without_circuit_exception(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            state,key,clock,objects,cp,report=fixture(Path(tmp))
+            folder=state.job_dir(key)/'news/raw';body=b'opaque publisher response'
+            p=folder/(digest(URL.encode())+'.json');meta=json.loads(p.read_text());meta['body_sha256']=digest(body)
+            p.write_bytes(canonical(meta));p.with_suffix('.body.gz').write_bytes(gzip.compress(body))
+            recovery.preconditions(state,report,require_ordinary_article=False)
+            with self.assertRaises(ValueError):recovery.preconditions(state,report)
+            with self.assertRaises(ValueError):state.check_circuit('paid')
+            self.assertFalse((state.root/policy.AUTHORIZATION).exists())
 
 
 if __name__=='__main__':unittest.main()

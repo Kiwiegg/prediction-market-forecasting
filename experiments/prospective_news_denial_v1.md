@@ -37,8 +37,11 @@ checkpoint and creating the original immutable recovery journal. The failed run
 must be completed/failure/attempt1 at its exact recorded commit. A fresh audit
 must match the operator-provided SHA, current owner digest and checkpoint, verify
 all captures/replays/17 responses and establish that all incomplete deadlines have
-passed. Any unknown response, changed ledger, extra denial, owner drift, active
-partial game or ambiguous account restriction blocks this recovery path.
+passed. Any unknown paid response, changed ledger, extra denial, owner drift or
+active partial game blocks owner release. A publisher response whose classification
+is ambiguous additionally blocks **policy adoption**; it need not block an exact
+owner release that leaves every global circuit enforced. These prerequisites are
+reported separately. Owner release never asserts that the article is ordinary.
 
 Releasing ownership does not clear a circuit or activate this amendment. Keep
 LIVE_ENABLED=false. Later, explicit operator adoption appends a scope-preserving

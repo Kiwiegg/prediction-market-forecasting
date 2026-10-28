@@ -8,10 +8,10 @@ from actions_storage import Checkpoints,StorageStop
 from audit_blocked_campaign import inspect,termination_proof,FAILED_RUN
 from cloud_state import durable_json
 from evidence_documents import canonical,digest,DocumentStore
-from news_denial_policy import POLICY,AUTHORIZATION,ordinary_403
+from news_denial_policy import POLICY,AUTHORIZATION,ordinary_403,classification_diagnostics
 
 
-def preconditions(state,report):
+def preconditions(state,report,require_ordinary_article=True):
     if (report['paid_claim_count']!=17 or abs(report['reserved_usd']-.282501)>1e-12
             or any(r['attempt_state']!='saved_http_response' or r['http_status']!=200 for r in report['claims'])):
         raise ValueError('Paid claims require fresh operator accounting review')
@@ -29,7 +29,8 @@ def preconditions(state,report):
         m=json.loads(p.read_text())
         if m.get('url')==url:
             meta,body=DocumentStore(p.parent,True,lambda u:u==url).get(url)
-            if not ordinary_403(meta,body):raise ValueError('Article denial is ambiguous/account restricted')
+            if require_ordinary_article and not ordinary_403(meta,body):
+                raise ValueError('Article denial not eligible: '+json.dumps(classification_diagnostics(meta,body),sort_keys=True))
             captures.append(meta['body_sha256'])
     if len(captures)!=1:raise ValueError('Exactly one saved denied article required')
     return {'source_denial_url':url,'source_denial_body_sha256':captures[0]}
@@ -40,7 +41,9 @@ def release(objects,uuid,destination,proof,expected_audit_sha,confirm=False):
     report=inspect(objects,uuid,destination,proof)
     if digest(canonical(report))!=expected_audit_sha:raise ValueError('Audit changed; no recovery mutation permitted')
     from audit_live_pilot import ReadOnlyState
-    state=ReadOnlyState(destination,json.loads(cloud.CONFIG.read_text()));preconditions(state,report)
+    # Owner release does not waive any circuit; article-policy adoption has an
+    # additional, independent content-classification prerequisite.
+    state=ReadOnlyState(destination,json.loads(cloud.CONFIG.read_text()));preconditions(state,report,require_ordinary_article=False)
     raw,_=objects.read('root.json');root=json.loads(raw)
     if root['snapshot']!=report['snapshot_sha256'] or digest(canonical(root.get('owner')))!=report['owner_sha256']:
         raise StorageStop('Owner/checkpoint changed before release')
@@ -57,6 +60,7 @@ def release(objects,uuid,destination,proof,expected_audit_sha,confirm=False):
 
 def adopt(state,objects,audit_sha,expected_predecessor,confirm=False):
     if not confirm:raise ValueError('Explicit prospective article-policy approval required')
+    if (state.root/AUTHORIZATION).exists():raise ValueError('Policy already adopted; review rather than overwrite')
     raw,_=objects.read('recovery_audits/'+audit_sha)
     if raw is None or digest(raw)!=audit_sha:raise ValueError('Audited exact-owner release attestation missing')
     report=json.loads(raw);preconditions(state,report)
@@ -72,7 +76,7 @@ def adopt(state,objects,audit_sha,expected_predecessor,confirm=False):
             raise ValueError('Ledger/denials changed; no policy adoption')
         value={**old,'previous_sha256':digest(canonical(old)),'transition_kind':'recovery_policy',
             'authorized_at_utc':cloud.iso(state.clock()),'assets_sha256':digest(campaign.REGISTRY.read_bytes()),
-            'renewal_protocol':None,'operational_migration':campaign.renewal_migration(old['assets_sha256']),
+            'renewal_protocol':None,'operational_migration':campaign.renewal_migration(old['assets_sha256']) if old['assets_sha256']!=digest(campaign.REGISTRY.read_bytes()) else None,
             'recovery_policy_sha256':digest(POLICY.read_bytes()),'recovery_audit_sha256':audit_sha}
         number=len(list((state.root/'campaign_amendments').glob('*.json')))+1
         durable_json(state.root/'campaign_amendments'/('%04d.json'%number),value)

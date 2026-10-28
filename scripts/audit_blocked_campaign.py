@@ -113,6 +113,10 @@ def inspect(objects,expected_uuid,destination,proof,allow_released=False):
             'store_uuid_verified':True,'termination_proof':proof}
     from campaign_recovery import preconditions
     try:
+        preconditions(state,result,require_ordinary_article=False)
+        result['owner_release_preconditions']={'verified':True,'circuits_must_remain_enforced':True}
+    except ValueError as e:result['owner_release_preconditions']={'verified':False,'reason':str(e)}
+    try:
         detail=preconditions(state,result)
         result['recovery_preconditions']={'verified':True,**detail}
     except ValueError as e:result['recovery_preconditions']={'verified':False,'reason':str(e)}
