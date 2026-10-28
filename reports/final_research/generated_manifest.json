@@ -1,0 +1,20 @@
+{
+  "build.json": "1f41a3c9d1f09ce7a7fb25b55278b106f543e1478b4e319d1e05cb31c89fe858",
+  "figures/calibration.png": "b78fcbe10bf96e13715f891d1e700dd73bce0b372e492ec3b6727ea4ce63d9bd",
+  "figures/calibration.svg": "f65c62efd6e4c95e4735f590fd58ddb6319228e85a9da3fbe5778cbaa97cc2ab",
+  "figures/development_heldout.png": "40aabbecf3a1133ce49415bcc3f58a7c0fd49737641479f0272e19d18aedc668",
+  "figures/development_heldout.svg": "1291479d1df21bcc5064206c8b69af7cc002aeab90b791c865370dff11f2ff0c",
+  "figures/heldout_brier.png": "e2b12d38c5ce2ed8834d39b84b43cf9916b27bb58684fba8b32e6d76d53e3bd8",
+  "figures/heldout_brier.svg": "5febd46627a3f2d14e299f261bc88055d5ee5c2b5827279f4d0ba4c86f40f92e",
+  "figures/paired_intervals.png": "ea28bbab1f39a951b1aa6cb5b49af0ca81dfb00bdeeefbcf3d6a096343b9358a",
+  "figures/paired_intervals.svg": "3bec7bd507eb761f841eec765671d438398f21ec66a3ad96d83112b1b44e3fe9",
+  "paper.md": "43c415751bba7f8214817cbb39c33d659f26e6bd1ea0553b276f3ef097f3cafb",
+  "tables/calibration.csv": "a8726cae2d8e5e3443b1b301e3c09865cd67225538c5cf6aca2a7928b8ef7a45",
+  "tables/development_per_game.csv": "3a5742b7d27af7f1ce96add0527b13e8b15e2468476f6879327e650074e9417b",
+  "tables/groups.csv": "8ef0ef8d2069f267731c86ce90e4ad1e6e1c7aef9ae34eaa88d538ce00c587e9",
+  "tables/heldout_per_game.csv": "444c4ee9e57c4186bb3e1018beb6aade3831f7d70cb69b09b25f3816b1779db8",
+  "tables/intervals.csv": "b77024ba31ed5cb55788545553a00c1b27902f134043f31f4b21ced744ea2c55",
+  "tables/prospective.csv": "fc93979a0d73b7d52015d5cfbda0c8fb1fc60b68be5992fbcf3349efd2dca852",
+  "tables/removals.csv": "abcd9f737bebb04a28bf082902d54bc2982785e94151542445ac774b0f7401e1",
+  "tables/scores.csv": "9b44e00641e032a5d37c26b6451d7e4534f366c968dbbae50eecf12bf9bbc339"
+}

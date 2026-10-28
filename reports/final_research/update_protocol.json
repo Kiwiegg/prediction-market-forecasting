@@ -1,0 +1,12 @@
+{
+  "protocol": "final_research_update_v1",
+  "capture_cutoff_exclusive_utc": "2026-11-03T05:00:00Z",
+  "capture_cutoff_local": "End of November 2, 2026, America/New_York (EST, UTC-05:00)",
+  "information_cutoff": "Recorded scheduled tipoff minus exactly 24 hours; unchanged",
+  "inclusion": "All enrolled jobs are inventoried. Only privately replayed live, timely frozen and sealed primary pairs captured before the fixed exclusive reporting cutoff enter prospective primary scores. No selection by prediction, outcome, market availability, news coverage or accuracy.",
+  "outcomes": "Only separately captured, hash-verified final outcomes passing the existing prospective_evaluate verifier and identity/schedule checks may be joined after forecast sealing. Unknown outcomes remain pending. Outcome verification may occur later than the capture cutoff; preserve its actual clock and label the analysis as interim until final verification.",
+  "cohorts": "Keep legacy, cloud-news-v1 and prospectively adopted news-denial amendment strata separate. Do not pool incompatible evidence protocols or count this deadline-limited report as completion of the original 100-game study.",
+  "updates": "Offline append-only update bundles link the prior bundle hash, retain every enrolled game and preserve prior forecast fields. Only pending-to-verified outcome transitions are permitted. No new source collection, paid inference, retries, backfills or authorization is performed by the reporting scripts.",
+  "scoring": "Reuse the frozen Brier, natural-log loss (epsilon 1e-15) and calibration functions. Primary is paired LEAP v2 raw minus Direct. Report exact cohort/intersection counts. No tuning or significance-based winner selection.",
+  "scope": "Publication/update convention only; does not amend forecasting, capture eligibility, campaign stopping rules, authorizations or budgets. Thirty prospective successes are not a publication requirement."
+}

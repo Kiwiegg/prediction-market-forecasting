@@ -1,0 +1,68 @@
+{
+  "replays": [
+    {
+      "verified": true,
+      "mode": "live_explicit_opt_in",
+      "stages": [
+        "baseline"
+      ],
+      "forecasts": false
+    },
+    {
+      "verified": true,
+      "mode": "live_explicit_opt_in",
+      "stages": [],
+      "forecasts": false
+    },
+    {
+      "verified": true,
+      "mode": "live_explicit_opt_in",
+      "stages": [],
+      "forecasts": false
+    },
+    {
+      "verified": true,
+      "mode": "live_explicit_opt_in",
+      "stages": [
+        "baseline",
+        "news"
+      ],
+      "forecasts": false
+    },
+    {
+      "verified": true,
+      "mode": "live_explicit_opt_in",
+      "stages": [
+        "baseline",
+        "extraction",
+        "news"
+      ],
+      "forecasts": false
+    },
+    {
+      "verified": true,
+      "mode": "live_explicit_opt_in",
+      "stages": [
+        "baseline",
+        "extraction",
+        "news"
+      ],
+      "forecasts": false
+    },
+    {
+      "verified": true,
+      "mode": "live_explicit_opt_in",
+      "stages": [
+        "baseline",
+        "extraction",
+        "forecast",
+        "freeze",
+        "market",
+        "news",
+        "refresh"
+      ],
+      "forecasts": true,
+      "packet_sha256": "e7b0dc9502a0f374f6805bfa0ad16a947a4ce6d1aeff09d6d3f5cb09503c27de"
+    }
+  ]
+}

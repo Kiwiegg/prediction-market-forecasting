@@ -1,0 +1,14 @@
+{
+  "status": "authorized_not_started",
+  "game_ids": [],
+  "max_games": 30,
+  "max_usd": 50.0,
+  "per_game_usd": 1.35,
+  "automatic_enrollment": true,
+  "expires_at_utc": "2026-11-03T12:30:00Z",
+  "mode": "live_explicit_opt_in",
+  "assets_sha256": "f4778b61b1b2a23f867c346c6a66040b4bb63e80f799bfc02e4da0f80ad40d95",
+  "approval_sha256": "50367c8444831c6d766d8b1d15849aa20274b460624af76b5f2b0c7117435072",
+  "previous_sha256": "52dd40964f91e29d0ae62f33b599e15d18044ec3fdc26ae7806aa7a377608257",
+  "transition_kind": "recovery_policy"
+}

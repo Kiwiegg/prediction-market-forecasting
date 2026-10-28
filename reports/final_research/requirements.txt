@@ -1,0 +1,2 @@
+# Optional report figures only; never installed by inference workers.
+matplotlib==3.10.8

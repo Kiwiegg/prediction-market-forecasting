@@ -1,0 +1,11 @@
+{
+  "python": "3.13.2",
+  "matplotlib": "3.10.8",
+  "numpy": "2.5.4",
+  "font": "DejaVu Sans bundled with Matplotlib",
+  "figure_formats": [
+    "PNG at 200 dpi",
+    "SVG"
+  ],
+  "publication_conversion": "PDF export instructions supplied; no PDF converter installed or PDF export validated"
+}
