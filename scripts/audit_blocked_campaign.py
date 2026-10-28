@@ -31,7 +31,7 @@ def audit(state):
         stages=[dict(r) for r in c.execute('SELECT job,name,status FROM stages ORDER BY job,name')]
         circuits=[dict(r) for r in c.execute('SELECT * FROM circuits ORDER BY id')]
     providers=[];source_denials=[]
-    for p in state.root.rglob('*.json'):
+    for p in sorted(state.root.rglob('*.json')):
         m=json.loads(p.read_text())
         if not isinstance(m,dict) or 'http_status' not in m or 'body_sha256' not in m:continue
         body=gzip.decompress(p.with_suffix('.body.gz').read_bytes())
@@ -135,7 +135,9 @@ def main():
         else:result=inspect(objects,os.environ.get('NBA_ACTIONS_STORE_UUID'),Path(tmp)/'state',json.loads(args.termination_proof.read_text()),allow_released=True)
     result=sanitized(result,os.environ)
     args.output.parent.mkdir(parents=True,exist_ok=True);args.output.write_bytes(canonical(result)+b'\n')
-    print(json.dumps(result if args.release_owner else {k:result[k] for k in ('paid_claim_count','reserved_usd','claims_by_kind','unknown_usage_reserved_usd','owner_run','snapshot_sha256','new_paid_calls','remote_writes')},indent=2))
+    summary={k:result[k] for k in ('paid_claim_count','reserved_usd','claims_by_kind','unknown_usage_reserved_usd','owner_run','snapshot_sha256','new_paid_calls','remote_writes')} if not args.release_owner else result
+    if not args.release_owner:summary['audit_sha256']=digest(canonical(result))
+    print(json.dumps(summary,indent=2))
 
 
 if __name__=='__main__':main()
