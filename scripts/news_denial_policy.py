@@ -1,6 +1,7 @@
 """Prospective-only, explicitly adopted publisher-403 policy. No provider bypass."""
 import gzip
 import json
+import re
 import urllib.parse
 from dataclasses import asdict
 
@@ -13,9 +14,20 @@ from research_providers import EXTRACTION_INSTRUCTIONS
 
 POLICY=cloud.ROOT/'experiments/prospective_news_denial_v1.json'
 AUTHORIZATION='news_denial_authorization.json'
+RESTRICTION_MARKERS=('invalid_api_key','api key','authentication_error','permission_error','account suspended',
+    'account disabled','account-wide','billing restriction','credential','quota exceeded','unauthorized','authentication required',
+    'sign in to continue','log in to continue','account locked','account restricted','subscription required','payment required')
+PASSWORD_FIELD=re.compile(r'<input\b[^>]*\btype\s*=\s*[\"\']?password\b')
 
 
 class ArticleUnavailable(ValueError):pass
+
+
+def cloudflare_challenge(headers,text):
+    """Documented response marker plus corroborating HTML; never execute scripts."""
+    return (headers.get('cf-mitigated','').strip().casefold()=='challenge'
+        and headers.get('content-type','').split(';',1)[0].strip().casefold()=='text/html'
+        and '<html' in text and '_cf_chl_opt' in text and '/cdn-cgi/challenge-platform/' in text)
 
 
 def host_key(url):
@@ -29,8 +41,10 @@ def classification_diagnostics(meta,body):
         'truncated':bool(meta.get('truncated')),'empty_body':not bool(body),
         'credential_challenge_header':'www-authenticate' in headers or 'proxy-authenticate' in headers,
         'json_or_api_shape':'json' in headers.get('content-type','') or text.lstrip().startswith(('{','[')),
+        'cloudflare_browser_challenge':cloudflare_challenge(headers,text),
         'recognized_denial_text':any(w in text for w in ('access denied','accessdenied','forbidden','request blocked','403','could not be satisfied','permission to access')),
-        'restriction_marker_names':[w for w in ('invalid_api_key','api key','authentication_error','permission_error','account suspended','account disabled','account-wide','billing restriction','credential','quota exceeded','unauthorized','authentication required') if w in text]}
+        'password_form_present':bool(PASSWORD_FIELD.search(text)),
+        'restriction_marker_names':[w for w in RESTRICTION_MARKERS if w in text]}
 
 
 def third_party_article(url):
@@ -38,15 +52,16 @@ def third_party_article(url):
 
 
 def ordinary_403(meta,body):
-    if meta.get('http_status')!=403 or not third_party_article(meta['url']) or meta.get('truncated'):return False
+    if meta.get('provider') or meta.get('http_status')!=403 or not third_party_article(meta['url']) or meta.get('truncated'):return False
+    if 'body_sha256' in meta and meta['body_sha256']!=digest(body):return False
+    if 'body_size' in meta and meta['body_size']!=len(body):return False
     headers={k.lower():v for k,v in meta.get('headers',{}).items()}
     if 'www-authenticate' in headers or 'proxy-authenticate' in headers:return False
     text=body.decode(errors='replace').casefold()
     if 'json' in headers.get('content-type','') or text.lstrip().startswith(('{','[')):return False
-    if not any(word in text for word in ('access denied','accessdenied','forbidden','request blocked','403','could not be satisfied','permission to access')):return False
-    markers=('invalid_api_key','api key','authentication_error','permission_error','account suspended',
-             'account disabled','account-wide','billing restriction','credential','quota exceeded','unauthorized','authentication required')
-    return not any(word in text for word in markers)
+    if any(word in text for word in RESTRICTION_MARKERS) or PASSWORD_FIELD.search(text):return False
+    return (any(word in text for word in ('access denied','accessdenied','forbidden','request blocked','403','could not be satisfied','permission to access'))
+            or cloudflare_challenge(headers,text))
 
 
 def authorization(state):

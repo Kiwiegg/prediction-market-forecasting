@@ -31,6 +31,13 @@
     "experiments/prospective_actions_before_news_recovery_v1_assets.json",
     ".github/workflows/audit-nba-recovery.yml",
     "scripts/audit_blocked_campaign.py",
-    "tests/test_blocked_campaign_audit.py"
+    "tests/test_blocked_campaign_audit.py",
+    "scripts/review_article_denial.py",
+    ".github/workflows/review-nba-denial.yml",
+    "tests/test_article_denial_profile.py",
+    "tests/test_article_denial_classification.py",
+    "tests/fixtures/denials/cloudflare_challenge.html",
+    "tests/fixtures/denials/cloudflare_challenge_headers.json",
+    "experiments/prospective_news_denial_review_v1.md"
   ]
 }

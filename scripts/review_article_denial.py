@@ -82,13 +82,21 @@ def inspect(objects,expected_uuid,destination):
             if digest(body)!=meta['body_sha256']:raise ValueError('Preserved response hash mismatch')
             matches.append({'source_url':url,'retrieved_at_utc':meta['retrieved_at_utc'],'profile':profile(meta,body)})
         if len(matches)!=1:raise ValueError('Unique original response required')
-        replays=[cloud.replay_job(state,key) for key in state.jobs()]
+        from audit_blocked_campaign import audit
+        from campaign_recovery import preconditions
+        accounting=audit(state)
+        replays=[j['private_replay'] for j in accounting['jobs']]
+        try:
+            preconditions(state,accounting)
+            adoption={'verified':True}
+        except ValueError as e:adoption={'verified':False,'reason':str(e)}
     if any(digest((Path(destination)/n).read_bytes())!=sha for n,sha in cp.files.items()):raise StorageStop('Private files changed')
     if objects.read('root.json')[0]!=raw:raise StorageStop('Root changed during review')
     return {'schema_version':1,'snapshot_sha256':root['snapshot'],'owner':None,'source':matches[0],
         'paid_claims':sum(r['kind']!='article' for r in ledger),'reserved_usd':sum(r['usd'] for r in ledger),
         'ledger_sha256':digest(canonical(ledger)),'circuits_sha256':digest(canonical(circuits)),
         'private_files_verified_unchanged':len(cp.files),'private_replays':replays,
+        'policy_adoption_preconditions':adoption,
         'policy_authorization_present':(state.root/'news_denial_authorization.json').exists(),
         'remote_writes':0,'publisher_requests':0,'paid_calls':0,'raw_private_responses_included':False}
 
