@@ -6,13 +6,24 @@ import unittest
 from unittest.mock import patch
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from audit_blocked_campaign import audit,termination_proof,FAILED_COMMIT
+from audit_blocked_campaign import audit,termination_proof,FAILED_COMMIT,public_response_path
 from audit_live_pilot import ReadOnlyState
 from test_cloud_news_pipeline import simulate
 from evidence_documents import digest
 
 
 class BlockedAuditTests(unittest.TestCase):
+    def test_benchmark_revalidation_claim_matches_independent_market_capture(self):
+        from types import SimpleNamespace
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);state=SimpleNamespace(root=root,job_dir=lambda j:root/'jobs'/j)
+            rec={'job':'pilot','slot':'market_revalidation','url':'https://example.invalid/schedule'}
+            # MarketEngine.capture stores revalidation bytes in market/raw,
+            # although the immutable claim deliberately has a different slot.
+            meta=root/'jobs/pilot/market/raw'/(digest(rec['url'].encode())+'.json')
+            meta.parent.mkdir(parents=True);meta.write_text('{}')
+            self.assertTrue(public_response_path(state,rec).exists())
+
     def test_only_exact_completed_failed_runner_proves_termination(self):
         proof={'id':40600612996,'status':'completed','conclusion':'failure','run_attempt':1,'head_sha':FAILED_COMMIT}
         self.assertEqual(termination_proof(proof),proof)

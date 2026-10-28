@@ -25,6 +25,13 @@ def termination_proof(value):
     return {k:value[k] for k in ('id','status','conclusion','run_attempt','head_sha')}
 
 
+def public_response_path(state,rec):
+    job=rec['job']
+    if job.startswith('catalog:'):folder=state.root/'jobs/catalog'/job[len('catalog:'):]
+    else:folder=state.job_dir(job)/('market' if rec['slot']=='market_revalidation' else rec['slot'])
+    return folder/'raw'/(digest(rec['url'].encode())+'.json')
+
+
 def audit(state):
     with state.db() as c:
         ledger=[dict(r) for r in c.execute('SELECT * FROM requests ORDER BY id')]
@@ -82,8 +89,7 @@ def audit(state):
     public=[]
     for p in (state.root/'public_claims').glob('*.json'):
         rec=json.loads(p.read_text());job=rec['job']
-        folder=(state.root/'jobs/catalog'/job[len('catalog:'):] if job.startswith('catalog:') else state.job_dir(job)/rec['slot'])
-        meta=folder/'raw'/(digest(rec['url'].encode())+'.json')
+        meta=public_response_path(state,rec)
         public.append({'claim_id':p.stem,**rec,'saved_response_present':meta.exists()})
     return {'claims':rows,'paid_claim_count':len(rows),'reserved_usd':sum(r['usd'] for r in claims),
             'unknown_usage_reserved_usd':sum(r['reserved_usd'] for r in rows if r['attempt_state']=='uncertain_no_saved_response'),
