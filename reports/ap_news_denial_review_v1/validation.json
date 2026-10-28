@@ -1,0 +1,56 @@
+{
+  "clean_checkout_commit": "2003d979ea2f092ff67fba9bad272757475e8471",
+  "baseline_commit": "b34720ff1283f3c2015a0931f56a9b4d11004cc0",
+  "tracked_baseline_files_checked": 7987,
+  "changed_baseline_files": [
+    "experiments/prospective_github_actions_v1_assets.json",
+    "experiments/prospective_news_denial_v1.json",
+    "scripts/news_denial_policy.py"
+  ],
+  "historical_data_and_frozen_methods_unchanged": true,
+  "checks": [
+    {
+      "command": [
+        "scripts/actions_prospective.py",
+        "--validate-assets"
+      ],
+      "exit_code": 0,
+      "output": "{\"verified\": true, \"assets_sha256\": \"f4778b61b1b2a23f867c346c6a66040b4bb63e80f799bfc02e4da0f80ad40d95\"}"
+    },
+    {
+      "command": [
+        "scripts/cloud_prospective.py",
+        "--replay-public",
+        "reports/prospective_cloud_news_v1/simulation"
+      ],
+      "exit_code": 0,
+      "output": "{\n  \"verified\": true,\n  \"mode\": \"offline_mock\",\n  \"packet_sha256\": \"68ba497484267bf559c6b603cf1d5c65eae35c3f8be548bc48829e21133d829d\",\n  \"scope\": \"sanitized shared packet, native requests and aggregation; not source/provider authentication\"\n}"
+    },
+    {
+      "command": [
+        "scripts/replay_live_pilot_summary.py",
+        "reports/prospective_live_pilot_1"
+      ],
+      "exit_code": 0,
+      "output": "{\n  \"verified\": true,\n  \"game_id\": \"401909877\",\n  \"packet_sha256\": \"e7b0dc9502a0f374f6805bfa0ad16a947a4ce6d1aeff09d6d3f5cb09503c27de\",\n  \"scope\": \"Sanitized hash/arithmetic/clock/accounting consistency; private replay separately required\"\n}"
+    },
+    {
+      "command": [
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_article_denial*.py",
+        "-q"
+      ],
+      "exit_code": 0,
+      "output": "----------------------------------------------------------------------\nRan 8 tests in 0.038s\n\nOK"
+    }
+  ],
+  "full_suite": {
+    "tests": 315,
+    "passed": true
+  }
+}

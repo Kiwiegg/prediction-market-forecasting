@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "implementation_commit": "2003d979ea2f092ff67fba9bad272757475e8471",
+  "files_sha256": {
+    "after_profile.json": "56d15f54a0ee26731c27f64ee778346b5b0bb094bd109a4b125a80a6bd97b425",
+    "before_profile.json": "e03bc539d46b39f50d970ca9a9fd7ac762246d2878ae98c9a610253266b86261",
+    "report.md": "bfbc23bc558d0f4e77b9e2f97b99fd8c66687175425b06de4c0bbbf3fe26bbca",
+    "validation.json": "dc2b6b857691d8bc89e1ba9d1da038ba65808058a61bdc395b45700912e86cfc"
+  }
+}
