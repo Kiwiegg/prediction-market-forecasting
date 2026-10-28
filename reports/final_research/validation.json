@@ -1,0 +1,116 @@
+{
+  "implementation_commit": "8e41a79fa7dd9bd10a23ccba674fe96451db04ea",
+  "checks": [
+    {
+      "command": [
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-q"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "scripts/actions_prospective.py",
+        "--validate-assets"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "scripts/analyze_heldout.py",
+        "--authorize-evaluation",
+        "--replay",
+        "reports/heldout_150"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "scripts/analyze_v2_development.py",
+        "--replay",
+        "reports/leap_nba_v2_development_50"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "scripts/evaluate_synthetic_elicitation.py",
+        "--replay",
+        "reports/leap_nba_v2_phase1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "scripts/replay_live_pilot_summary.py",
+        "reports/prospective_live_pilot_1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "scripts/update_final_prospective.py",
+        "--verify",
+        "reports/final_research/prospective_update_2026_10_28"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "scripts/build_final_research.py",
+        "--verify",
+        "reports/final_research"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "scripts/build_final_research.py",
+        "--output",
+        "TEMP_REBUILT"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "byte_identical_generated_files": 18,
+  "private_credentials_and_captures_available": false,
+  "baseline_files_verified_unchanged": 7999,
+  "baseline_commit": "43ea2d4125e1cfd2214249d8a97e43020ced9cb0",
+  "full_test_count": 328,
+  "full_suite_passed": true,
+  "policy_adoption": {
+    "reviewed_commit": "43ea2d4125e1cfd2214249d8a97e43020ced9cb0",
+    "workflow_run": 40755133266,
+    "status_run": 40757698617,
+    "private_replay_run": 40758625180,
+    "post_adoption_audit_run": 40758918594,
+    "paid_claims_preserved": 17,
+    "reserved_usd_preserved": 0.282501,
+    "live_enabled": false,
+    "new_paid_calls": 0,
+    "new_game_enrollments": 0
+  },
+  "publication_state": {
+    "historical_experiments_complete": true,
+    "prospective_eligible_captures": 1,
+    "verified_prospective_outcomes_scored": 0,
+    "prospective_100_game_study_complete": false,
+    "capture_cutoff_exclusive_utc": "2026-11-03T05:00:00Z"
+  },
+  "validation_limits": [
+    "The new GET-only R2 reporting wrapper was tested with mocks; existing private replay/audit tools were run against real R2.",
+    "No new outcome retrieval, news collection, model inference or paid-live recovery test was performed.",
+    "PDF export instructions supplied; PDF conversion was not run."
+  ],
+  "operational_proofs_sha256": {
+    "operations/adoption.json": "cba78590e83be4c9352b7f871dc5b4a5e2b2c50628f95bf2636fbaacdb81ca2e",
+    "operations/policy_adoption.md": "aa39fd453a83903db62f56a259ddcfc92b756bdb4a6fa131b9bfdf0e2a71de7b",
+    "operations/post_adoption_profile.json": "f9563bc194d17527bffe60a8f1bb5a1098635a331b86f6a3e85540db6e3a9c4c",
+    "operations/replay.json": "92e5a78b76d6b27315f662a9c3faf85213479cf3b12db3d28cbb9658cd6fcd05",
+    "operations/status.json": "7554e3b00430be09ad20fdfbdd073c919d89f62043cc93b230b4df4958b79df8"
+  }
+}
