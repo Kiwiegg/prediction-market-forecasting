@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "implementation_commit": "67769972a4e47e791293b7522c4bd69e3c0efda3",
+  "full_unit_suite": {
+    "tests": 307,
+    "seconds": 84.482,
+    "passed": true
+  },
+  "clean_checkout": {
+    "commit": "67769972a4e47e791293b7522c4bd69e3c0efda3",
+    "paid_calls": 0,
+    "checks": [
+      {
+        "command": "python scripts/actions_prospective.py --validate-assets",
+        "result": {
+          "verified": true,
+          "assets_sha256": "1b420395732b0cf349681e4803e3632b28fe425d70bb1ef935e3c85c01aba3b8"
+        }
+      },
+      {
+        "command": "python scripts/cloud_prospective.py --replay-public reports/prospective_cloud_news_v1/simulation",
+        "result": {
+          "verified": true,
+          "mode": "offline_mock",
+          "packet_sha256": "68ba497484267bf559c6b603cf1d5c65eae35c3f8be548bc48829e21133d829d",
+          "scope": "sanitized shared packet, native requests and aggregation; not source/provider authentication"
+        }
+      },
+      {
+        "command": "python scripts/replay_live_pilot_summary.py reports/prospective_live_pilot_1",
+        "result": {
+          "verified": true,
+          "game_id": "401909877",
+          "packet_sha256": "e7b0dc9502a0f374f6805bfa0ad16a947a4ce6d1aeff09d6d3f5cb09503c27de",
+          "scope": "Sanitized hash/arithmetic/clock/accounting consistency; private replay separately required"
+        }
+      },
+      {
+        "test": "test_news_denial_recovery.py",
+        "passed": true,
+        "summary": [
+          "----------------------------------------------------------------------",
+          "Ran 12 tests in 1.103s",
+          "",
+          "OK"
+        ]
+      },
+      {
+        "test": "test_source_session_clock.py",
+        "passed": true,
+        "summary": [
+          "----------------------------------------------------------------------",
+          "Ran 4 tests in 0.071s",
+          "",
+          "OK"
+        ]
+      },
+      {
+        "test": "test_blocked_campaign_audit.py",
+        "passed": true,
+        "summary": [
+          "----------------------------------------------------------------------",
+          "Ran 3 tests in 0.335s",
+          "",
+          "OK"
+        ]
+      }
+    ]
+  },
+  "actionlint_passed": true,
+  "private_audit_run": 40723506300,
+  "exact_owner_release_run": 40724586144,
+  "post_release_audit_run": 40726224030,
+  "owner_released": true,
+  "circuits_changed": false,
+  "policy_adopted": false,
+  "new_paid_calls": 0,
+  "new_source_calls": 0,
+  "new_game_authorizations": 0,
+  "live_enabled": false,
+  "reserved_usd_before_and_after": 0.282501,
+  "original_data_files_unchanged": 7411,
+  "protected_files_unchanged": 7847,
+  "changed_original_files": [
+    ".github/workflows/prospective-nba.yml",
+    "deploy/github-actions/README.md",
+    "experiments/prospective_github_actions_v1_assets.json",
+    "scripts/actions_campaign.py",
+    "scripts/actions_gates.py",
+    "scripts/actions_prospective.py"
+  ],
+  "original_cloud_evidence_registry_unchanged": true,
+  "expired_unfinished_games": 6,
+  "eligible_pairs_preserved": 1,
+  "paid_response_reconciliation_complete": true,
+  "policy_adoption_ready": false
+}

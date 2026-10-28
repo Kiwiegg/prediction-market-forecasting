@@ -1,0 +1,8 @@
+game_id,away,home,target_cutoff_utc,freeze_deadline_utc,forecast_deadline_utc,reserved_usd,disposition,stages
+401909887,Houston Rockets,Milwaukee Bucks,2026-10-28T00:00:00Z,2026-10-28T00:05:00Z,2026-10-28T00:15:00Z,0.01,unrecoverable_expired_no_backfill,baseline:done;news:failed
+401909890,San Antonio Spurs,Utah Jazz,2026-10-28T01:00:00Z,2026-10-28T01:05:00Z,2026-10-28T01:15:00Z,0,unrecoverable_expired_no_backfill,
+401909891,Oklahoma City Thunder,Dallas Mavericks,2026-10-28T01:30:00Z,2026-10-28T01:35:00Z,2026-10-28T01:45:00Z,0,unrecoverable_expired_no_backfill,
+401909889,Denver Nuggets,New Orleans Pelicans,2026-10-28T00:00:00Z,2026-10-28T00:05:00Z,2026-10-28T00:15:00Z,0.02,unrecoverable_expired_no_backfill,baseline:done;extraction:failed;news:done
+401909886,New York Knicks,Chicago Bulls,2026-10-28T00:00:00Z,2026-10-28T00:05:00Z,2026-10-28T00:15:00Z,0.054169999999999996,unrecoverable_expired_no_backfill,baseline:done;extraction:done;news:done
+401909888,Golden State Warriors,Minnesota Timberwolves,2026-10-28T00:00:00Z,2026-10-28T00:05:00Z,2026-10-28T00:15:00Z,0.02,unrecoverable_expired_no_backfill,baseline:done;extraction:done;news:done
+401909877,Brooklyn Nets,Boston Celtics,2026-10-26T23:30:00Z,2026-10-26T23:35:00Z,2026-10-26T23:45:00Z,0.178331,preserved_completed,baseline:done;extraction:done;forecast:done;freeze:done;market:done;news:done;refresh:done

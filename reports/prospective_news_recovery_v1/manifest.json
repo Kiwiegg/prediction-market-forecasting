@@ -1,0 +1,12 @@
+{
+  "canonical_released_audit_sha256": "058ca50461a068f21765c55e32551dab9203cb50367dc9ab8fce88cb6c3b150d",
+  "files": {
+    "audit.json": "0e74b581bfa670ab3dab4f0dc7db8eaa1cf5491206d8ae765347dcf214cf24c0",
+    "games.csv": "069129d102a66e46dfb86ae6138145f9854d8a4bab61b4cd705138db39eb471e",
+    "owner_release.json": "f392ae50bcf868d9bd22d49064daeeefdace1f0a74dfd8a533755625b16ee430",
+    "paid_claims.csv": "09a3f447ec8aeccdf9a9cc22fc19031fb76d6d942c36c6621a83eed0a13e0b6e",
+    "pre_release_audit.json": "c87d15963533960faecded00ecffb8299d8dcc4f32d388088a4ac73d5af6ddfd",
+    "report.md": "ad55e8f99e639a938b2381809297f5a6275ba81f6a390c34e15a4aa717e55dd7",
+    "validation.json": "a336a49b47a9642de8f7908af38e48222ab212553327753b50f195af88edf639"
+  }
+}

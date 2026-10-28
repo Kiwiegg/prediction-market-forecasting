@@ -1,0 +1,13 @@
+{
+  "run_id": 40724586144,
+  "run_url": "https://github.com/Kiwiegg/prediction-market-forecasting/actions/runs/40724586144",
+  "result": {
+    "owner_released": true,
+    "circuits_cleared": false,
+    "audit_sha256": "058ca50461a068f21765c55e32551dab9203cb50367dc9ab8fce88cb6c3b150d",
+    "snapshot_preserved": true,
+    "reserved_usd": 0.282501,
+    "paid_calls": 0,
+    "policy_adopted": false
+  }
+}
